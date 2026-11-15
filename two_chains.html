@@ -1,0 +1,336 @@
+<meta charset="utf-8">
+<title>سلسلتان ترسمان الشكل</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* التخطيط: لوحة رسم قابلة للسحب، بجانبها لوحة تحكّم بمعيار Fluent؛ وتنزل تحتها في الهاتف */
+:root{
+  --bg:#f3f3f3; --card:#ffffff; --card2:#f9f9fb; --line:#e0e0e6; --fg:#1b1b1f; --muted:#5f6170;
+  --accent:#0067c0; --accent-fg:#ffffff; --accent-soft:#e6f0fa;
+  --stage:#0d1512; --ghost:#2a3632; --trace:#ff6b5a; --xchain:#f2c14e; --ychain:#4fd1b5; --dash:#8a9a94; --pen:#ffffff;
+  --tip:#c42b1c; --tip-fg:#ffffff;
+  --font:"Segoe UI Variable Text","Segoe UI",Tahoma,sans-serif; --mono:"Cascadia Mono",Consolas,monospace;
+  --r-ctl:4px; --r-win:8px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#202020; --card:#2b2b2b; --card2:#323232; --line:#3d3d42; --fg:#f2f2f2; --muted:#b4b4bd;
+  --accent:#4cc2ff; --accent-fg:#002a40; --accent-soft:#1f3442; --stage:#0a100e; --ghost:#24302c;
+  --tip:#d13438; --tip-fg:#ffffff; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#202020; --card:#2b2b2b; --card2:#323232; --line:#3d3d42; --fg:#f2f2f2; --muted:#b4b4bd;
+  --accent:#4cc2ff; --accent-fg:#002a40; --accent-soft:#1f3442; --stage:#0a100e; --ghost:#24302c;
+  --tip:#d13438; --tip-fg:#ffffff; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--font);font-size:14px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 32px}
+.wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+header{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+header h1{font-size:28px;line-height:36px;font-weight:600;margin:0;text-wrap:balance}
+header p{margin:0;color:var(--muted);flex-basis:100%;max-width:90ch;line-height:1.7}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:16px;align-items:start}
+@media (max-width:860px){.layout{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r-win);box-shadow:0 2px 4px rgba(0,0,0,.06)}
+.stage{padding:8px;background:var(--card2);display:flex;flex-direction:column;gap:8px;min-width:0}
+.stage-box{resize:both;overflow:hidden;width:100%;height:600px;max-width:100%;min-width:220px;min-height:220px;
+  border-radius:var(--r-ctl);border:1px solid var(--line);background:var(--stage)}
+.stage-box canvas{display:block;width:100%;height:100%}
+.hint{color:var(--muted);font-size:12px}
+.sec{padding:16px;display:flex;flex-direction:column;gap:12px;border-top:1px solid var(--line)}
+.sec:first-child{border-top:0}
+.sec.alt{background:var(--card2)}
+.sec h2{font-size:14px;line-height:20px;font-weight:600;margin:0;color:var(--muted)}
+.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+/* الأزرار بعرض نصّها؛ والمترابطة منها داخل إطار واحد */
+.group{display:inline-flex;flex-wrap:wrap;align-items:center;gap:4px;padding:4px;max-width:100%;
+  border:1px solid var(--line);border-radius:var(--r-win);background:var(--card)}
+.btn{font:inherit;display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:5px 12px;border-radius:var(--r-ctl);
+  border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;box-shadow:0 1px 0 rgba(0,0,0,.08)}
+.btn:hover{background:var(--card2);border-color:var(--muted)}
+.btn:active{background:var(--accent-soft);box-shadow:none}
+.btn:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn.primary{background:var(--accent);color:var(--accent-fg);border-color:transparent}
+.btn[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent)}
+.btn svg{width:16px;height:16px;flex:none}
+.chip{font:inherit;font-family:var(--mono);min-height:32px;padding:4px 8px;border-radius:var(--r-ctl);border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer}
+.chip.on{background:var(--accent);color:var(--accent-fg);border-color:transparent}
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{display:flex;justify-content:space-between;gap:8px}
+.field output{font-family:var(--mono);color:var(--accent)}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.check{display:flex;align-items:center;gap:8px;cursor:pointer;min-height:32px;padding-inline:6px}
+.check input{width:20px;height:20px;accent-color:var(--accent)}
+.legend{display:flex;flex-direction:column;gap:8px;line-height:1.6}
+.legend div{display:flex;gap:8px;align-items:flex-start}
+.sw{width:14px;height:14px;border-radius:3px;flex:none;margin-top:4px}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.stat{background:var(--card2);border:1px solid var(--line);border-radius:var(--r-ctl);padding:8px}
+.stat b{display:block;font-family:var(--mono);font-size:18px;line-height:24px}
+.stat span{color:var(--muted);font-size:12px}
+.steps{padding:16px;line-height:1.8;max-width:90ch}
+.steps h2{margin:0 0 8px;font-size:16px}
+.steps ol{margin:0;padding-inline-start:20px}
+.eq{display:block;direction:ltr;text-align:left;font-family:var(--mono);background:var(--card2);border:1px solid var(--line);border-radius:var(--r-ctl);padding:8px 10px;margin:8px 0;overflow-x:auto}
+[data-tip]{position:relative}
+[data-tip]:hover::after,[data-tip]:focus-visible::after{content:attr(data-tip);position:absolute;inset-inline-start:0;top:calc(100% + 6px);z-index:20;
+  background:var(--tip);color:var(--tip-fg);padding:5px 9px;border-radius:var(--r-ctl);font-size:12px;width:max-content;max-width:240px;pointer-events:none;box-shadow:0 4px 10px rgba(0,0,0,.2)}
+</style>
+
+<div class="wrap" dir="rtl">
+  <header>
+    <span data-icon="logo"></span>
+    <h1 data-t="title"></h1>
+    <p data-t="intro"></p>
+  </header>
+
+  <div class="layout">
+    <div class="card stage">
+      <div class="stage-box" id="box"><canvas id="cv" data-t-aria="canvas.aria"></canvas></div>
+      <span class="hint" data-t="stage.hint"></span>
+    </div>
+
+    <div class="card">
+      <div class="sec">
+        <h2 data-t="shape.title"></h2>
+        <div class="toolbar"><div class="group" id="shapes"></div></div>
+      </div>
+
+      <div class="sec alt">
+        <h2 data-t="play.title"></h2>
+        <div class="toolbar">
+          <div class="group">
+            <button class="btn primary" id="play" data-t-tip="play.tip"></button>
+            <button class="btn" id="restart" data-t-tip="restart.tip"><span data-icon="restart"></span><span data-t="restart"></span></button>
+          </div>
+          <div class="group">
+            <button class="btn" id="modeAuto" aria-pressed="true" data-t="mode.auto" data-t-tip="mode.auto_tip"></button>
+            <button class="btn" id="modeManual" aria-pressed="false" data-t="mode.manual" data-t-tip="mode.manual_tip"></button>
+          </div>
+        </div>
+        <div class="toolbar"><div class="group" id="chips"></div></div>
+        <div class="field">
+          <label for="m"><span data-t="m.label"></span> <output id="mOut">1</output></label>
+          <input type="range" id="m" min="1" max="40" value="1">
+        </div>
+        <div class="field">
+          <label for="speed"><span data-t="speed.label"></span> <output id="speedOut">1×</output></label>
+          <input type="range" id="speed" min="0.25" max="3" step="0.25" value="1">
+        </div>
+        <div class="toolbar"><div class="group">
+          <label class="check"><input type="checkbox" id="showGhost" checked> <span data-t="show.ghost"></span></label>
+          <label class="check"><input type="checkbox" id="showSmall" checked> <span data-t="show.small"></span></label>
+        </div></div>
+      </div>
+
+      <div class="sec">
+        <h2 data-t="legend.title"></h2>
+        <div class="legend">
+          <div><span class="sw" style="background:var(--xchain)"></span><span data-t="legend.x"></span></div>
+          <div><span class="sw" style="background:var(--ychain)"></span><span data-t="legend.y"></span></div>
+          <div><span class="sw" style="background:var(--trace)"></span><span data-t="legend.pen"></span></div>
+        </div>
+        <div class="stats">
+          <div class="stat" data-t-tip="stat.rx_tip"><b id="rx">–</b><span data-t="stat.rx"></span></div>
+          <div class="stat" data-t-tip="stat.ry_tip"><b id="ry">–</b><span data-t="stat.ry"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="card steps">
+    <h2 data-t="how.title"></h2>
+    <ol>
+      <li data-t="how.1"></li>
+      <li data-t="how.2"></li>
+      <li data-t="how.3"></li>
+      <li data-t="how.4"></li>
+    </ol>
+    <span class="eq">x(t) = a0 + Σ R_x(n)·cos(n·t + φ_n)        y(t) = c0 + Σ R_y(n)·cos(n·t + ψ_n)</span>
+    <p data-t="how.5"></p>
+  </section>
+</div>
+
+<script>
+/* نصوص الواجهة كلها هنا */
+const STRINGS = {
+  "canvas.aria": "لوحة الرسم: سلسلتا دوائر خارج الشكل ترسمانه معًا",
+  "how.1": "تُؤخذ نقاط متساوية التباعد على محيط الشكل، ولكل نقطة إحداثي أفقي x ورأسي y.",
+  "how.2": "تُفصل الحركة الأفقية x(t) عن الرأسية y(t)، وتُفكّ كلٌّ منهما إلى دوائر: الدائرة n تلفّ n مرّات، ونصف قطرها من a وb (للأفقية) أو من c وd (للرأسية).",
+  "how.3": "السلسلة العليا لا يُقرأ منها إلا موضع طرفها الأفقي، فيمكن وضعها فوق الشكل بعيدًا عنه. والجانبية لا يُقرأ منها إلا موضع طرفها الرأسي، فتوضع بجانبه.",
+  "how.4": "خطّ متقطّع ينزل من طرف العليا، وآخر يمتدّ من طرف الجانبية؛ ونقطة التقائهما هي القلم الذي يرسم الشكل.",
+  "how.5": "بدائرة واحدة في كل سلسلة يخرج شكل بيضاوي، وكلما زادت الدوائر اقترب من زوايا المثلث الحادّة.",
+  "how.title": "كيف تعمل",
+  "intro": "دائرتان بعيدتان عن الشكل، واحدة فوقه وأخرى بجانبه، تدوران معًا. العليا تحدّد الموضع الأفقي للقلم، والجانبية موضعه الرأسي، فيرسمان الشكل معًا. زِد عدد الدوائر في كل سلسلة لترى الزوايا تتكوّن.",
+  "legend.pen": "القلم: نقطة التقاء الخطّين المتقطّعين",
+  "legend.title": "ما على اللوحة",
+  "legend.x": "السلسلة العليا: ترسم الحركة الأفقية x",
+  "legend.y": "السلسلة الجانبية: ترسم الحركة الرأسية y",
+  "m.label": "عدد الدوائر في كل سلسلة",
+  "mode.auto": "مراحل تلقائية",
+  "mode.auto_tip": "يزيد عدد الدوائر بعد كل دورة كاملة",
+  "mode.manual": "عدد ثابت",
+  "mode.manual_tip": "تختار عدد الدوائر بنفسك من المنزلق",
+  "pause": "إيقاف مؤقت",
+  "play": "تشغيل",
+  "play.tip": "تشغيل الحركة أو إيقافها (مفتاح المسافة)",
+  "play.title": "التشغيل",
+  "restart": "من البداية",
+  "restart.tip": "إعادة الرسم من أوّل مرحلة",
+  "shape.square": "مربّع",
+  "shape.star": "نجمة",
+  "shape.title": "الشكل",
+  "shape.triangle": "مثلث",
+  "show.ghost": "إظهار الشكل الأصلي",
+  "show.small": "إظهار الدوائر الصغيرة",
+  "speed.label": "السرعة",
+  "stage.hint": "اسحب زاوية اللوحة السفلية لتغيير حجمها",
+  "stat.rx": "نصف قطر أكبر دائرة عليا",
+  "stat.rx_tip": "نصف قطر الدائرة الأولى في السلسلة العليا (الحركة الأفقية)",
+  "stat.ry": "نصف قطر أكبر دائرة جانبية",
+  "stat.ry_tip": "نصف قطر الدائرة الأولى في السلسلة الجانبية (الحركة الرأسية)",
+  "title": "سلسلتان ترسمان الشكل"
+};
+function t(k){ return STRINGS[k] ?? (console.warn("missing string:",k), k); }
+function applyStrings(){
+  document.querySelectorAll("[data-t]").forEach(e=>e.textContent=t(e.dataset.t));
+  document.querySelectorAll("[data-t-tip]").forEach(e=>e.setAttribute("data-tip",t(e.dataset.tTip)));
+  document.querySelectorAll("[data-t-aria]").forEach(e=>e.setAttribute("aria-label",t(e.dataset.tAria)));
+}
+
+/* الأيقونات كلها هنا، كلٌّ بلونها */
+const ICONS = {
+  logo:{vb:"0 0 34 34",size:34,body:'<circle cx="17" cy="7" r="5" fill="none" stroke="#f2c14e" stroke-width="2"/><circle cx="7" cy="20" r="5" fill="none" stroke="#4fd1b5" stroke-width="2"/><path d="M17 12v14M12 20h14" stroke="#8a9a94" stroke-width="1.5" stroke-dasharray="2 2"/><circle cx="17" cy="20" r="2.6" fill="#e0453a"/>'},
+  play:{vb:"0 0 16 16",body:'<path d="M4 2.5v11l9-5.5z" fill="#6ccb5f"/>'},
+  pause:{vb:"0 0 16 16",body:'<rect x="3.5" y="2.5" width="3" height="11" rx="1" fill="#ffb900"/><rect x="9.5" y="2.5" width="3" height="11" rx="1" fill="#ff8c00"/>'},
+  restart:{vb:"0 0 16 16",body:'<path d="M3 8a5 5 0 1 0 1.6-3.7" fill="none" stroke="#8a5cd6" stroke-width="1.6" stroke-linecap="round"/><path d="M3 2.5v3h3" fill="none" stroke="#e8a317" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>'},
+  triangle:{vb:"0 0 16 16",body:'<path d="M8 2.5 14 13.5H2z" fill="none" stroke="#e0453a" stroke-width="1.6" stroke-linejoin="round"/>'},
+  square:{vb:"0 0 16 16",body:'<rect x="3" y="3" width="10" height="10" fill="none" stroke="#0078d4" stroke-width="1.6"/>'},
+  star:{vb:"0 0 16 16",body:'<path d="M8 1.8l1.8 4 4.4.4-3.3 2.9 1 4.3L8 11.2l-3.9 2.2 1-4.3L1.8 6.2l4.4-.4z" fill="none" stroke="#e8a317" stroke-width="1.4" stroke-linejoin="round"/>'}
+};
+function icon(n){const d=ICONS[n];const s=d.size||16;return `<svg width="${s}" height="${s}" viewBox="${d.vb}" aria-hidden="true">${d.body}</svg>`;}
+function applyIcons(){document.querySelectorAll("[data-icon]").forEach(e=>e.outerHTML=icon(e.dataset.icon));}
+
+/* ---------- الأشكال: رؤوس مضلّع بسيط (y للأسفل) ---------- */
+const SHAPES = {
+  triangle:[[0.5,0],[1,0.866],[0,0.866]],
+  square:[[0,0],[1,0],[1,1],[0,1]],
+  star:(()=>{const p=[];for(let i=0;i<10;i++){const r=i%2?0.2:0.5,a=-Math.PI/2+i*Math.PI/5;p.push([0.5+r*Math.cos(a),0.5+r*Math.sin(a)]);}return p;})()
+};
+const N = 360;                       // عدد النقاط على المحيط
+const MAXM = 40;                     // أقصى عدد دوائر في كل سلسلة
+const STAGES = [1,2,3,5,10,20,40];
+
+/** يضع N نقطة متساوية التباعد على محيط المضلّع، بدءًا من رأسه الأوّل. */
+function samplePolygon(v){
+  const L=[0]; for(let i=0;i<v.length;i++){const a=v[i],b=v[(i+1)%v.length];L.push(L[i]+Math.hypot(b[0]-a[0],b[1]-a[1]));}
+  const tot=L[L.length-1], xs=[], ys=[]; let s=0;
+  for(let j=0;j<N;j++){const d=tot*j/N; while(L[s+1]<d) s++; const a=v[s],b=v[(s+1)%v.length],f=(d-L[s])/(L[s+1]-L[s]);
+    xs.push(a[0]+(b[0]-a[0])*f); ys.push(a[1]+(b[1]-a[1])*f);}
+  return {xs,ys};
+}
+
+/** يفكّ حركة واحدة (أفقية أو رأسية) إلى دوائر: لكل n عدد مركّب نصف قطره R ومن زاويته φ.
+ *  X_n = (2/N)·Σ v_j·e^(−i·n·t_j)، فتكون الحركة v(t) = v0 + Σ Re(X_n·e^(i·n·t)). */
+function decompose(vals){
+  const v0=vals.reduce((a,b)=>a+b,0)/N, out=[];
+  for(let n=1;n<=MAXM;n++){let re=0,im=0;
+    for(let j=0;j<N;j++){const a=2*Math.PI*n*j/N;re+=vals[j]*Math.cos(a);im-=vals[j]*Math.sin(a);}
+    out.push({n,re:2*re/N,im:2*im/N,r:2*Math.hypot(re,im)/N});}
+  return {v0,circles:out};
+}
+
+/* ---------- الحالة ---------- */
+const S = {key:"triangle", X:null, Y:null, poly:null, m:1, mode:"auto", stage:0, t:0, hold:0, playing:true, speed:1, trail:[]};
+const $=id=>document.getElementById(id), cv=$("cv"), ctx=cv.getContext("2d");
+
+/** موضع القلم عند الزمن tau بأوّل m دائرة في كل سلسلة. */
+function penAt(tau,m){
+  let x=S.X.v0,y=S.Y.v0;
+  for(let i=0;i<m;i++){const a=S.X.circles[i],b=S.Y.circles[i],c=Math.cos((i+1)*tau),s=Math.sin((i+1)*tau);
+    x+=a.re*c-a.im*s; y+=b.re*c-b.im*s;}
+  return [x,y];
+}
+function rebuild(){
+  const tr=[]; for(let i=0;i<=720;i++) tr.push(penAt(2*Math.PI*i/720,S.m)); S.trail=tr;
+  $("mOut").textContent=S.m; $("m").value=S.m;
+  document.querySelectorAll(".chip").forEach(c=>c.classList.toggle("on",S.mode==="auto"&&+c.dataset.m===S.m));
+}
+function loadShape(k){
+  S.key=k; S.poly=SHAPES[k]; const p=samplePolygon(S.poly); S.X=decompose(p.xs); S.Y=decompose(p.ys);
+  $("rx").textContent=S.X.circles[0].r.toFixed(3); $("ry").textContent=S.Y.circles[0].r.toFixed(3);
+  document.querySelectorAll("#shapes .btn").forEach(b=>b.setAttribute("aria-pressed",b.dataset.k===k));
+  restart();
+}
+function restart(){S.stage=0;S.t=0;S.hold=0;if(S.mode==="auto")S.m=STAGES[0];rebuild();}
+
+/* ---------- الرسم ---------- */
+function tok(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim();}
+function draw(){
+  const r=cv.getBoundingClientRect(),dpr=devicePixelRatio||1,W=Math.round(r.width*dpr),H=Math.round(r.height*dpr);
+  if(cv.width!==W||cv.height!==H){cv.width=W;cv.height=H;}
+  const col={stage:tok("--stage"),ghost:tok("--ghost"),trace:tok("--trace"),x:tok("--xchain"),y:tok("--ychain"),dash:tok("--dash"),pen:tok("--pen")};
+  ctx.fillStyle=col.stage; ctx.fillRect(0,0,W,H);
+  const m=S.m;
+  // مدى كل سلسلة = مجموع أنصاف أقطار دوائرها، ليتّسع لها مكانها خارج الشكل
+  let Rx=0,Ry=0; for(let i=0;i<m;i++){Rx+=S.X.circles[i].r;Ry+=S.Y.circles[i].r;}
+  const gap=0.18;
+  const topC=[S.X.v0, -gap-Rx];               // مركز السلسلة العليا: فوق الشكل
+  const sideC=[-gap-Ry, S.Y.v0];              // مركز السلسلة الجانبية: يسار الشكل
+  const minX=Math.min(sideC[0]-Ry, S.X.v0-Rx, 0), maxX=Math.max(1, S.X.v0+Rx, sideC[0]+Ry);
+  const minY=Math.min(topC[1]-Rx, S.Y.v0-Ry, 0), maxY=Math.max(1, S.Y.v0+Ry, topC[1]+Rx);
+  const pad=24*dpr, sc=Math.min((W-2*pad)/(maxX-minX),(H-2*pad)/(maxY-minY));
+  const ox=pad+(W-2*pad-(maxX-minX)*sc)/2-minX*sc, oy=pad+(H-2*pad-(maxY-minY)*sc)/2-minY*sc;
+  const P=(x,y)=>[x*sc+ox,y*sc+oy];
+
+  if($("showGhost").checked){ctx.beginPath();S.poly.forEach((p,i)=>{const q=P(p[0],p[1]);i?ctx.lineTo(q[0],q[1]):ctx.moveTo(q[0],q[1]);});ctx.closePath();ctx.fillStyle=col.ghost;ctx.fill();}
+
+  const tau=2*Math.PI*(S.hold>0?1:S.t), small=$("showSmall").checked;
+  // سلسلة: نرسم كل ذراع من طرف السابقة. في الجانبية نديرها ربع دورة ليُقرأ منها الاتجاه الرأسي.
+  const chain=(start,circles,color,rotate)=>{
+    let [x,y]=start;
+    for(let i=0;i<m;i++){const c=circles[i],a=(i+1)*tau,vr=c.re*Math.cos(a)-c.im*Math.sin(a),vi=c.re*Math.sin(a)+c.im*Math.cos(a);
+      const dx=rotate?vi:vr, dy=rotate?vr:vi, [px,py]=P(x,y), rr=c.r*sc;
+      if(i===0||small){ctx.beginPath();ctx.arc(px,py,rr,0,2*Math.PI);ctx.strokeStyle=color;ctx.globalAlpha=i===0?.9:.45;ctx.lineWidth=(i===0?2:1)*dpr;ctx.stroke();}
+      x+=dx;y+=dy; const [qx,qy]=P(x,y);
+      ctx.globalAlpha=.9;ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(qx,qy);ctx.strokeStyle=color;ctx.lineWidth=1.5*dpr;ctx.stroke();ctx.globalAlpha=1;}
+    return [x,y];
+  };
+  const tipX=chain(topC,S.X.circles,col.x,false), tipY=chain(sideC,S.Y.circles,col.y,true);
+  const pen=[tipX[0],tipY[1]], [penx,peny]=P(pen[0],pen[1]);
+  // الخطّان المتقطّعان من طرفي السلسلتين إلى القلم
+  ctx.setLineDash([6*dpr,6*dpr]); ctx.strokeStyle=col.dash; ctx.lineWidth=1*dpr;
+  let a=P(tipX[0],tipX[1]); ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(penx,peny);ctx.stroke();
+  a=P(tipY[0],tipY[1]); ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(penx,peny);ctx.stroke(); ctx.setLineDash([]);
+  // أثر القلم
+  const upto=S.hold>0?S.trail.length:Math.max(2,Math.floor(S.t*(S.trail.length-1))+1);
+  ctx.beginPath();for(let i=0;i<upto;i++){const q=P(S.trail[i][0],S.trail[i][1]);i?ctx.lineTo(q[0],q[1]):ctx.moveTo(q[0],q[1]);}
+  ctx.strokeStyle=col.trace;ctx.lineWidth=3*dpr;ctx.lineJoin="round";ctx.stroke();
+  for(const tp of [tipX,tipY]){const q=P(tp[0],tp[1]);ctx.beginPath();ctx.arc(q[0],q[1],3.5*dpr,0,2*Math.PI);ctx.fillStyle=col.dash;ctx.fill();}
+  ctx.beginPath();ctx.arc(penx,peny,5*dpr,0,2*Math.PI);ctx.fillStyle=col.pen;ctx.fill();
+  ctx.fillStyle=col.trace;ctx.font=`700 ${Math.round(30*dpr)}px ${tok("--mono")}`;ctx.textAlign="right";ctx.fillText(String(m),W-16*dpr,H-16*dpr);
+}
+
+let last=performance.now();
+function frame(now){
+  const dt=Math.min(.05,(now-last)/1000); last=now;
+  if(S.playing){
+    if(S.hold>0){S.hold-=dt; if(S.hold<=0){S.hold=0;S.t=0; if(S.mode==="auto"){S.stage=(S.stage+1)%STAGES.length;S.m=STAGES[S.stage];rebuild();}}}
+    else{S.t+=dt*S.speed/6; if(S.t>=1){S.t=1;S.hold=1;}}
+  }
+  draw(); requestAnimationFrame(frame);
+}
+
+/* ---------- الواجهة ---------- */
+function setPlay(p){S.playing=p;$("play").innerHTML=p?`${icon("pause")}${t("pause")}`:`${icon("play")}${t("play")}`;}
+function setMode(md){S.mode=md;$("modeAuto").setAttribute("aria-pressed",md==="auto");$("modeManual").setAttribute("aria-pressed",md==="manual");if(md==="auto")restart();else{S.t=0;S.hold=0;rebuild();}}
+$("shapes").innerHTML=Object.keys(SHAPES).map(k=>`<button class="btn" data-k="${k}">${icon(k)}${t("shape."+k)}</button>`).join("");
+$("shapes").querySelectorAll(".btn").forEach(b=>b.onclick=()=>loadShape(b.dataset.k));
+$("chips").innerHTML=STAGES.map((m,i)=>`<button class="chip" data-m="${m}" data-i="${i}">${m}</button>`).join("");
+$("chips").querySelectorAll(".chip").forEach(c=>c.onclick=()=>{if(S.mode!=="auto"){S.mode="auto";$("modeAuto").setAttribute("aria-pressed",true);$("modeManual").setAttribute("aria-pressed",false);}S.stage=+c.dataset.i;S.m=+c.dataset.m;S.t=0;S.hold=0;rebuild();});
+$("play").onclick=()=>setPlay(!S.playing);
+$("restart").onclick=()=>{restart();setPlay(true);};
+$("modeAuto").onclick=()=>setMode("auto");
+$("modeManual").onclick=()=>setMode("manual");
+$("m").oninput=e=>{if(S.mode!=="manual")setMode("manual");S.m=+e.target.value;rebuild();};
+$("speed").oninput=e=>{S.speed=+e.target.value;$("speedOut").textContent=S.speed+"×";};
+document.addEventListener("keydown",e=>{if(e.code==="Space"&&!/INPUT|BUTTON/.test(e.target.tagName)){e.preventDefault();setPlay(!S.playing);}});
+
+applyIcons(); applyStrings(); setPlay(true); loadShape("triangle"); requestAnimationFrame(frame);
+</script>
