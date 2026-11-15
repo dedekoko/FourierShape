@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<!-- md2html:v1.2 src=شرح-المركزين.md sha=9fce2467ef04b79a — مولَّد آلِيًّا من شرح-المركزين.md، لا تعدّله بيدك -->
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>شرح المركزين: سلسلتان خارج الشكل ترسمانه</title>
+<style>
+:root{--bg:#fff;--fg:#1b1b1b;--muted:#5d5d5d;--card:#f6f6f6;--border:#d8d8d8;--accent:#0f6cbd;--accent-bg:#e8f1fb;--code-bg:#f3f3f3;--quote:#c4314b;--shadow:0 1px 3px rgba(0,0,0,.08)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c1c1c;--fg:#f0f0f0;--muted:#a8a8a8;--card:#262626;--border:#3d3d3d;--accent:#5eb0ef;--accent-bg:#14304d;--code-bg:#2a2a2a;--quote:#ff8aa0;--shadow:none}}
+:root[data-theme="dark"]{--bg:#1c1c1c;--fg:#f0f0f0;--muted:#a8a8a8;--card:#262626;--border:#3d3d3d;--accent:#5eb0ef;--accent-bg:#14304d;--code-bg:#2a2a2a;--quote:#ff8aa0;--shadow:none}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:64px}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.85 "Segoe UI Variable Text","Segoe UI",Tahoma,system-ui,sans-serif}
+header.bar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;padding:10px 20px;background:var(--card);border-bottom:1px solid var(--border);font-size:14px;color:var(--muted)}
+header.bar .path{flex:1;direction:ltr;text-align:start;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;unicode-bidi:plaintext}
+header.bar button{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:4px 12px;cursor:pointer}
+header.bar button:hover{border-color:var(--accent);color:var(--accent)}
+.layout{display:flex;gap:32px;max-width:1280px;margin:0 auto;padding:24px 20px 80px}
+nav.toc{position:sticky;top:64px;align-self:flex-start;flex:0 0 250px;max-height:calc(100vh - 88px);overflow:auto;padding:12px 14px;background:var(--card);border:1px solid var(--border);border-radius:8px;font-size:14px;line-height:1.6}
+nav.toc b{display:block;margin-bottom:8px;color:var(--muted);font-weight:600}
+nav.toc a{display:block;padding:3px 8px;color:var(--fg);text-decoration:none;border-radius:4px;border-inline-start:3px solid transparent}
+nav.toc a.l3{padding-inline-start:22px;font-size:13px;color:var(--muted)}
+nav.toc a:hover{background:var(--accent-bg)}
+nav.toc a.on{background:var(--accent-bg);color:var(--accent);border-inline-start-color:var(--accent)}
+main{flex:1;min-width:0}
+main h1,main h2,main h3,main h4{line-height:1.4;margin:1.7em 0 .6em;font-weight:600}
+main h1{font-size:2em;margin-top:.4em;padding-bottom:.3em;border-bottom:1px solid var(--border)}
+main h2{font-size:1.5em;padding-bottom:.25em;border-bottom:1px solid var(--border)}
+main h3{font-size:1.2em}
+a{color:var(--accent)}
+.anchor{margin-inline-start:.4em;opacity:0;text-decoration:none;font-weight:400}
+h1:hover .anchor,h2:hover .anchor,h3:hover .anchor,h4:hover .anchor{opacity:.6}
+blockquote{margin:1em 0;padding:.4em 1em;background:var(--card);border:1px solid var(--border);border-inline-start:4px solid var(--quote);border-radius:4px;color:var(--muted)}
+blockquote p{margin:.4em 0}
+code{font:.9em Consolas,"Cascadia Mono",monospace;background:var(--code-bg);padding:.15em .4em;border-radius:4px;direction:ltr;unicode-bidi:isolate}
+pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:12px 16px;overflow:auto;line-height:1.55;text-align:left}
+pre code{background:none;padding:0;font-size:.88em}
+.tbl{overflow:auto;margin:1em 0;border:1px solid var(--border);border-radius:8px}
+table{border-collapse:collapse;width:100%;font-size:.95em}
+th,td{padding:8px 12px;border:1px solid var(--border);vertical-align:top}
+th{background:var(--card);font-weight:600;text-align:start}
+.tbl table,.tbl th,.tbl td{border-width:0 0 1px 0}.tbl tr:last-child td{border-bottom:0}
+img,svg{max-width:100%;height:auto}
+hr{border:0;border-top:1px solid var(--border);margin:2em 0}
+details{margin:1em 0;padding:.5em 1em;background:var(--card);border:1px solid var(--border);border-radius:8px}
+details>summary{cursor:pointer;font-weight:600;min-height:32px;display:flex;align-items:center;gap:8px;list-style:none;margin:-.5em -1em;padding:.5em 1em;border-radius:8px}
+details>summary::-webkit-details-marker{display:none}
+details>summary::before{content:"\25C0";color:var(--accent);font-size:11px;transition:transform .15s}
+[dir="ltr"] details>summary::before{content:"\25B6"}
+details[open]>summary::before{transform:rotate(-90deg)}
+[dir="ltr"] details[open]>summary::before{transform:rotate(90deg)}
+details>summary:hover{background:var(--accent-bg)}
+details[open]>summary{margin-bottom:.5em;border-bottom:1px solid var(--border);border-radius:8px 8px 0 0}
+main [id]{scroll-margin-top:64px}
+details.sec{background:transparent;border:0;border-radius:0;padding:0;margin:0}
+details.sec>summary{margin:0;padding:0 6px;border-radius:6px}
+details.sec[open]>summary{margin:0;border-bottom:0;border-radius:6px}
+details.sec>summary>h2,details.sec>summary>h3{flex:1;margin:.9em 0 .5em}
+details.sec.l2>summary::before{font-size:13px}
+details.sec>.sec,details.sec>details.lead{margin-inline-start:4px}
+details.lead{background:transparent}
+footer.foot{margin-top:48px;padding-top:12px;border-top:1px solid var(--border);color:var(--muted);font-size:13px}
+@media (max-width:860px){.layout{display:block;padding:16px}nav.toc{position:static;max-height:none;margin-bottom:20px}}
+@media print{header.bar,nav.toc{display:none}.layout{display:block}}
+</style>
+</head>
+<body>
+<header class="bar"><span class="path" title="2-centers/docs/شرح-المركزين.md">2-centers/docs/شرح-المركزين.md</span><button id="foldall" type="button">افتح الكل / اطوِ الكل</button><button id="theme" type="button">فاتح / داكن</button></header>
+<div class="layout">
+<nav class="toc" aria-label="الفهرس"><b>في هذه الصفحة</b><a class="l2" href="#الفهرس">الفهرس</a><a class="l2" href="#1-الفكرة-في-سطرين">1. الفكرة في سطرين</a><a class="l2" href="#2-فصل-الشكل-عن-الخلفية-وتتبّع-حدّه">2. فصل الشكل عن الخلفية وتتبّع حدّه</a><a class="l2" href="#3-اختيار-النقاط-كيف-وكم">3. اختيار النقاط: كيف وكم</a><a class="l2" href="#4-فصل-الحركة-إلى-أفقية-ورأسية">4. فصل الحركة إلى أفقية ورأسية</a><a class="l2" href="#5-مركز-كل-سلسلة">5. مركز كل سلسلة</a><a class="l2" href="#6-حساب-دوائر-كل-سلسلة">6. حساب دوائر كل سلسلة</a><a class="l2" href="#7-ما-الذي-يحدّد-نصف-قطر-الدائرة">7. ما الذي يحدّد نصف قطر الدائرة</a><a class="l2" href="#8-لماذا-تكون-السلسلتان-بعيدتين-عن-الشكل">8. لماذا تكون السلسلتان بعيدتين عن الشكل</a><a class="l2" href="#9-ترتيب-الدوائر-لماذا-n-1-2-3">9. ترتيب الدوائر: لماذا n = 1، 2، 3…</a><a class="l2" href="#10-كيف-تتكوّن-الزوايا-والتفاصيل">10. كيف تتكوّن الزوايا والتفاصيل</a><a class="l2" href="#11-العلاقة-بين-عدد-النقاط-وعدد-الدوائر">11. العلاقة بين عدد النقاط وعدد الدوائر</a><a class="l2" href="#12-الجدول-a-و-b-و-c-و-d">12. الجدول: a و b و c و d</a><a class="l2" href="#13-الصلة-بالمركز-الواحد">13. الصلة بالمركز الواحد</a></nav>
+<main>
+<h1 dir="auto" id="شرح-المركزين-سلسلتان-خارج-الشكل-ترسمانه">شرح المركزين: سلسلتان خارج الشكل ترسمانه<a class="anchor" href="#شرح-المركزين-سلسلتان-خارج-الشكل-ترسمانه" aria-label="رابط القسم">#</a></h1>
+<p dir="auto">هذا الملف يشرح الأسلوب الثاني: دائرتان بعيدتان عن الشكل، واحدة فوقه وأخرى بجانبه، تتحرّكان معًا فترسمانه. كل قسم يجيب عن سؤال واحد، وحين يُسأل عن نقطة جديدة يُحدَّث قسمها هنا.</p>
+<p dir="auto">الأرقام في الأمثلة محسوبة من صفحة <code>two_chains.html</code> نفسها: <strong>المثلث</strong> و<strong>القط</strong> بـ 360 نقطة. والأسلوب الأوّل (سلسلة واحدة من مركز الشكل) مشروح في <a href="../../1-center/docs/%D8%B4%D8%B1%D8%AD-%D8%B7%D8%B1%D9%8A%D9%82%D8%A9-%D8%A7%D9%84%D8%B9%D9%85%D9%84.html">../../1-center/docs/شرح-طريقة-العمل.md</a>.</p>
+<h2 dir="auto" id="الفهرس">الفهرس<a class="anchor" href="#الفهرس" aria-label="رابط القسم">#</a></h2>
+<ol>
+<li dir="auto"><a href="#1-%D8%A7%D9%84%D9%81%D9%83%D8%B1%D8%A9-%D9%81%D9%8A-%D8%B3%D8%B7%D8%B1%D9%8A%D9%86">الفكرة في سطرين</a></li>
+<li dir="auto"><a href="#2-%D9%81%D8%B5%D9%84-%D8%A7%D9%84%D8%B4%D9%83%D9%84-%D8%B9%D9%86-%D8%A7%D9%84%D8%AE%D9%84%D9%81%D9%8A%D8%A9-%D9%88%D8%AA%D8%AA%D8%A8%D8%B9-%D8%AD%D8%AF%D9%87">فصل الشكل عن الخلفية وتتبّع حدّه</a></li>
+<li dir="auto"><a href="#3-%D8%A7%D8%AE%D8%AA%D9%8A%D8%A7%D8%B1-%D8%A7%D9%84%D9%86%D9%82%D8%A7%D8%B7-%D9%83%D9%8A%D9%81-%D9%88%D9%83%D9%85">اختيار النقاط: كيف وكم</a></li>
+<li dir="auto"><a href="#4-%D9%81%D8%B5%D9%84-%D8%A7%D9%84%D8%AD%D8%B1%D9%83%D8%A9-%D8%A5%D9%84%D9%89-%D8%A3%D9%81%D9%82%D9%8A%D8%A9-%D9%88%D8%B1%D8%A3%D8%B3%D9%8A%D8%A9">فصل الحركة إلى أفقية ورأسية</a></li>
+<li dir="auto"><a href="#5-%D9%85%D8%B1%D9%83%D8%B2-%D9%83%D9%84-%D8%B3%D9%84%D8%B3%D9%84%D8%A9">مركز كل سلسلة</a></li>
+<li dir="auto"><a href="#6-%D8%AD%D8%B3%D8%A7%D8%A8-%D8%AF%D9%88%D8%A7%D8%A6%D8%B1-%D9%83%D9%84-%D8%B3%D9%84%D8%B3%D9%84%D8%A9">حساب دوائر كل سلسلة</a></li>
+<li dir="auto"><a href="#7-%D9%85%D8%A7-%D8%A7%D9%84%D8%B0%D9%8A-%D9%8A%D8%AD%D8%AF%D8%AF-%D9%86%D8%B5%D9%81-%D9%82%D8%B7%D8%B1-%D8%A7%D9%84%D8%AF%D8%A7%D8%A6%D8%B1%D8%A9">ما الذي يحدّد نصف قطر الدائرة</a></li>
+<li dir="auto"><a href="#8-%D9%84%D9%85%D8%A7%D8%B0%D8%A7-%D8%AA%D9%83%D9%88%D9%86-%D8%A7%D9%84%D8%B3%D9%84%D8%B3%D9%84%D8%AA%D8%A7%D9%86-%D8%A8%D8%B9%D9%8A%D8%AF%D8%AA%D9%8A%D9%86-%D8%B9%D9%86-%D8%A7%D9%84%D8%B4%D9%83%D9%84">لماذا تكون السلسلتان بعيدتين عن الشكل</a></li>
+<li dir="auto"><a href="#9-%D8%AA%D8%B1%D8%AA%D9%8A%D8%A8-%D8%A7%D9%84%D8%AF%D9%88%D8%A7%D8%A6%D8%B1-%D9%84%D9%85%D8%A7%D8%B0%D8%A7-n--1-2-3">ترتيب الدوائر: لماذا n = 1، 2، 3…</a></li>
+<li dir="auto"><a href="#10-%D9%83%D9%8A%D9%81-%D8%AA%D8%AA%D9%83%D9%88%D9%86-%D8%A7%D9%84%D8%B2%D9%88%D8%A7%D9%8A%D8%A7-%D9%88%D8%A7%D9%84%D8%AA%D9%81%D8%A7%D8%B5%D9%8A%D9%84">كيف تتكوّن الزوايا والتفاصيل</a></li>
+<li dir="auto"><a href="#11-%D8%A7%D9%84%D8%B9%D9%84%D8%A7%D9%82%D8%A9-%D8%A8%D9%8A%D9%86-%D8%B9%D8%AF%D8%AF-%D8%A7%D9%84%D9%86%D9%82%D8%A7%D8%B7-%D9%88%D8%B9%D8%AF%D8%AF-%D8%A7%D9%84%D8%AF%D9%88%D8%A7%D8%A6%D8%B1">العلاقة بين عدد النقاط وعدد الدوائر</a></li>
+<li dir="auto"><a href="#12-%D8%A7%D9%84%D8%AC%D8%AF%D9%88%D9%84-a-%D9%88-b-%D9%88-c-%D9%88-d">الجدول: a و b و c و d</a></li>
+<li dir="auto"><a href="#13-%D8%A7%D9%84%D8%B5%D9%84%D8%A9-%D8%A8%D8%A7%D9%84%D9%85%D8%B1%D9%83%D8%B2-%D8%A7%D9%84%D9%88%D8%A7%D8%AD%D8%AF">الصلة بالمركز الواحد</a></li>
+</ol>
+<hr>
+<h2 dir="auto" id="1-الفكرة-في-سطرين">1. الفكرة في سطرين<a class="anchor" href="#1-الفكرة-في-سطرين" aria-label="رابط القسم">#</a></h2>
+<p dir="auto">نفصل حركة القلم حول الشكل إلى حركتين: <strong>أفقية</strong> ترسمها السلسلة العليا فوق الشكل، و<strong>رأسية</strong> ترسمها السلسلة الجانبية بجانبه. ينزل من طرف العليا خطّ متقطّع رأسي، ويمتدّ من طرف الجانبية خطّ أفقي، و<strong>نقطة التقائهما هي القلم</strong>.</p>
+<h2 dir="auto" id="2-فصل-الشكل-عن-الخلفية-وتتبّع-حدّه">2. فصل الشكل عن الخلفية وتتبّع حدّه<a class="anchor" href="#2-فصل-الشكل-عن-الخلفية-وتتبّع-حدّه" aria-label="رابط القسم">#</a></h2>
+<p dir="auto">مثل المركز الواحد تمامًا (القسم 2 في شرحه): يُفصل الشكل عن الخلفية بالشفافية أو بعتبة السطوع، ويؤخذ أكبر جزء متّصل، ويُتتبّع حدّه نقطةً نقطة. في الصفحة ثلاثة مضلّعات جاهزة (مثلث، مربّع، نجمة)، وثلاث صور (كمان، قط، إيطاليا)، ويمكن رفع أي صورة.</p>
+<h2 dir="auto" id="3-اختيار-النقاط-كيف-وكم">3. اختيار النقاط: كيف وكم<a class="anchor" href="#3-اختيار-النقاط-كيف-وكم" aria-label="رابط القسم">#</a></h2>
+<p dir="auto">يقاس طول المحيط، وتوضع عليه <code>N</code> نقطة <strong>بمسافات متساوية</strong>، فيمشي القلم بسرعة ثابتة. العدد نختاره نحن بالمنزلق، من 8 إلى 1000، والافتراضي 360. المعيار أن يكفي العدد لالتقاط أدقّ تفصيل نريده.</p>
+<h2 dir="auto" id="4-فصل-الحركة-إلى-أفقية-ورأسية">4. فصل الحركة إلى أفقية ورأسية<a class="anchor" href="#4-فصل-الحركة-إلى-أفقية-ورأسية" aria-label="رابط القسم">#</a></h2>
+<p dir="auto">لكل نقطة <code>j</code> إحداثيان: <code>x_j</code> و<code>y_j</code>. فإذا مرّ القلم على النقاط بالترتيب، تكون عندنا موجتان:</p>
+<ul>
+<li dir="auto"><strong><code>x(t)</code>:</strong> الموضع الأفقي للقلم وهو يدور حول الشكل، يزيد وينقص.</li>
+<li dir="auto"><strong><code>y(t)</code>:</strong> الموضع الرأسي.</li>
+</ul>
+<p dir="auto">كل موجة تُعالَج <strong>وحدها تمامًا</strong>، ولا تعرف إحداهما شيئًا عن الأخرى. الأولى تصير السلسلة العليا، والثانية الجانبية.</p>
+<h2 dir="auto" id="5-مركز-كل-سلسلة">5. مركز كل سلسلة<a class="anchor" href="#5-مركز-كل-سلسلة" aria-label="رابط القسم">#</a></h2>
+<p dir="auto">مركز السلسلة العليا موضعه الأفقي هو <strong>متوسط <code>x</code> لكل النقاط</strong>، ومركز الجانبية موضعه الرأسي هو <strong>متوسط <code>y</code></strong>:</p>
+<pre dir="ltr"><code>x0 = (x_1 + x_2 + ... + x_N) / N
+y0 = (y_1 + y_2 + ... + y_N) / N
+</code></pre>
+<p dir="auto">في القط: <code>x0 = 542.7</code> و<code>y0 = 510.3</code>، وفي المثلث: <code>x0 = 200.0</code> و<code>y0 = 230.6</code>. أمّا الاتجاه الآخر لكل مركز فحرّ: نضع العليا فوق الشكل والجانبية يساره (القسم 8).</p>
+<h2 dir="auto" id="6-حساب-دوائر-كل-سلسلة">6. حساب دوائر كل سلسلة<a class="anchor" href="#6-حساب-دوائر-كل-سلسلة" aria-label="رابط القسم">#</a></h2>
+<p dir="auto">كل موجة تُفكّ إلى دوائر، <strong>الدائرة <code>n</code> تلفّ <code>n</code> مرّات</strong> خلال رسم الشكل مرة واحدة:</p>
+<pre dir="ltr"><code>X_n = (2/N) · Σ x_j · e^(−i·n·t_j)
+Y_n = (2/N) · Σ y_j · e^(−i·n·t_j)
+t_j = 2π·j / N
+</code></pre>
+<ul>
+<li dir="auto">نصف قطر الدائرة <code>n</code> في العليا هو <code>|X_n|</code>، وفي الجانبية <code>|Y_n|</code>.</li>
+<li dir="auto">زاوية البداية هي زاوية العدد المركّب نفسه.</li>
+<li dir="auto">والموجة تُعاد بناؤها بجمع الدوائر:</li>
+</ul>
+<pre dir="ltr"><code>x(t) = x0 + Σ Re(X_n · e^(i·n·t))
+y(t) = y0 + Σ Re(Y_n · e^(i·n·t))
+</code></pre>
+<details><summary>أنصاف أقطار أوّل ثلاث دوائر</summary>
+
+<div class="tbl"><table><thead><tr>
+<th dir="auto">الشكل</th>
+<th dir="auto">عليا n=1</th>
+<th dir="auto">عليا n=2</th>
+<th dir="auto">عليا n=3</th>
+<th dir="auto">جانبية n=1</th>
+<th dir="auto">جانبية n=2</th>
+<th dir="auto">جانبية n=3</th>
+</tr>
+</thead><tbody><tr>
+<td dir="auto">المثلث</td>
+<td dir="auto">157.9</td>
+<td dir="auto">39.4</td>
+<td dir="auto">0.0</td>
+<td dir="auto">157.8</td>
+<td dir="auto">39.4</td>
+<td dir="auto">0.0</td>
+</tr>
+<tr>
+<td dir="auto">القط</td>
+<td dir="auto">321.8</td>
+<td dir="auto">60.9</td>
+<td dir="auto">35.2</td>
+<td dir="auto">326.2</td>
+<td dir="auto">106.7</td>
+<td dir="auto">42.4</td>
+</tr>
+</tbody></table></div>
+</details>
+
+<h2 dir="auto" id="7-ما-الذي-يحدّد-نصف-قطر-الدائرة">7. ما الذي يحدّد نصف قطر الدائرة<a class="anchor" href="#7-ما-الذي-يحدّد-نصف-قطر-الدائرة" aria-label="رابط القسم">#</a></h2>
+<p dir="auto">الفكرة نفسها في المركز الواحد (القسم 6 في شرحه)، لكن <strong>على محور واحد</strong>: نصف القطر يقيس <strong>كم تشبه الموجة الأفقية (أو الرأسية) موجةً دائرية تلفّ <code>n</code> مرّات</strong>.</p>
+<ul>
+<li dir="auto">إن كان الشكل يتمدّد أفقيًّا ويتقلّص بإيقاع لفّة واحدة، تخرج الدائرة الأولى في العليا كبيرة.</li>
+<li dir="auto">الدائرة الأولى في كل سلسلة تحمل حجم الشكل كله تقريبًا: في القط <code>321.8</code> أفقيًّا و<code>326.2</code> رأسيًّا، أي أن القط في مجمله عرضه وارتفاعه متقاربان.</li>
+<li dir="auto"><strong>الدائرة الثالثة في المثلث صفر تمامًا.</strong> المثلث متساوي الأضلاع يتكرّر ثلاث مرّات في الدورة، فكل حركة بثلاث لفّات تلغي نفسها على أضلاعه الثلاثة المتطابقة. وكذلك الدوائر 6 و9 و12…</li>
+</ul>
+<h2 dir="auto" id="8-لماذا-تكون-السلسلتان-بعيدتين-عن-الشكل">8. لماذا تكون السلسلتان بعيدتين عن الشكل<a class="anchor" href="#8-لماذا-تكون-السلسلتان-بعيدتين-عن-الشكل" aria-label="رابط القسم">#</a></h2>
+<p dir="auto">لأن كل سلسلة <strong>لا يُقرأ منها إلا اتجاه واحد</strong>. العليا لا يهمّ منها إلا موضع طرفها الأفقي، فيمكن رفعها إلى أي ارتفاع دون أن يتغيّر الرسم. والجانبية لا يهمّ منها إلا موضع طرفها الرأسي. فتوضع كلٌّ منهما خارج الشكل ليبقى الرسم نظيفًا، ويُترك بينها وبين الشكل فراغ قدره 8% من حجمه.</p>
+<p dir="auto"><strong>لماذا تُدار الجانبية ربع دورة؟</strong> دوائرها محسوبة بحيث يكون <strong>الجزء الأفقي</strong> من مجموعها هو <code>y</code>. فنديرها ربع دورة ليصير ذلك الجزء رأسيًّا، فنقرؤه موضعًا رأسيًّا.</p>
+<h2 dir="auto" id="9-ترتيب-الدوائر-لماذا-n-1-2-3">9. ترتيب الدوائر: لماذا n = 1، 2، 3…<a class="anchor" href="#9-ترتيب-الدوائر-لماذا-n-1-2-3" aria-label="رابط القسم">#</a></h2>
+<p dir="auto">في كل سلسلة تُركّب الدوائر <strong>بالتسلسل</strong>: الدائرة 1، ثم 2 على طرفها، ثم 3، وهكذا، كما في الفيديو الأصلي. والدائرة <code>n</code> تكون في الموضع نفسه في السلسلتين، فـ«عدد الدوائر في كل سلسلة» يعني الحدود من 1 إلى <code>m</code>.</p>
+<p dir="auto">وكل دائرة تُحسب <strong>وحدها ومرة واحدة</strong> من النقاط، فلا تتغيّر قيمتها حين تُضاف دوائر بعدها. الجديد في كل مرحلة يُضاف فقط، ويُلوَّن في الجدول.</p>
+<h2 dir="auto" id="10-كيف-تتكوّن-الزوايا-والتفاصيل">10. كيف تتكوّن الزوايا والتفاصيل<a class="anchor" href="#10-كيف-تتكوّن-الزوايا-والتفاصيل" aria-label="رابط القسم">#</a></h2>
+<details><summary>الانحراف عن الشكل الأصلي بعدد الدوائر في كل سلسلة</summary>
+
+<div class="tbl"><table><thead><tr>
+<th dir="auto">الدوائر في كل سلسلة</th>
+<th dir="auto">المثلث</th>
+<th dir="auto">القط</th>
+</tr>
+</thead><tbody><tr>
+<td dir="auto">1</td>
+<td dir="auto">7.60%</td>
+<td dir="auto">8.47%</td>
+</tr>
+<tr>
+<td dir="auto">3</td>
+<td dir="auto">2.10%</td>
+<td dir="auto">3.50%</td>
+</tr>
+<tr>
+<td dir="auto">5</td>
+<td dir="auto">0.75%</td>
+<td dir="auto">2.84%</td>
+</tr>
+<tr>
+<td dir="auto">10</td>
+<td dir="auto">0.32%</td>
+<td dir="auto">1.10%</td>
+</tr>
+<tr>
+<td dir="auto">20</td>
+<td dir="auto">0.10%</td>
+<td dir="auto">0.57%</td>
+</tr>
+<tr>
+<td dir="auto">50</td>
+<td dir="auto">0.03%</td>
+<td dir="auto">0.44%</td>
+</tr>
+</tbody></table></div>
+<p dir="auto">الانحراف هو متوسط بُعد الرسم عن المحيط الأصلي، نسبةً إلى قطر الشكل.</p>
+</details>
+
+<ul>
+<li dir="auto"><strong>بدائرة واحدة في كل سلسلة</strong> يخرج دائمًا <strong>شكل بيضاوي</strong>، لأن كل موجة صارت دائرية بسيطة.</li>
+<li dir="auto"><strong>الزوايا الحادّة</strong> تغيّر الاتجاه فجأة، والدوائر البطيئة لا تقدر على ذلك. لهذا تحتاج دوائر سريعة صغيرة كثيرة على طرف الدائرة الكبيرة.</li>
+<li dir="auto">المثلث يكتمل أسرع من القط لأنه أبسط: خمس دوائر في كل سلسلة تكفيه لانحراف أقل من 1%، والقط يحتاج نحو عشرين.</li>
+</ul>
+<h2 dir="auto" id="11-العلاقة-بين-عدد-النقاط-وعدد-الدوائر">11. العلاقة بين عدد النقاط وعدد الدوائر<a class="anchor" href="#11-العلاقة-بين-عدد-النقاط-وعدد-الدوائر" aria-label="رابط القسم">#</a></h2>
+<p dir="auto">من <code>N</code> نقطة يمكن أن تُعرف في كل سلسلة دوائر بسرعات <strong>أقل من <code>N/2</code></strong> فقط:</p>
+<pre dir="ltr"><code>circles_per_chain_max = floor((N − 1) / 2)
+</code></pre>
+<p dir="auto">السبب أن دائرة تلفّ <code>n</code> مرّات ودائرة تلفّ <code>N − n</code> مرّات تمرّان بالنقاط نفسها بالضبط، فلا تفرّق بينهما النقاط. لهذا يُحدَّد المنزلق تلقائيًّا، والصفحة تكتب الحدّ تحته. وفي الصفحة سقف عامّ قدره 150 دائرة في كل سلسلة.</p>
+<details><summary>المثلث بأعداد نقاط مختلفة وكل الدوائر الممكنة</summary>
+
+<div class="tbl"><table><thead><tr>
+<th dir="auto">النقاط</th>
+<th dir="auto">أقصى دوائر في كل سلسلة</th>
+<th dir="auto">الانحراف</th>
+</tr>
+</thead><tbody><tr>
+<td dir="auto">8</td>
+<td dir="auto">3</td>
+<td dir="auto">2.70%</td>
+</tr>
+<tr>
+<td dir="auto">12</td>
+<td dir="auto">5</td>
+<td dir="auto">1.64%</td>
+</tr>
+<tr>
+<td dir="auto">24</td>
+<td dir="auto">11</td>
+<td dir="auto">0.54%</td>
+</tr>
+<tr>
+<td dir="auto">60</td>
+<td dir="auto">29</td>
+<td dir="auto">0.12%</td>
+</tr>
+<tr>
+<td dir="auto">360</td>
+<td dir="auto">150</td>
+<td dir="auto">0.02%</td>
+</tr>
+<tr>
+<td dir="auto">1000</td>
+<td dir="auto">150</td>
+<td dir="auto">0.02%</td>
+</tr>
+</tbody></table></div>
+</details>
+
+<h2 dir="auto" id="12-الجدول-a-و-b-و-c-و-d">12. الجدول: a و b و c و d<a class="anchor" href="#12-الجدول-a-و-b-و-c-و-d" aria-label="رابط القسم">#</a></h2>
+<p dir="auto">في الصفحة جدول بصفّ لكل دائرة <code>n</code>:</p>
+<ul>
+<li dir="auto"><strong>النصف الأيمن للسلسلة العليا:</strong> نصف القطر والزاوية، و<code>a</code> و<code>b</code>.</li>
+<li dir="auto"><strong>النصف الأيسر للجانبية:</strong> نصف القطر والزاوية، و<code>c</code> و<code>d</code>.</li>
+</ul>
+<p dir="auto">وهي صيغة الفيديو نفسها:</p>
+<pre dir="ltr"><code>x(t) = x0 + Σ (a_n·cos nt + b_n·sin nt)        R_x(n) = √(a_n² + b_n²)
+y(t) = y0 + Σ (c_n·cos nt + d_n·sin nt)        R_y(n) = √(c_n² + d_n²)
+</code></pre>
+<p dir="auto">في القط، الدائرة الأولى:</p>
+<pre dir="ltr"><code>a1 = 243.98    b1 = −209.78    →  R_x(1) = 321.8
+c1 = −319.63   d1 = −65.05     →  R_y(1) = 326.2
+</code></pre>
+<h2 dir="auto" id="13-الصلة-بالمركز-الواحد">13. الصلة بالمركز الواحد<a class="anchor" href="#13-الصلة-بالمركز-الواحد" aria-label="رابط القسم">#</a></h2>
+<p dir="auto">الحساب نفسه مرسوم بطريقة أخرى. <strong>دائرة واحدة في كل سلسلة = دائرتان في المركز الواحد</strong> (<code>+n</code> و<code>−n</code>)، وكلا الرسمين يعطي الشكل نفسه بالضبط. الفرق في الترتيب فقط: السلسلتان تأخذان الحدود بالتسلسل، والمركز الواحد يأخذ الدوائر من الأكبر إلى الأصغر، فيصل أحيانًا إلى الدقّة نفسها بدوائر أقل.</p>
+<hr>
+<details><summary>سجلّ تحديثات الشرح</summary>
+
+<ul>
+<li dir="auto"><strong>2026-11-15:</strong> توسيع الشرح مع ترقية الصفحة إلى مميزات صفحة المركز الواحد: النقاط، الصور، الجدول، القياسات، وأرقام المثلث والقط.</li>
+<li dir="auto"><strong>2026-11-15:</strong> إنشاء الملف مع صفحة المركزين.</li>
+</ul>
+</details>
+
+<footer class="foot">مولَّد آلِيًّا من <code>شرح-المركزين.md</code> — التعديل في ملف الـ MD ثم يُحدَّث هذا الملف تلقائيًّا.</footer>
+</main>
+</div>
+<script>
+(function(){
+  var root=document.documentElement,btn=document.getElementById('theme');
+  try{var s=localStorage.getItem('md2html-theme');if(s)root.setAttribute('data-theme',s);}catch(e){}
+  if(btn)btn.onclick=function(){
+    var dark=root.getAttribute('data-theme')==='dark'||(!root.getAttribute('data-theme')&&matchMedia('(prefers-color-scheme:dark)').matches);
+    var n=dark?'light':'dark';root.setAttribute('data-theme',n);try{localStorage.setItem('md2html-theme',n);}catch(e){}
+  };
+  // افتح الكل / اطوِ الكل
+  var all=document.getElementById('foldall');
+  if(all)all.onclick=function(){var d=document.querySelectorAll('main details'),o=[].some.call(d,function(x){return !x.open;});[].forEach.call(d,function(x){x.open=o;});};
+  // رابط إلى عنوان (الفهرس، إحالة) يفتح الأكورديونات حوله عند النقر نفسه: بعض العارضات لا تغيّر العنوان
+  function reveal(id){var el=id&&document.getElementById(id);for(var p=el;p;p=p.parentElement){if(p.tagName==='DETAILS')p.open=true;}if(el)setTimeout(function(){el.scrollIntoView();},0);return !!el;}
+  document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^="#"]');if(a&&reveal(decodeURIComponent(a.getAttribute('href').slice(1)))){e.preventDefault();try{history.replaceState(null,'',a.getAttribute('href'));}catch(x){}}});
+  window.addEventListener('hashchange',function(){reveal(decodeURIComponent(location.hash.slice(1)));});
+  reveal(decodeURIComponent(location.hash.slice(1)));
+  var links=[].slice.call(document.querySelectorAll('nav.toc a'));if(!links.length||!('IntersectionObserver' in window))return;
+  var map={};links.forEach(function(a){map[a.getAttribute('href').slice(1)]=a;});
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){links.forEach(function(a){a.classList.remove('on');});var a=map[e.target.id];if(a)a.classList.add('on');}});},{rootMargin:'-70px 0px -70% 0px'});
+  document.querySelectorAll('main h1[id],main h2[id],main h3[id]').forEach(function(h){io.observe(h);});
+})();
+</script>
+</body>
+</html>
