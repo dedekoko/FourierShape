@@ -34,8 +34,13 @@ header p{margin:0;color:var(--muted);flex-basis:100%}
 .layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px;align-items:start}
 @media (max-width:860px){.layout{grid-template-columns:minmax(0,1fr)}}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r-win);box-shadow:0 2px 4px rgba(0,0,0,.06)}
-.stage{padding:8px;background:var(--card2)}
-.stage canvas{display:block;width:100%;aspect-ratio:4/5;max-height:78vh;border-radius:var(--r-ctl);background:var(--stage);touch-action:none}
+.stage{padding:8px;background:var(--card2);display:flex;flex-direction:column;gap:8px;min-width:0}
+.stage-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.stage-bar .hint{color:var(--muted);font-size:12px;margin-inline-start:auto}
+/* لوحة قابلة للسحب من زاويتها: يغيّر المستخدم عرضها وارتفاعها بحرّية */
+.stage-box{resize:both;overflow:hidden;width:100%;height:640px;max-width:100%;min-width:200px;min-height:200px;
+  border-radius:var(--r-ctl);border:1px solid var(--line);background:var(--stage)}
+.stage-box canvas{display:block;width:100%;height:100%;touch-action:none}
 .panel{display:flex;flex-direction:column}
 .sec{padding:16px;display:flex;flex-direction:column;gap:12px;border-top:1px solid var(--line)}
 .sec:first-child{border-top:0}
@@ -119,7 +124,15 @@ code,.eq{font-family:var(--mono);direction:ltr;unicode-bidi:isolate}
   </header>
 
   <div class="layout">
-    <div class="card stage"><canvas id="cv" data-t-aria="canvas.aria"></canvas></div>
+    <div class="card stage">
+      <div class="stage-bar">
+        <button class="btn" id="fitBtn" data-t-tip="stage.fit_tip"><span data-icon="fit"></span><span data-t="stage.fit"></span></button>
+        <button class="btn" id="fullBtn" data-t-tip="stage.full_tip"><span data-icon="full"></span><span data-t="stage.full"></span></button>
+        <label class="check"><input type="checkbox" id="autoFit" checked> <span data-t="stage.auto"></span></label>
+        <span class="hint" data-t="stage.hint"></span>
+      </div>
+      <div class="stage-box" id="stageBox"><canvas id="cv" data-t-aria="canvas.aria"></canvas></div>
+    </div>
 
     <div class="card panel">
       <div class="sec">
@@ -219,6 +232,8 @@ code,.eq{font-family:var(--mono);direction:ltr;unicode-bidi:isolate}
 /* سجلّ الأيقونات: كل أيقونة معرّفة هنا مرة واحدة بلونها (الصفحة مستقلة فلا ملف أيقونات خارجي).
    {vb: viewBox، attrs: سمات إضافية على svg، body: المحتوى}. في "shape" الرمز {c} يُستبدل بلون الشكل. */
 const ICONS = {
+  fit: {vb:"0 0 16 16", body:'<path d="M2 5.5V2h3.5M14 5.5V2h-3.5M2 10.5V14h3.5M14 10.5V14h-3.5" fill="none" stroke="#0078d4" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><rect x="5.5" y="4.5" width="5" height="7" rx="1" fill="#2fa36b"/>'},
+  full: {vb:"0 0 16 16", body:'<path d="M1.5 8h13" stroke="#8a5cd6" stroke-width="1.6" stroke-linecap="round"/><path d="M4.5 5 1.5 8l3 3M11.5 5l3 3-3 3" fill="none" stroke="#e8a317" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>'},
   copy: {vb:"0 0 16 16", body:'<rect x="5.5" y="5.5" width="8" height="8.5" rx="1.2" fill="none" stroke="#0078d4" stroke-width="1.5"/><path d="M10.5 3.5V3a1 1 0 0 0-1-1H3.5a1 1 0 0 0-1 1v7.5a1 1 0 0 0 1 1h.5" fill="none" stroke="#8a5cd6" stroke-width="1.5" stroke-linecap="round"/>'},
   logo: {vb:"0 0 34 34", attrs:'width="34" height="34" aria-hidden="true"', body:'<circle cx="13" cy="17" r="10" fill="none" stroke="#2fa36b" stroke-width="2"/><circle cx="21" cy="12" r="5" fill="none" stroke="#e8a317" stroke-width="2"/><line x1="13" y1="17" x2="21" y2="12" stroke="#0067c0" stroke-width="2"/><circle cx="24.5" cy="8.5" r="2.5" fill="#e0453a"/>'},
   pause: {vb:"0 0 16 16", body:'<rect x="3.5" y="2.5" width="3" height="11" rx="1" fill="#ffb900"/><rect x="9.5" y="2.5" width="3" height="11" rx="1" fill="#ff8c00"/>'},
@@ -278,6 +293,12 @@ const STRINGS = {
   "show.circles": "إظهار الدوائر",
   "show.ghost": "إظهار الشكل الأصلي في الخلفية",
   "show.points": "إظهار النقاط المأخوذة من المحيط",
+  "stage.auto": "ملاءمة تلقائية عند تغيير الشكل",
+  "stage.fit": "على قدّ الشكل",
+  "stage.fit_tip": "يجعل نسبة عرض اللوحة إلى ارتفاعها مثل نسبة الشكل نفسه",
+  "stage.full": "ملء العرض",
+  "stage.full_tip": "يعيد اللوحة إلى كامل عرض مكانها",
+  "stage.hint": "اسحب زاوية اللوحة السفلية لتغيير حجمها",
   "speed.label": "السرعة",
   "stats.count_label": "دائرة",
   "stats.count_tip": "عدد الدوائر المستعملة الآن",
@@ -416,6 +437,7 @@ function loadPoints(raw){
   S.box={x:x0,y:y0,w:x1-x0,h:y1-y0};
   S.tableN=0; S.lastAbcd=null; S.prevTableN=0; S.prevAbcd=null;   // شكل جديد: لا مقارنة مع جدول الشكل السابق
   sample(); restart();
+  if($("autoFit").checked) fitStage();
 }
 
 /** يأخذ من المحيط الأصلي S.P نقطة متساوية التباعد ويعيد حساب الدوائر، دون إعادة المراحل. */
@@ -560,6 +582,18 @@ function setMsg(t,kind){const m=$("msg");m.textContent=t;m.className="msg "+(kin
 
 function tok(name){return getComputedStyle(document.documentElement).getPropertyValue(name).trim();}
 
+/** يضبط حجم اللوحة على نسبة الشكل: يبدأ من العرض المتاح، ولا يتجاوز الارتفاعُ 82% من الشاشة. */
+function fitStage(){
+  const box=$("stageBox"), avail=box.parentElement.clientWidth-16, ratio=S.box.h/S.box.w;
+  let w=avail, h=w*ratio;
+  const maxH=Math.max(240,window.innerHeight*0.82);
+  if(h>maxH){h=maxH; w=h/ratio;}
+  w=Math.max(200,Math.min(avail,w)); h=Math.max(200,h);
+  box.style.width=Math.round(w)+"px"; box.style.height=Math.round(h)+"px";
+}
+/** يعيد اللوحة إلى كامل العرض مع إبقاء ارتفاعها. */
+function fullStage(){$("stageBox").style.width="100%";}
+
 function fit(){
   const r=cv.getBoundingClientRect(), dpr=window.devicePixelRatio||1;
   const w=Math.round(r.width*dpr), h=Math.round(r.height*dpr);
@@ -660,6 +694,8 @@ function setTab(tb){
   S.tab=tb; $("tabC").setAttribute("aria-pressed",tb==="c"); $("tabA").setAttribute("aria-pressed",tb==="a");
   renderTables(true);
 }
+$("fitBtn").onclick=fitStage;
+$("fullBtn").onclick=fullStage;
 $("tabC").onclick=()=>setTab("c");
 $("tabA").onclick=()=>setTab("a");
 $("copyTbl").onclick=copyTable;
