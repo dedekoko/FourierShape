@@ -1,19 +1,26 @@
 """
 fourier_shape.py — يرسم محيط أي شكل من صورة بسلسلة دوائر دوّارة (Fourier epicycles).
 
-الفكرة:
-    1. نستخرج محيط الشكل من الصورة (أكبر كفاف).
-    2. نعيد أخذ نقاطه بتباعد متساوٍ على طول القوس، فتصير "سرعة المرور" ثابتة
-       (وإلا تغيّرت المعاملات مع أن الشكل واحد، وهي نقطة عنوان الفيديو).
-    3. نعامل كل نقطة عددًا مركّبًا z = x + iy ونحسب تحويل فورييه السريع (FFT).
-       كل معامل = دائرة: حجمه نصف قطرها، وتردّده سرعة دورانها، وزاويته بدايتها.
-    4. نرتّب الدوائر من الأكبر إلى الأصغر، ونرسم الشكل بعدد متزايد منها
-       (1، 3، 5، 10، 20، 50، 100 ...) فيظهر كيف يكتمل الشكل.
+خطوات البرنامج، ولكل خطوة دالّة باسمها، وقسم بالرقم نفسه في docs/شرح-طريقة-العمل.md:
+    الخطوة 2  فصل الشكل وتتبّع حدّه ........ extract_contour()
+    الخطوة 3  أخذ نقاط متساوية التباعد ...... sample_points()
+    الخطوة 4  حساب المركز .................. compute_center()
+    الخطوة 6  قياس الفجوات ................. measure_gaps()
+              (قبل الدائرة الأولى: الفجوة = بُعد النقطة عن المركز)
+    الخطوة 6  قياس نصف قطر دائرة وزاويتها .. fit_circle()
+    الخطوة 8  اختيار الدائرة التالية ........ find_next_circle()
+    الخطوة 10 طرح الدائرة من الفجوات ........ remove_circle_from_gaps()
+    الخطوات معًا: الدوائر واحدة بعد أخرى .... build_circles()
+
+    الدائرة الأولى = find_next_circle(الفجوات عن المركز)
+    الدائرة الثانية = find_next_circle(ما تبقّى من الفجوات بعد طرح الأولى)
+    ... وهكذا.
 
 الاستعمال:
     python fourier_shape.py                      # شكل كمان مولَّد داخليًّا
     python fourier_shape.py صورة.png             # أي صورة فيها شكل واحد واضح
     python fourier_shape.py صورة.png --out ناتج.mp4 --stages 1 3 5 10 20 50 100 --show
+    python fourier_shape.py صورة.png --explain 5 # يطبع حساب أوّل 5 دوائر خطوة بخطوة
 
 المتطلبات:
     pip install opencv-python numpy
@@ -23,6 +30,7 @@ import argparse
 import json
 import os
 import sys
+from dataclasses import dataclass
 
 import cv2
 import numpy as np
@@ -104,11 +112,17 @@ def to_gray_on_white(img):
     return cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
 
-def extract_contour(gray):
-    """يستخرج أكبر كفاف من صورة رمادية.
+# ════════════════════════════════════════════════════════════════════════════
+# الخطوة 2: فصل الشكل عن الخلفية وتتبّع حدّه          (الشرح: القسم 2)
+# ════════════════════════════════════════════════════════════════════════════
 
-    يحدّد العتبة تلقائيًّا (Otsu)، ويعكس الصورة إن كانت الخلفية فاتحة،
-    ويرجع مصفوفة نقاط (n, 2) من نوع float.
+def extract_contour(gray):
+    """يفصل الشكل عن الخلفية ويرجع حدّه نقطةً نقطة.
+
+    المدخل: صورة رمادية (الشكل بلون والخلفية بلون آخر).
+    السلوك: يحدّد عتبة السطوع تلقائيًّا (Otsu)، ويعدّ لون حوافّ الصورة لون
+    الخلفية فيعكس إن لزم، ثم يأخذ أكبر قطعة متّصلة فقط ويتتبّع حدّها.
+    يرجع: (نقاط الحدّ بالترتيب كمصفوفة (n, 2)، قناع الشكل).
     """
     blur = cv2.GaussianBlur(gray, (5, 5), 0)
     _, bw = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
@@ -123,48 +137,194 @@ def extract_contour(gray):
     return c[:, 0, :].astype(float), bw
 
 
-def resample_by_arclength(pts, n):
-    """يعيد أخذ n نقطة متساوية التباعد على طول المحيط المغلق.
+# ════════════════════════════════════════════════════════════════════════════
+# الخطوة 3: أخذ نقاط متساوية التباعد على المحيط        (الشرح: القسم 3 و14)
+# ════════════════════════════════════════════════════════════════════════════
 
-    لماذا: معاملات فورييه تتبع طريقة المرور على المحيط لا الشكل وحده؛
-    التباعد المتساوي يثبّت السرعة فتصير المعاملات وصفًا للشكل فقط.
+def sample_points(contour, n):
+    """يضع n نقطة بمسافات متساوية تمامًا على المحيط المغلق.
+
+    المدخل: نقاط الحدّ بالترتيب (n, 2)، وعدد النقاط المطلوب n (نحن نختاره).
+    يرجع: n عددًا مركّبًا z_j = x_j + i·y_j، أوّلها نقطة بداية القلم.
+    لماذا التباعد المتساوي: ليمشي القلم بسرعة ثابتة؛ لو تزاحمت النقاط في مكان
+    وتباعدت في آخر لتغيّرت الدوائر مع أن الشكل لم يتغيّر.
     """
-    closed = np.vstack([pts, pts[:1]])
+    closed = np.vstack([contour, contour[:1]])
     seg = np.linalg.norm(np.diff(closed, axis=0), axis=1)
-    s = np.concatenate([[0], np.cumsum(seg)])
-    t = np.linspace(0, s[-1], n, endpoint=False)
-    x = np.interp(t, s, closed[:, 0])
-    y = np.interp(t, s, closed[:, 1])
+    s = np.concatenate([[0], np.cumsum(seg)])            # المسافة المقطوعة عند كل بكسل
+    targets = np.linspace(0, s[-1], n, endpoint=False)  # مسافات متساوية على المحيط
+    x = np.interp(targets, s, closed[:, 0])
+    y = np.interp(targets, s, closed[:, 1])
     return x + 1j * y
 
 
-def fourier_terms(z):
-    """يحسب الدوائر من نقاط المحيط المركّبة.
+# ════════════════════════════════════════════════════════════════════════════
+# الخطوة 4: حساب المركز، نقطة انطلاق السلسلة            (الشرح: القسم 4)
+# ════════════════════════════════════════════════════════════════════════════
 
-    يرجع: (المركز c0، قائمة (تردّد k، معامل مركّب c) مرتّبة تنازليًّا بالحجم).
+def compute_center(z):
+    """يحسب المركز: متوسط كل نقاط المحيط.
+
+    المدخل: النقاط المركّبة z.
+    يرجع: عددًا مركّبًا واحدًا c0. هو ثابت لا يدور، ومنه تخرج الدائرة الأولى.
     """
-    n = len(z)
-    coeffs = np.fft.fft(z) / n
-    freqs = np.fft.fftfreq(n, d=1.0 / n).astype(int)   # ..., -2, -1, 0, 1, 2, ...
-    c0 = coeffs[freqs == 0][0]
-    terms = [(k, c) for k, c in zip(freqs, coeffs) if k != 0]
-    terms.sort(key=lambda kc: -abs(kc[1]))
-    return c0, terms
+    return z.mean()
 
 
-def chain_points(c0, terms, t):
-    """يرجع مراكز سلسلة الدوائر عند الزمن t (من 0 إلى 2π)، آخرها رأس القلم."""
-    pos = [c0]
-    for k, c in terms:
-        pos.append(pos[-1] + c * np.exp(1j * k * t))
+# ════════════════════════════════════════════════════════════════════════════
+# الدائرة: ذراع بطول ثابت تدور بسرعة ثابتة               (الشرح: القسم 5)
+# ════════════════════════════════════════════════════════════════════════════
+
+@dataclass
+class Circle:
+    """دائرة واحدة في السلسلة.
+
+    k: سرعة الدوران، أي عدد اللفّات خلال رسم الشكل مرة واحدة (السالبة عكس الموجبة).
+    coef: عدد مركّب يجمع نصف القطر وزاوية البداية معًا.
+    """
+    k: int
+    coef: complex
+
+    @property
+    def radius(self):
+        """نصف قطر الدائرة: طول الذراع."""
+        return abs(self.coef)
+
+    @property
+    def start_angle_deg(self):
+        """زاوية بداية الذراع بالدرجات."""
+        return float(np.degrees(np.angle(self.coef)))
+
+    def arm_at(self, t):
+        """متّجه الذراع عند الزمن t (من 0 إلى 2π): من مركز الدائرة إلى طرفها."""
+        return self.coef * np.exp(1j * self.k * t)
+
+
+def point_times(n):
+    """يرجع زمن كل نقطة: النقطة j يمرّ بها القلم عند الزمن 2π·j/n."""
+    return 2 * np.pi * np.arange(n) / n
+
+
+# ════════════════════════════════════════════════════════════════════════════
+# الخطوة 6: قياس الفجوات                                   (الشرح: القسم 6 و10)
+# ════════════════════════════════════════════════════════════════════════════
+
+def measure_gaps(z, center, circles=()):
+    """يقيس الفجوة عند كل نقطة: من طرف آخر ذراع إلى النقطة الحقيقية.
+
+    المدخل: النقاط z، المركز، والدوائر المستعملة حتى الآن.
+    - بلا دوائر: الفجوة = بُعد النقطة عن المركز (z − c0)؛ منها تُقاس الدائرة الأولى.
+    - بعد الدائرة الأولى: الفجوة = ما عجزت عنه الأولى؛ منها تُقاس الثانية. وهكذا.
+    يرجع: فجوة مركّبة لكل نقطة (اتجاهها وطولها).
+    """
+    t = point_times(len(z))
+    gaps = z - center
+    for c in circles:
+        gaps = gaps - c.arm_at(t)
+    return gaps
+
+
+def remove_circle_from_gaps(gaps, circle):
+    """يطرح ذراع دائرة جديدة من الفجوات، فيبقى ما لم تسدّه بعد.
+
+    هو نفس measure_gaps بعد إضافة الدائرة، لكن دون إعادة طرح كل الدوائر السابقة.
+    """
+    return gaps - circle.arm_at(point_times(len(gaps)))
+
+
+# ════════════════════════════════════════════════════════════════════════════
+# الخطوة 6: قياس نصف قطر دائرة وزاوية بدايتها            (الشرح: القسم 6 و7)
+# ════════════════════════════════════════════════════════════════════════════
+
+def useful_lengths(gaps, k, start_angle):
+    """الطول النافع لكل فجوة: الجزء منها الواقع على اتجاه الذراع في لحظتها.
+
+    المدخل: الفجوات، سرعة الذراع k، وزاوية بدايتها (راديان).
+    عند النقطة j تكون الذراع قد دارت بزاوية k·2π·j/n فوق زاوية البداية.
+    يرجع: طولًا نافعًا لكل نقطة (قد يكون سالبًا إن كانت الفجوة عكس الذراع).
+    للشرح والطباعة فقط؛ fit_circle تصل إلى المتوسط مباشرة.
+    """
+    direction = np.exp(1j * (k * point_times(len(gaps)) + start_angle))
+    return (gaps * np.conj(direction)).real
+
+
+def fit_circle(gaps, k):
+    """يقيس الدائرة التي تسدّ الفجوات أفضل ما يمكن وهي تلفّ بسرعة k.
+
+    نصف قطرها = متوسط الطول النافع للفجوات على اتجاه ذراعها، وزاويتها هي
+    الاتجاه الذي يجعل هذا المتوسط أكبر ما يمكن. المعادلة تعطي الاثنين معًا:
+        c_k = (1/N) · Σ gap_j · e^(−i·k·2π·j/N)
+    يرجع: Circle(k, c_k).
+    """
+    return Circle(int(k), complex(np.mean(gaps * np.exp(-1j * k * point_times(len(gaps))))))
+
+
+# ════════════════════════════════════════════════════════════════════════════
+# الخطوة 8: اختيار الدائرة التالية                          (الشرح: القسم 8 و9)
+# ════════════════════════════════════════════════════════════════════════════
+
+def find_next_circle(gaps, used_speeds):
+    """يجرّب كل سرعة لم تُستعمل بعد، ويرجع الدائرة الأكبر منها.
+
+    لماذا الأكبر: تسدّ أكبر جزء من الفجوات، فيكون الرسم بعدد الدوائر هذا
+    أقرب ما يمكن إلى الأصل.
+    كيف: fit_circle لكل سرعة k على حدة تعطي ما يعطيه تحويل فورييه السريع (FFT)
+    للفجوات دفعة واحدة، فنستعمله لأنه أسرع بكثير والنتيجة واحدة.
+    """
+    n = len(gaps)
+    all_circles = np.fft.fft(gaps) / n                     # fit_circle لكل k معًا
+    speeds = np.fft.fftfreq(n, d=1.0 / n).astype(int)      # ..., -2, -1, 0, 1, 2, ...
+    sizes = np.abs(all_circles)
+    sizes[speeds == 0] = -1                                # السرعة 0 هي المركز، لا دائرة
+    for k in used_speeds:
+        sizes[speeds == k] = -1
+    best = int(np.argmax(sizes))
+    return Circle(int(speeds[best]), complex(all_circles[best]))
+
+
+# ════════════════════════════════════════════════════════════════════════════
+# الخطوات معًا: بناء الدوائر واحدة بعد أخرى              (الشرح: القسم 10 و11)
+# ════════════════════════════════════════════════════════════════════════════
+
+def build_circles(z, count, log=None):
+    """يبني المركز وأوّل count دائرة، كل دائرة من الفجوات التي تركتها السابقة.
+
+    1. المركز = compute_center.
+    2. الفجوات الأولى = بُعد النقاط عن المركز (measure_gaps بلا دوائر).
+    3. كرّر: الدائرة التالية = find_next_circle(الفجوات)، ثم اطرحها من الفجوات.
+    log: دالّة طباعة اختيارية تستقبل (رقم الدائرة، الدائرة، متوسط الفجوة قبلها).
+    يرجع: (المركز، قائمة الدوائر بالترتيب من الأكبر إلى الأصغر).
+    """
+    count = min(count, len(z) - 1)                       # أقصى عدد = عدد النقاط − 1
+    center = compute_center(z)
+    gaps = measure_gaps(z, center)
+    circles = []
+    for i in range(count):
+        circle = find_next_circle(gaps, {c.k for c in circles})
+        if log:
+            log(i + 1, circle, float(np.abs(gaps).mean()))
+        circles.append(circle)
+        gaps = remove_circle_from_gaps(gaps, circle)
+    return center, circles
+
+
+# ════════════════════════════════════════════════════════════════════════════
+# الرسم: مواضع الأذرع والشكل المعاد بناؤه                  (الشرح: القسم 15)
+# ════════════════════════════════════════════════════════════════════════════
+
+def chain_points(center, circles, t):
+    """يرجع مواضع مفاصل السلسلة عند الزمن t: المركز ثم طرف كل ذراع، آخرها القلم."""
+    pos = [center]
+    for c in circles:
+        pos.append(pos[-1] + c.arm_at(t))
     return pos
 
 
-def curve(c0, terms, ts):
-    """يرجع نقاط الشكل المعاد بناؤه بهذه الدوائر عند كل الأزمنة ts."""
-    out = np.full(len(ts), c0, complex)
-    for k, c in terms:
-        out += c * np.exp(1j * k * ts)
+def curve(center, circles, ts):
+    """يرجع موضع القلم عند كل زمن في ts: المركز + مجموع الأذرع."""
+    out = np.full(len(ts), center, complex)
+    for c in circles:
+        out += c.arm_at(ts)
     return out
 
 
@@ -173,15 +333,15 @@ def to_px(z, scale, off):
     return (int(round(z.real * scale + off[0])), int(round(z.imag * scale + off[1])))
 
 
-def render(z, ghost_mask, stages, out_path, size=(720, 900), frames_per_stage=150,
-           fps=30, show=False):
+def render(z, ghost_mask, center, circles, stages, out_path, size=(720, 900),
+           frames_per_stage=150, fps=30, show=False):
     """يرسم الفيديو: لكل مرحلة عدد دوائر، تدور السلسلة دورة كاملة وترسم الشكل.
 
     z: نقاط المحيط المركّبة. ghost_mask: قناع الشكل الأصلي (ظلّ خلفي).
-    stages: أعداد الدوائر. out_path: ملف mp4 الناتج. show: عرض نافذة حيّة.
+    center وcircles: ناتج build_circles. stages: أعداد الدوائر في كل مرحلة.
+    out_path: ملف mp4 الناتج. show: عرض نافذة حيّة.
     """
     W, H = size
-    c0, terms = fourier_terms(z)
 
     # ملاءمة الشكل في اللوحة مع هامش للدوائر
     xs, ys = z.real, z.imag
@@ -198,8 +358,8 @@ def render(z, ghost_mask, stages, out_path, size=(720, 900), frames_per_stage=15
     ts_all = np.linspace(0, 2 * np.pi, frames_per_stage)
 
     for n in stages:
-        sel = terms[:n]
-        full = curve(c0, sel, np.linspace(0, 2 * np.pi, 800))
+        sel = circles[:n]
+        full = curve(center, sel, np.linspace(0, 2 * np.pi, 800))
         for i, t in enumerate(ts_all):
             img = np.full((H, W, 3), BG, np.uint8)
             img[ghost] = GHOST
@@ -208,9 +368,9 @@ def render(z, ghost_mask, stages, out_path, size=(720, 900), frames_per_stage=15
             pts = np.array([to_px(p, scale, off) for p in done], np.int32)
             cv2.polylines(img, [pts], False, TRACE, 3, cv2.LINE_AA)
             # سلسلة الدوائر
-            chain = chain_points(c0, sel, t)
-            for (k, c), a, b in zip(sel, chain[:-1], chain[1:]):
-                r = abs(c) * scale
+            chain = chain_points(center, sel, t)
+            for c, a, b in zip(sel, chain[:-1], chain[1:]):
+                r = c.radius * scale
                 if r > 1.5:
                     cv2.circle(img, to_px(a, scale, off), int(r), CIRCLE, 1, cv2.LINE_AA)
                 cv2.line(img, to_px(a, scale, off), to_px(b, scale, off), ARM, 1, cv2.LINE_AA)
@@ -248,6 +408,7 @@ def main():
                     help=t("cli.stages_help"))
     ap.add_argument("--points", type=int, default=1024, help=t("cli.points_help"))
     ap.add_argument("--show", action="store_true", help=t("cli.show_help"))
+    ap.add_argument("--explain", type=int, default=0, metavar="N", help=t("cli.explain_help"))
     a = ap.parse_args()
 
     if a.image:
@@ -260,9 +421,21 @@ def main():
     else:
         gray = make_default_shape()
 
-    pts, mask = extract_contour(gray)
-    z = resample_by_arclength(pts, a.points)
-    render(z, mask, a.stages, a.out, show=a.show)
+    contour, mask = extract_contour(gray)                    # الخطوة 2
+    z = sample_points(contour, a.points)                     # الخطوة 3
+
+    def explain(i, circle, mean_gap):
+        """يطبع سطرًا لكل دائرة من أوّل N: الفجوة قبلها، سرعتها، نصف قطرها، زاويتها."""
+        if i <= a.explain:
+            print(t("explain.circle", i=i, gap=mean_gap, k=circle.k,
+                    r=circle.radius, angle=circle.start_angle_deg))
+
+    if a.explain:
+        c0 = compute_center(z)
+        print(t("explain.center", n=len(z), x=c0.real, y=c0.imag))
+    # الخطوات 4 إلى 10: المركز ثم الدوائر واحدة بعد أخرى من الفجوات
+    center, circles = build_circles(z, max(a.stages), log=explain if a.explain else None)
+    render(z, mask, center, circles, a.stages, a.out, show=a.show)
     print(t("done.message", out=a.out))
 
 
