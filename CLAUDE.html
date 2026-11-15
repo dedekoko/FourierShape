@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<!-- md2html:v1.2 src=CLAUDE.md sha=ea81071d2a2c793f — مولَّد آلِيًّا من CLAUDE.md، لا تعدّله بيدك -->
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FourierShape — تعليمات المشروع</title>
+<style>
+:root{--bg:#fff;--fg:#1b1b1b;--muted:#5d5d5d;--card:#f6f6f6;--border:#d8d8d8;--accent:#0f6cbd;--accent-bg:#e8f1fb;--code-bg:#f3f3f3;--quote:#c4314b;--shadow:0 1px 3px rgba(0,0,0,.08)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c1c1c;--fg:#f0f0f0;--muted:#a8a8a8;--card:#262626;--border:#3d3d3d;--accent:#5eb0ef;--accent-bg:#14304d;--code-bg:#2a2a2a;--quote:#ff8aa0;--shadow:none}}
+:root[data-theme="dark"]{--bg:#1c1c1c;--fg:#f0f0f0;--muted:#a8a8a8;--card:#262626;--border:#3d3d3d;--accent:#5eb0ef;--accent-bg:#14304d;--code-bg:#2a2a2a;--quote:#ff8aa0;--shadow:none}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:64px}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.85 "Segoe UI Variable Text","Segoe UI",Tahoma,system-ui,sans-serif}
+header.bar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;padding:10px 20px;background:var(--card);border-bottom:1px solid var(--border);font-size:14px;color:var(--muted)}
+header.bar .path{flex:1;direction:ltr;text-align:start;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;unicode-bidi:plaintext}
+header.bar button{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:4px 12px;cursor:pointer}
+header.bar button:hover{border-color:var(--accent);color:var(--accent)}
+.layout{display:flex;gap:32px;max-width:1280px;margin:0 auto;padding:24px 20px 80px}
+nav.toc{position:sticky;top:64px;align-self:flex-start;flex:0 0 250px;max-height:calc(100vh - 88px);overflow:auto;padding:12px 14px;background:var(--card);border:1px solid var(--border);border-radius:8px;font-size:14px;line-height:1.6}
+nav.toc b{display:block;margin-bottom:8px;color:var(--muted);font-weight:600}
+nav.toc a{display:block;padding:3px 8px;color:var(--fg);text-decoration:none;border-radius:4px;border-inline-start:3px solid transparent}
+nav.toc a.l3{padding-inline-start:22px;font-size:13px;color:var(--muted)}
+nav.toc a:hover{background:var(--accent-bg)}
+nav.toc a.on{background:var(--accent-bg);color:var(--accent);border-inline-start-color:var(--accent)}
+main{flex:1;min-width:0}
+main h1,main h2,main h3,main h4{line-height:1.4;margin:1.7em 0 .6em;font-weight:600}
+main h1{font-size:2em;margin-top:.4em;padding-bottom:.3em;border-bottom:1px solid var(--border)}
+main h2{font-size:1.5em;padding-bottom:.25em;border-bottom:1px solid var(--border)}
+main h3{font-size:1.2em}
+a{color:var(--accent)}
+.anchor{margin-inline-start:.4em;opacity:0;text-decoration:none;font-weight:400}
+h1:hover .anchor,h2:hover .anchor,h3:hover .anchor,h4:hover .anchor{opacity:.6}
+blockquote{margin:1em 0;padding:.4em 1em;background:var(--card);border:1px solid var(--border);border-inline-start:4px solid var(--quote);border-radius:4px;color:var(--muted)}
+blockquote p{margin:.4em 0}
+code{font:.9em Consolas,"Cascadia Mono",monospace;background:var(--code-bg);padding:.15em .4em;border-radius:4px;direction:ltr;unicode-bidi:isolate}
+pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:12px 16px;overflow:auto;line-height:1.55;text-align:left}
+pre code{background:none;padding:0;font-size:.88em}
+.tbl{overflow:auto;margin:1em 0;border:1px solid var(--border);border-radius:8px}
+table{border-collapse:collapse;width:100%;font-size:.95em}
+th,td{padding:8px 12px;border:1px solid var(--border);vertical-align:top}
+th{background:var(--card);font-weight:600;text-align:start}
+.tbl table,.tbl th,.tbl td{border-width:0 0 1px 0}.tbl tr:last-child td{border-bottom:0}
+img,svg{max-width:100%;height:auto}
+hr{border:0;border-top:1px solid var(--border);margin:2em 0}
+details{margin:1em 0;padding:.5em 1em;background:var(--card);border:1px solid var(--border);border-radius:8px}
+details>summary{cursor:pointer;font-weight:600;min-height:32px;display:flex;align-items:center;gap:8px;list-style:none;margin:-.5em -1em;padding:.5em 1em;border-radius:8px}
+details>summary::-webkit-details-marker{display:none}
+details>summary::before{content:"\25C0";color:var(--accent);font-size:11px;transition:transform .15s}
+[dir="ltr"] details>summary::before{content:"\25B6"}
+details[open]>summary::before{transform:rotate(-90deg)}
+[dir="ltr"] details[open]>summary::before{transform:rotate(90deg)}
+details>summary:hover{background:var(--accent-bg)}
+details[open]>summary{margin-bottom:.5em;border-bottom:1px solid var(--border);border-radius:8px 8px 0 0}
+main [id]{scroll-margin-top:64px}
+details.sec{background:transparent;border:0;border-radius:0;padding:0;margin:0}
+details.sec>summary{margin:0;padding:0 6px;border-radius:6px}
+details.sec[open]>summary{margin:0;border-bottom:0;border-radius:6px}
+details.sec>summary>h2,details.sec>summary>h3{flex:1;margin:.9em 0 .5em}
+details.sec.l2>summary::before{font-size:13px}
+details.sec>.sec,details.sec>details.lead{margin-inline-start:4px}
+details.lead{background:transparent}
+footer.foot{margin-top:48px;padding-top:12px;border-top:1px solid var(--border);color:var(--muted);font-size:13px}
+@media (max-width:860px){.layout{display:block;padding:16px}nav.toc{position:static;max-height:none;margin-bottom:20px}}
+@media print{header.bar,nav.toc{display:none}.layout{display:block}}
+</style>
+</head>
+<body>
+<header class="bar"><span class="path" title="CLAUDE.md">CLAUDE.md</span><button id="theme" type="button">فاتح / داكن</button></header>
+<div class="layout">
+<nav class="toc" aria-label="الفهرس"><b>في هذه الصفحة</b><a class="l2" href="#ملف-الشرح">ملف الشرح</a><a class="l2" href="#الواجهة-fourierlivehtml">الواجهة fourierlive.html</a></nav>
+<main>
+<h1 dir="auto" id="fouriershape-تعليمات-المشروع">FourierShape — تعليمات المشروع<a class="anchor" href="#fouriershape-تعليمات-المشروع" aria-label="رابط القسم">#</a></h1>
+<h2 dir="auto" id="ملف-الشرح">ملف الشرح<a class="anchor" href="#ملف-الشرح" aria-label="رابط القسم">#</a></h2>
+<ul>
+<li dir="auto">الشرح الدائم لطريقة العمل في <code>docs/شرح-طريقة-العمل.md</code>، قسم لكل سؤال.</li>
+<li dir="auto">حين يسأل المستخدم عن نقطة في الشرح: <strong>حدّث قسمها في الملف</strong> (أو أضف قسمًا فرعيًّا تحته، أو قسمًا جديدًا في مكانه المنطقي مع سطر في الفهرس)، وأضف سطرًا في «سجلّ تحديثات الشرح». ثم أجب في المحادثة <strong>بالنقطة المسؤول عنها فقط</strong> باختصار، مع رابط إلى قسمها. لا تُعِد الشرح كله.</li>
+<li dir="auto">الأرقام في الأمثلة محسوبة فعلًا من بيانات المشروع (شكل القط بـ 600 نقطة افتراضيًّا)، لا تقديرية.</li>
+</ul>
+<h2 dir="auto" id="الواجهة-fourierlivehtml">الواجهة <code>fourier_live.html</code><a class="anchor" href="#الواجهة-fourierlivehtml" aria-label="رابط القسم">#</a></h2>
+<ul>
+<li dir="auto">صفحة واحدة مستقلّة تُنشر Artifact: لا ملفات خارجية. النصوص في كائن <code>STRINGS</code>، والأيقونات في <code>ICONS</code>، داخل الملف.</li>
+<li dir="auto">الأزرار بعرض نصّها، متراصّة في صفوف لا تلتفّ إلا عند الضيق؛ والمترابطة منها داخل إطار <code>.group</code>. لا شبكات أعمدة متساوية تمطّ الأزرار.</li>
+<li dir="auto">بعد كل تعديل: افحصها بخادم محلي (<code>.claude/launch.json</code>)، ثم أعد النشر على رابطها نفسه.</li>
+</ul>
+
+<footer class="foot">مولَّد آلِيًّا من <code>CLAUDE.md</code> — التعديل في ملف الـ MD ثم يُحدَّث هذا الملف تلقائيًّا.</footer>
+</main>
+</div>
+<script>
+(function(){
+  var root=document.documentElement,btn=document.getElementById('theme');
+  try{var s=localStorage.getItem('md2html-theme');if(s)root.setAttribute('data-theme',s);}catch(e){}
+  if(btn)btn.onclick=function(){
+    var dark=root.getAttribute('data-theme')==='dark'||(!root.getAttribute('data-theme')&&matchMedia('(prefers-color-scheme:dark)').matches);
+    var n=dark?'light':'dark';root.setAttribute('data-theme',n);try{localStorage.setItem('md2html-theme',n);}catch(e){}
+  };
+  // افتح الكل / اطوِ الكل
+  var all=document.getElementById('foldall');
+  if(all)all.onclick=function(){var d=document.querySelectorAll('main details'),o=[].some.call(d,function(x){return !x.open;});[].forEach.call(d,function(x){x.open=o;});};
+  // رابط إلى عنوان (الفهرس، إحالة) يفتح الأكورديونات حوله عند النقر نفسه: بعض العارضات لا تغيّر العنوان
+  function reveal(id){var el=id&&document.getElementById(id);for(var p=el;p;p=p.parentElement){if(p.tagName==='DETAILS')p.open=true;}if(el)setTimeout(function(){el.scrollIntoView();},0);return !!el;}
+  document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^="#"]');if(a&&reveal(decodeURIComponent(a.getAttribute('href').slice(1)))){e.preventDefault();try{history.replaceState(null,'',a.getAttribute('href'));}catch(x){}}});
+  window.addEventListener('hashchange',function(){reveal(decodeURIComponent(location.hash.slice(1)));});
+  reveal(decodeURIComponent(location.hash.slice(1)));
+  var links=[].slice.call(document.querySelectorAll('nav.toc a'));if(!links.length||!('IntersectionObserver' in window))return;
+  var map={};links.forEach(function(a){map[a.getAttribute('href').slice(1)]=a;});
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){links.forEach(function(a){a.classList.remove('on');});var a=map[e.target.id];if(a)a.classList.add('on');}});},{rootMargin:'-70px 0px -70% 0px'});
+  document.querySelectorAll('main h1[id],main h2[id],main h3[id]').forEach(function(h){io.observe(h);});
+})();
+</script>
+</body>
+</html>

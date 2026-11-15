@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<!-- md2html:v1.2 src=شرح-طريقة-العمل.md sha=629dafb55c80d2d5 — مولَّد آلِيًّا من شرح-طريقة-العمل.md، لا تعدّله بيدك -->
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>شرح طريقة العمل: رسم الأشكال بدوائر فورييه</title>
+<style>
+:root{--bg:#fff;--fg:#1b1b1b;--muted:#5d5d5d;--card:#f6f6f6;--border:#d8d8d8;--accent:#0f6cbd;--accent-bg:#e8f1fb;--code-bg:#f3f3f3;--quote:#c4314b;--shadow:0 1px 3px rgba(0,0,0,.08)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c1c1c;--fg:#f0f0f0;--muted:#a8a8a8;--card:#262626;--border:#3d3d3d;--accent:#5eb0ef;--accent-bg:#14304d;--code-bg:#2a2a2a;--quote:#ff8aa0;--shadow:none}}
+:root[data-theme="dark"]{--bg:#1c1c1c;--fg:#f0f0f0;--muted:#a8a8a8;--card:#262626;--border:#3d3d3d;--accent:#5eb0ef;--accent-bg:#14304d;--code-bg:#2a2a2a;--quote:#ff8aa0;--shadow:none}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:64px}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.85 "Segoe UI Variable Text","Segoe UI",Tahoma,system-ui,sans-serif}
+header.bar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;padding:10px 20px;background:var(--card);border-bottom:1px solid var(--border);font-size:14px;color:var(--muted)}
+header.bar .path{flex:1;direction:ltr;text-align:start;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;unicode-bidi:plaintext}
+header.bar button{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:4px 12px;cursor:pointer}
+header.bar button:hover{border-color:var(--accent);color:var(--accent)}
+.layout{display:flex;gap:32px;max-width:1280px;margin:0 auto;padding:24px 20px 80px}
+nav.toc{position:sticky;top:64px;align-self:flex-start;flex:0 0 250px;max-height:calc(100vh - 88px);overflow:auto;padding:12px 14px;background:var(--card);border:1px solid var(--border);border-radius:8px;font-size:14px;line-height:1.6}
+nav.toc b{display:block;margin-bottom:8px;color:var(--muted);font-weight:600}
+nav.toc a{display:block;padding:3px 8px;color:var(--fg);text-decoration:none;border-radius:4px;border-inline-start:3px solid transparent}
+nav.toc a.l3{padding-inline-start:22px;font-size:13px;color:var(--muted)}
+nav.toc a:hover{background:var(--accent-bg)}
+nav.toc a.on{background:var(--accent-bg);color:var(--accent);border-inline-start-color:var(--accent)}
+main{flex:1;min-width:0}
+main h1,main h2,main h3,main h4{line-height:1.4;margin:1.7em 0 .6em;font-weight:600}
+main h1{font-size:2em;margin-top:.4em;padding-bottom:.3em;border-bottom:1px solid var(--border)}
+main h2{font-size:1.5em;padding-bottom:.25em;border-bottom:1px solid var(--border)}
+main h3{font-size:1.2em}
+a{color:var(--accent)}
+.anchor{margin-inline-start:.4em;opacity:0;text-decoration:none;font-weight:400}
+h1:hover .anchor,h2:hover .anchor,h3:hover .anchor,h4:hover .anchor{opacity:.6}
+blockquote{margin:1em 0;padding:.4em 1em;background:var(--card);border:1px solid var(--border);border-inline-start:4px solid var(--quote);border-radius:4px;color:var(--muted)}
+blockquote p{margin:.4em 0}
+code{font:.9em Consolas,"Cascadia Mono",monospace;background:var(--code-bg);padding:.15em .4em;border-radius:4px;direction:ltr;unicode-bidi:isolate}
+pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:12px 16px;overflow:auto;line-height:1.55;text-align:left}
+pre code{background:none;padding:0;font-size:.88em}
+.tbl{overflow:auto;margin:1em 0;border:1px solid var(--border);border-radius:8px}
+table{border-collapse:collapse;width:100%;font-size:.95em}
+th,td{padding:8px 12px;border:1px solid var(--border);vertical-align:top}
+th{background:var(--card);font-weight:600;text-align:start}
+.tbl table,.tbl th,.tbl td{border-width:0 0 1px 0}.tbl tr:last-child td{border-bottom:0}
+img,svg{max-width:100%;height:auto}
+hr{border:0;border-top:1px solid var(--border);margin:2em 0}
+details{margin:1em 0;padding:.5em 1em;background:var(--card);border:1px solid var(--border);border-radius:8px}
+details>summary{cursor:pointer;font-weight:600;min-height:32px;display:flex;align-items:center;gap:8px;list-style:none;margin:-.5em -1em;padding:.5em 1em;border-radius:8px}
+details>summary::-webkit-details-marker{display:none}
+details>summary::before{content:"\25C0";color:var(--accent);font-size:11px;transition:transform .15s}
+[dir="ltr"] details>summary::before{content:"\25B6"}
+details[open]>summary::before{transform:rotate(-90deg)}
+[dir="ltr"] details[open]>summary::before{transform:rotate(90deg)}
+details>summary:hover{background:var(--accent-bg)}
+details[open]>summary{margin-bottom:.5em;border-bottom:1px solid var(--border);border-radius:8px 8px 0 0}
+main [id]{scroll-margin-top:64px}
+details.sec{background:transparent;border:0;border-radius:0;padding:0;margin:0}
+details.sec>summary{margin:0;padding:0 6px;border-radius:6px}
+details.sec[open]>summary{margin:0;border-bottom:0;border-radius:6px}
+details.sec>summary>h2,details.sec>summary>h3{flex:1;margin:.9em 0 .5em}
+details.sec.l2>summary::before{font-size:13px}
+details.sec>.sec,details.sec>details.lead{margin-inline-start:4px}
+details.lead{background:transparent}
+footer.foot{margin-top:48px;padding-top:12px;border-top:1px solid var(--border);color:var(--muted);font-size:13px}
+@media (max-width:860px){.layout{display:block;padding:16px}nav.toc{position:static;max-height:none;margin-bottom:20px}}
+@media print{header.bar,nav.toc{display:none}.layout{display:block}}
+</style>
+</head>
+<body>
+<header class="bar"><span class="path" title="docs/شرح-طريقة-العمل.md">docs/شرح-طريقة-العمل.md</span><button id="foldall" type="button">افتح الكل / اطوِ الكل</button><button id="theme" type="button">فاتح / داكن</button></header>
+<div class="layout">
+<nav class="toc" aria-label="الفهرس"><b>في هذه الصفحة</b><a class="l2" href="#الفهرس">الفهرس</a><a class="l2" href="#1-الفكرة-في-سطرين">1. الفكرة في سطرين</a><a class="l2" href="#2-فصل-الشكل-عن-الخلفية-وتتبّع-حدّه">2. فصل الشكل عن الخلفية وتتبّع حدّه</a><a class="l2" href="#3-اختيار-النقاط-كيف-وكم">3. اختيار النقاط: كيف وكم</a><a class="l2" href="#4-المركز-من-أين-تنطلق-السلسلة">4. المركز: من أين تنطلق السلسلة</a><a class="l3" href="#هل-يتغيّر-المركز-إذا-غيّرنا-عدد-النقاط">هل يتغيّر المركز إذا غيّرنا عدد النقاط؟</a><a class="l2" href="#5-حساب-الدائرة-المعادلة-الوحيدة">5. حساب الدائرة: المعادلة الوحيدة</a><a class="l2" href="#6-ما-الذي-يحدّد-نصف-قطر-الدائرة">6. ما الذي يحدّد نصف قطر الدائرة</a><a class="l3" href="#ما-العلاقة-بين-متوسط-النقاط-المركز-ونصف-القطر">ما العلاقة بين متوسط النقاط (المركز) ونصف القطر؟</a><a class="l2" href="#7-زاوية-البداية">7. زاوية البداية</a><a class="l2" href="#8-لماذا-دائرة-أكبر-من-أخرى">8. لماذا دائرة أكبر من أخرى</a><a class="l2" href="#9-لماذا-نأخذ-أكبر-n-دائرة">9. لماذا نأخذ أكبر n دائرة</a><a class="l2" href="#10-الدائرة-الثانية-وما-بعدها">10. الدائرة الثانية وما بعدها</a><a class="l2" href="#11-هل-تُحسب-القيم-دفعة-واحدة-أم-تدريجيًّا">11. هل تُحسب القيم دفعة واحدة أم تدريجيًّا</a><a class="l2" href="#12-صيغة-الفيديو-a-و-b-و-c-و-d">12. صيغة الفيديو a و b و c و d</a><a class="l2" href="#13-العلاقة-بين-عدد-النقاط-وعدد-الدوائر">13. العلاقة بين عدد النقاط وعدد الدوائر</a><a class="l2" href="#14-سرعة-المرور-فكرة-عنوان-الفيديو">14. سرعة المرور: فكرة عنوان الفيديو</a><a class="l2" href="#15-الحركة-على-الشاشة">15. الحركة على الشاشة</a></nav>
+<main>
+<h1 dir="auto" id="شرح-طريقة-العمل-رسم-الأشكال-بدوائر-فورييه">شرح طريقة العمل: رسم الأشكال بدوائر فورييه<a class="anchor" href="#شرح-طريقة-العمل-رسم-الأشكال-بدوائر-فورييه" aria-label="رابط القسم">#</a></h1>
+<p dir="auto">هذا الملف يشرح كيف يحوّل البرنامج صورة شكلٍ إلى دوائر دوّارة ترسمه. كل قسم يجيب عن سؤال واحد، وحين يُسأل عن نقطة جديدة يُحدَّث قسمها هنا.</p>
+<p dir="auto">الأرقام في الأمثلة من شكل <strong>القط</strong> بـ 600 نقطة، كما في الواجهة التفاعلية.</p>
+<h2 dir="auto" id="الفهرس">الفهرس<a class="anchor" href="#الفهرس" aria-label="رابط القسم">#</a></h2>
+<ol>
+<li dir="auto"><a href="#1-%D8%A7%D9%84%D9%81%D9%83%D8%B1%D8%A9-%D9%81%D9%8A-%D8%B3%D8%B7%D8%B1%D9%8A%D9%86">الفكرة في سطرين</a></li>
+<li dir="auto"><a href="#2-%D9%81%D8%B5%D9%84-%D8%A7%D9%84%D8%B4%D9%83%D9%84-%D8%B9%D9%86-%D8%A7%D9%84%D8%AE%D9%84%D9%81%D9%8A%D8%A9-%D9%88%D8%AA%D8%AA%D8%A8%D8%B9-%D8%AD%D8%AF%D9%87">فصل الشكل عن الخلفية وتتبّع حدّه</a></li>
+<li dir="auto"><a href="#3-%D8%A7%D8%AE%D8%AA%D9%8A%D8%A7%D8%B1-%D8%A7%D9%84%D9%86%D9%82%D8%A7%D8%B7-%D9%83%D9%8A%D9%81-%D9%88%D9%83%D9%85">اختيار النقاط: كيف وكم</a></li>
+<li dir="auto"><a href="#4-%D8%A7%D9%84%D9%85%D8%B1%D9%83%D8%B2-%D9%85%D9%86-%D8%A3%D9%8A%D9%86-%D8%AA%D9%86%D8%B7%D9%84%D9%82-%D8%A7%D9%84%D8%B3%D9%84%D8%B3%D9%84%D8%A9">المركز: من أين تنطلق السلسلة</a></li>
+<li dir="auto"><a href="#5-%D8%AD%D8%B3%D8%A7%D8%A8-%D8%A7%D9%84%D8%AF%D8%A7%D8%A6%D8%B1%D8%A9-%D8%A7%D9%84%D9%85%D8%B9%D8%A7%D8%AF%D9%84%D8%A9-%D8%A7%D9%84%D9%88%D8%AD%D9%8A%D8%AF%D8%A9">حساب الدائرة: المعادلة الوحيدة</a></li>
+<li dir="auto"><a href="#6-%D9%85%D8%A7-%D8%A7%D9%84%D8%B0%D9%8A-%D9%8A%D8%AD%D8%AF%D8%AF-%D9%86%D8%B5%D9%81-%D9%82%D8%B7%D8%B1-%D8%A7%D9%84%D8%AF%D8%A7%D8%A6%D8%B1%D8%A9">ما الذي يحدّد نصف قطر الدائرة</a></li>
+<li dir="auto"><a href="#7-%D8%B2%D8%A7%D9%88%D9%8A%D8%A9-%D8%A7%D9%84%D8%A8%D8%AF%D8%A7%D9%8A%D8%A9">زاوية البداية</a></li>
+<li dir="auto"><a href="#8-%D9%84%D9%85%D8%A7%D8%B0%D8%A7-%D8%AF%D8%A7%D8%A6%D8%B1%D8%A9-%D8%A3%D9%83%D8%A8%D8%B1-%D9%85%D9%86-%D8%A3%D8%AE%D8%B1%D9%89">لماذا دائرة أكبر من أخرى</a></li>
+<li dir="auto"><a href="#9-%D9%84%D9%85%D8%A7%D8%B0%D8%A7-%D9%86%D8%A3%D8%AE%D8%B0-%D8%A3%D9%83%D8%A8%D8%B1-n-%D8%AF%D8%A7%D8%A6%D8%B1%D8%A9">لماذا نأخذ أكبر n دائرة</a></li>
+<li dir="auto"><a href="#10-%D8%A7%D9%84%D8%AF%D8%A7%D8%A6%D8%B1%D8%A9-%D8%A7%D9%84%D8%AB%D8%A7%D9%86%D9%8A%D8%A9-%D9%88%D9%85%D8%A7-%D8%A8%D8%B9%D8%AF%D9%87%D8%A7">الدائرة الثانية وما بعدها</a></li>
+<li dir="auto"><a href="#11-%D9%87%D9%84-%D8%AA%D8%AD%D8%B3%D8%A8-%D8%A7%D9%84%D9%82%D9%8A%D9%85-%D8%AF%D9%81%D8%B9%D8%A9-%D9%88%D8%A7%D8%AD%D8%AF%D8%A9-%D8%A3%D9%85-%D8%AA%D8%AF%D8%B1%D9%8A%D8%AC%D9%8A%D8%A7">هل تُحسب القيم دفعة واحدة أم تدريجيًّا</a></li>
+<li dir="auto"><a href="#12-%D8%B5%D9%8A%D8%BA%D8%A9-%D8%A7%D9%84%D9%81%D9%8A%D8%AF%D9%8A%D9%88-a-%D9%88-b-%D9%88-c-%D9%88-d">صيغة الفيديو a و b و c و d</a></li>
+<li dir="auto"><a href="#13-%D8%A7%D9%84%D8%B9%D9%84%D8%A7%D9%82%D8%A9-%D8%A8%D9%8A%D9%86-%D8%B9%D8%AF%D8%AF-%D8%A7%D9%84%D9%86%D9%82%D8%A7%D8%B7-%D9%88%D8%B9%D8%AF%D8%AF-%D8%A7%D9%84%D8%AF%D9%88%D8%A7%D8%A6%D8%B1">العلاقة بين عدد النقاط وعدد الدوائر</a></li>
+<li dir="auto"><a href="#14-%D8%B3%D8%B1%D8%B9%D8%A9-%D8%A7%D9%84%D9%85%D8%B1%D9%88%D8%B1-%D9%81%D9%83%D8%B1%D8%A9-%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D9%84%D9%81%D9%8A%D8%AF%D9%8A%D9%88">سرعة المرور: فكرة عنوان الفيديو</a></li>
+<li dir="auto"><a href="#15-%D8%A7%D9%84%D8%AD%D8%B1%D9%83%D8%A9-%D8%B9%D9%84%D9%89-%D8%A7%D9%84%D8%B4%D8%A7%D8%B4%D8%A9">الحركة على الشاشة</a></li>
+</ol>
+<hr>
+<h2 dir="auto" id="1-الفكرة-في-سطرين">1. الفكرة في سطرين<a class="anchor" href="#1-الفكرة-في-سطرين" aria-label="رابط القسم">#</a></h2>
+<p dir="auto">نأخذ نقاطًا على محيط الشكل، ونعاملها كأنها حركة قلم يلفّ حول الشكل مرة واحدة. ثم نفكّ هذه الحركة إلى مجموع حركات دائرية بسيطة، كل منها ذراع بطول ثابت يدور بسرعة ثابتة، ونرسم الشكل بجمع هذه الأذرع طرفًا بطرف.</p>
+<h2 dir="auto" id="2-فصل-الشكل-عن-الخلفية-وتتبّع-حدّه">2. فصل الشكل عن الخلفية وتتبّع حدّه<a class="anchor" href="#2-فصل-الشكل-عن-الخلفية-وتتبّع-حدّه" aria-label="رابط القسم">#</a></h2>
+<p dir="auto">البرنامج لا يعرف أن في الصورة قطًّا؛ يرى بكسلات فقط، ويقسمها إلى «شكل» و«خلفية»:</p>
+<ul>
+<li dir="auto">إن كانت في الصورة <strong>شفافية</strong>، فالبكسل المعتم شكل والشفاف خلفية. هذا أدقّ فاصل، ولا تربكه الخطوط والألوان داخل الشكل، مثل حدود المحافظات في الخريطة.</li>
+<li dir="auto">وإلا يبحث عن <strong>عتبة سطوع</strong> تفصل لونين (طريقة Otsu)، ويعدّ لون حوافّ الصورة هو لون الخلفية.</li>
+</ul>
+<p dir="auto">ثم يأخذ <strong>أكبر قطعة متّصلة</strong> فقط، ويترك البقع الصغيرة. لهذا رُسمت إيطاليا بلا سردينيا، فهي جزيرة منفصلة.</p>
+<p dir="auto">بعدها يبدأ من أعلى بكسل في الشكل، ويدور حول حدّه بكسلًا بكسلًا حتى يرجع إلى البداية. في القط خرج حدّ من 2909 بكسلات متتالية. <strong>نقطة البداية هذه هي التي يبدأ منها القلم.</strong></p>
+<h2 dir="auto" id="3-اختيار-النقاط-كيف-وكم">3. اختيار النقاط: كيف وكم<a class="anchor" href="#3-اختيار-النقاط-كيف-وكم" aria-label="رابط القسم">#</a></h2>
+<p dir="auto"><strong>كيف:</strong> البكسلات المتتالية على الحدّ ليست متساوية التباعد، فبعضها جانبي وبعضها قطري. لذلك يقيس البرنامج طول المحيط كله، ويضع عليه <code>N</code> نقطة <strong>بمسافات متساوية تمامًا</strong>.</p>
+<p dir="auto"><strong>كم:</strong> عدد النقاط <strong>لا يُحسب من الشكل؛ نحن نختاره</strong>. الافتراضي 600 في الواجهة و1024 في برنامج بايثون، وفي الواجهة منزلق يغيّره من 8 إلى 1000.</p>
+<details class="lead"><summary>المعيار</summary><p dir="auto">أن يكفي العدد لالتقاط أدقّ تفصيل نريده. المسافة بين نقطتين متجاورتين يجب أن تكون أقصر من أصغر تفصيل، مثل أذن القط أو مفتاح الكمان. أكثر من ذلك لا يضيف شيئًا؛ انظر <a href="#13-%D8%A7%D9%84%D8%B9%D9%84%D8%A7%D9%82%D8%A9-%D8%A8%D9%8A%D9%86-%D8%B9%D8%AF%D8%AF-%D8%A7%D9%84%D9%86%D9%82%D8%A7%D8%B7-%D9%88%D8%B9%D8%AF%D8%AF-%D8%A7%D9%84%D8%AF%D9%88%D8%A7%D8%A6%D8%B1">القسم 13</a>.</p></details>
+<p dir="auto"><strong>لماذا التباعد المتساوي؟</strong> ليمشي القلم على المحيط بسرعة ثابتة؛ انظر <a href="#14-%D8%B3%D8%B1%D8%B9%D8%A9-%D8%A7%D9%84%D9%85%D8%B1%D9%88%D8%B1-%D9%81%D9%83%D8%B1%D8%A9-%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D9%84%D9%81%D9%8A%D8%AF%D9%8A%D9%88">القسم 14</a>.</p>
+<details class="sec l2"><summary><h2 dir="auto" id="4-المركز-من-أين-تنطلق-السلسلة">4. المركز: من أين تنطلق السلسلة<a class="anchor" href="#4-المركز-من-أين-تنطلق-السلسلة" aria-label="رابط القسم">#</a></h2></summary>
+<p dir="auto">المركز ليس دائرة. هو <strong>متوسط كل النقاط</strong>:</p>
+<pre dir="ltr"><code>c0 = (z_1 + z_2 + ... + z_N) / N
+</code></pre>
+<p dir="auto">في القط خرج نحو <code>(542, 510)</code>. هذه النقطة ثابتة لا تدور، ومنها تنطلق الدائرة الأولى. هي «مركز ثقل» المحيط، وليست بالضرورة داخل الشكل.</p>
+<details class="sec l3"><summary><h3 dir="auto" id="هل-يتغيّر-المركز-إذا-غيّرنا-عدد-النقاط">هل يتغيّر المركز إذا غيّرنا عدد النقاط؟<a class="anchor" href="#هل-يتغيّر-المركز-إذا-غيّرنا-عدد-النقاط" aria-label="رابط القسم">#</a></h3></summary>
+<details class="lead"><summary>يتغيّر قليلًا جدًّا بنقاط قليلة، ثم يثبت.</summary><p dir="auto">النقاط متساوية التباعد، فمتوسطها هو متوسط المحيط نفسه. ومع زيادة النقاط يقترب من قيمة واحدة ثابتة لا تتحرّك:</p>
+<ul>
+<li dir="auto"><strong>8 نقاط:</strong> المتوسط يعتمد على أين وقعت النقاط القليلة، فينحرف نحو 10 بكسلات.</li>
+<li dir="auto"><strong>من نحو 24 نقطة:</strong> لا يتحرّك المركز إلا بكسلًا واحدًا.</li>
+<li dir="auto"><strong>من 100 نقطة فأكثر:</strong> يثبت تمامًا.</li>
+</ul></details>
+<p dir="auto">والأمر نفسه لنصف قطر الدائرة الأولى. التفصيل في الجدول.</p>
+<details><summary>القط بأعداد نقاط مختلفة</summary>
+
+<div class="tbl"><table><thead><tr>
+<th dir="auto">النقاط</th>
+<th dir="auto">المركز</th>
+<th dir="auto">نصف قطر الدائرة الأولى</th>
+<th dir="auto">متوسط البُعد عن المركز</th>
+</tr>
+</thead><tbody><tr>
+<td dir="auto">8</td>
+<td dir="auto"><code>(552.2, 513.0)</code></td>
+<td dir="auto">318.4</td>
+<td dir="auto">333.2</td>
+</tr>
+<tr>
+<td dir="auto">12</td>
+<td dir="auto"><code>(542.9, 509.6)</code></td>
+<td dir="auto">307.3</td>
+<td dir="auto">319.5</td>
+</tr>
+<tr>
+<td dir="auto">24</td>
+<td dir="auto"><code>(542.6, 510.4)</code></td>
+<td dir="auto">305.8</td>
+<td dir="auto">318.6</td>
+</tr>
+<tr>
+<td dir="auto">40</td>
+<td dir="auto"><code>(542.9, 510.5)</code></td>
+<td dir="auto">306.3</td>
+<td dir="auto">319.0</td>
+</tr>
+<tr>
+<td dir="auto">100</td>
+<td dir="auto"><code>(542.7, 510.3)</code></td>
+<td dir="auto">306.5</td>
+<td dir="auto">319.3</td>
+</tr>
+<tr>
+<td dir="auto">600</td>
+<td dir="auto"><code>(542.7, 510.3)</code></td>
+<td dir="auto">306.5</td>
+<td dir="auto">319.3</td>
+</tr>
+<tr>
+<td dir="auto">1000</td>
+<td dir="auto"><code>(542.7, 510.3)</code></td>
+<td dir="auto">306.5</td>
+<td dir="auto">319.3</td>
+</tr>
+</tbody></table></div>
+</details>
+
+</details>
+</details>
+<h2 dir="auto" id="5-حساب-الدائرة-المعادلة-الوحيدة">5. حساب الدائرة: المعادلة الوحيدة<a class="anchor" href="#5-حساب-الدائرة-المعادلة-الوحيدة" aria-label="رابط القسم">#</a></h2>
+<p dir="auto">كل نقطة تُكتب عددًا مركّبًا، أي نقطة في المستوى يمكن تدويرها بسهولة:</p>
+<pre dir="ltr"><code>z_j = x_j + i·y_j
+</code></pre>
+<p dir="auto">ولكل سرعة دوران <code>k</code> (عدد اللفّات خلال رسم الشكل مرة واحدة) تعطي معادلة واحدة قيمة الدائرة:</p>
+<pre dir="ltr"><code>c_k = (1/N) · Σ z_j · e^(−2πi·k·j/N)
+</code></pre>
+<ul>
+<li dir="auto"><code>|c_k|</code> هو <strong>نصف قطر</strong> الدائرة؛ انظر <a href="#6-%D9%85%D8%A7-%D8%A7%D9%84%D8%B0%D9%8A-%D9%8A%D8%AD%D8%AF%D8%AF-%D9%86%D8%B5%D9%81-%D9%82%D8%B7%D8%B1-%D8%A7%D9%84%D8%AF%D8%A7%D8%A6%D8%B1%D8%A9">القسم 6</a>.</li>
+<li dir="auto">زاوية <code>c_k</code> هي <strong>زاوية بدايتها</strong>؛ انظر <a href="#7-%D8%B2%D8%A7%D9%88%D9%8A%D8%A9-%D8%A7%D9%84%D8%A8%D8%AF%D8%A7%D9%8A%D8%A9">القسم 7</a>.</li>
+<li dir="auto">إشارة <code>k</code> هي <strong>اتجاه الدوران</strong>: الموجبة في اتجاه، والسالبة في الاتجاه المعاكس.</li>
+</ul>
+<p dir="auto">والشكل يُرسم بجمع الدوائر:</p>
+<pre dir="ltr"><code>z(t) = c0 + Σ c_k · e^(i·k·t)
+</code></pre>
+<details class="sec l2"><summary><h2 dir="auto" id="6-ما-الذي-يحدّد-نصف-قطر-الدائرة">6. ما الذي يحدّد نصف قطر الدائرة<a class="anchor" href="#6-ما-الذي-يحدّد-نصف-قطر-الدائرة" aria-label="رابط القسم">#</a></h2></summary>
+<p dir="auto"><strong>نصف القطر = متوسط بُعد نقاط المحيط عن المركز، محسوبًا على اتجاه الذراع الدوّارة فقط.</strong></p>
+<p dir="auto">تخيّل ذراعًا تخرج من المركز وتدور بسرعة ثابتة لفّة كاملة، بينما يمرّ القلم على النقاط الـ 600 بالترتيب. عند النقطة رقم <code>j</code> تكون الذراع قد دارت بزاوية:</p>
+<pre dir="ltr"><code>θ_j = 360° × j / N
+</code></pre>
+<p dir="auto">لكل نقطة يُحسب <strong>«الطول النافع»</strong>: الجزء من بُعدها عن المركز الواقع على اتجاه الذراع في تلك اللحظة. ونصف القطر هو <strong>متوسط الأطوال النافعة لكل النقاط</strong>.</p>
+<p dir="auto"><strong>مثال الدائرة الكاملة:</strong> في دائرة نصف قطرها 200 نمرّ عليها بسرعة ثابتة، تقع كل نقطة على بُعد 200 وفي اتجاه الذراع تمامًا. فالطول النافع لكل نقطة 200، والمتوسط 200 بالضبط.</p>
+<details class="lead"><summary>في القط</summary><p dir="auto">بُعد النقاط عن المركز بين 119 و549 بكسل، ومتوسطه <strong>319.6</strong>. لكن بعض النقاط لا تقع في اتجاه الذراع تمامًا، فلا يُحسب منها إلا الجزء الواقع عليه. متوسط الأطوال النافعة هو <strong>306.8</strong>، وهذا نصف قطر الدائرة الكبيرة.</p></details>
+<details><summary>عيّنة من نقاط القط</summary>
+
+<div class="tbl"><table><thead><tr>
+<th dir="auto">النقطة</th>
+<th dir="auto">زاوية الذراع</th>
+<th dir="auto">البُعد عن المركز</th>
+<th dir="auto">الطول النافع</th>
+</tr>
+</thead><tbody><tr>
+<td dir="auto">0</td>
+<td dir="auto"><code>0°</code></td>
+<td dir="auto">542.6</td>
+<td dir="auto">542.5</td>
+</tr>
+<tr>
+<td dir="auto">75</td>
+<td dir="auto"><code>45°</code></td>
+<td dir="auto">278.7</td>
+<td dir="auto">216.8</td>
+</tr>
+<tr>
+<td dir="auto">150</td>
+<td dir="auto"><code>90°</code></td>
+<td dir="auto">196.1</td>
+<td dir="auto">185.6</td>
+</tr>
+<tr>
+<td dir="auto">225</td>
+<td dir="auto"><code>135°</code></td>
+<td dir="auto">492.9</td>
+<td dir="auto">475.0</td>
+</tr>
+<tr>
+<td dir="auto">300</td>
+<td dir="auto"><code>180°</code></td>
+<td dir="auto">346.2</td>
+<td dir="auto">326.8</td>
+</tr>
+<tr>
+<td dir="auto">375</td>
+<td dir="auto"><code>225°</code></td>
+<td dir="auto">199.5</td>
+<td dir="auto">197.8</td>
+</tr>
+<tr>
+<td dir="auto">450</td>
+<td dir="auto"><code>270°</code></td>
+<td dir="auto">326.1</td>
+<td dir="auto">315.5</td>
+</tr>
+<tr>
+<td dir="auto">525</td>
+<td dir="auto"><code>315°</code></td>
+<td dir="auto">290.0</td>
+<td dir="auto">287.8</td>
+</tr>
+</tbody></table></div>
+<p dir="auto">النقطة 75 بُعدها 278.7، ونافعها 216.8 فقط لأنها ليست في اتجاه الذراع. هذا الفرق هو سبب أن نصف القطر أقل من متوسط البُعد.</p>
+</details>
+
+<details class="sec l3"><summary><h3 dir="auto" id="ما-العلاقة-بين-متوسط-النقاط-المركز-ونصف-القطر">ما العلاقة بين متوسط النقاط (المركز) ونصف القطر؟<a class="anchor" href="#ما-العلاقة-بين-متوسط-النقاط-المركز-ونصف-القطر" aria-label="رابط القسم">#</a></h3></summary>
+<details class="lead"><summary>المركز يحدّد مكان الدائرة فقط، ولا يحدّد حجمها.</summary><p dir="auto">نصف القطر يُحسب من بُعد النقاط <strong>عن المركز</strong>، أي من شكل المحيط حول مركزه لا من موضعه في الصورة. لو حرّكنا الشكل كله 300 بكسل يمينًا و200 لأسفل، لتحرّك المركز معه، وبقي نصف القطر <code>306.5</code> كما هو.</p></details>
+<p dir="auto">والعلاقة بين الاثنين قاعدة ثابتة:</p>
+<pre dir="ltr"><code>radius_1 ≤ mean distance of points from the center
+</code></pre>
+<p dir="auto">نصف القطر <strong>لا يزيد أبدًا</strong> على متوسط بُعد النقاط عن المركز، لأنه متوسط الأطوال <strong>النافعة</strong> فقط، والطول النافع لا يزيد على البُعد كاملًا. ويتساويان في حالة واحدة فقط: دائرة كاملة نمرّ عليها بسرعة ثابتة.</p>
+<p dir="auto">فالفرق بينهما مقياس لـ <strong>كم يبتعد الشكل عن الدائرة</strong>:</p>
+<ul>
+<li dir="auto">في القط: متوسط البُعد <code>319.3</code> ونصف القطر <code>306.5</code>، والفرق نحو 4% فقط. القط في مجمله قريب من الدائرة، والفرق تصحّحه الدوائر التالية.</li>
+<li dir="auto">كلما كان الشكل أطول أو أكثر تعرّجًا كبر هذا الفرق.</li>
+</ul>
+<details class="lead"><summary>الخلاصة</summary><p dir="auto">نصف القطر هو أفضل طول ثابت لذراع واحدة تلفّ بسرعة ثابتة وتحاول أن تبقى قريبة من النقاط. لا يوجد طول آخر يجعل متوسط بُعدها عن النقاط أقل. وما تعجز عنه من بروزات وانبعاجات تصحّحه الدوائر التالية.</p></details>
+</details>
+</details>
+<h2 dir="auto" id="7-زاوية-البداية">7. زاوية البداية<a class="anchor" href="#7-زاوية-البداية" aria-label="رابط القسم">#</a></h2>
+<p dir="auto">تُختار بالطريقة نفسها: هي <strong>الاتجاه الذي يجعل متوسط الطول النافع أكبر ما يمكن</strong>. المعادلة في <a href="#5-%D8%AD%D8%B3%D8%A7%D8%A8-%D8%A7%D9%84%D8%AF%D8%A7%D8%A6%D8%B1%D8%A9-%D8%A7%D9%84%D9%85%D8%B9%D8%A7%D8%AF%D9%84%D8%A9-%D8%A7%D9%84%D9%88%D8%AD%D9%8A%D8%AF%D8%A9">القسم 5</a> تعطي نصف القطر والزاوية معًا في خطوة واحدة.</p>
+<h2 dir="auto" id="8-لماذا-دائرة-أكبر-من-أخرى">8. لماذا دائرة أكبر من أخرى<a class="anchor" href="#8-لماذا-دائرة-أكبر-من-أخرى" aria-label="رابط القسم">#</a></h2>
+<p dir="auto">المعيار: <strong>كم تشبه حركةُ القلم دورانًا بهذه السرعة</strong>.</p>
+<ul>
+<li dir="auto"><strong>الدوائر البطيئة كبيرة</strong> (<code>k</code> = ±1 و±2 و±3): المحيط كله يلفّ حول المركز لفّة واحدة، وهذه أقوى حركة في الشكل.</li>
+<li dir="auto"><strong>الدوائر السريعة صغيرة</strong>: تمثّل التفاصيل الدقيقة، مثل الأذنين والذيل، وهي قصيرة على المحيط فنصيبها قليل.</li>
+<li dir="auto">إن لم تكن في الشكل حركة بسرعة ما، يلغي بعضُ الأطوال النافعة بعضَها فيخرج نصف القطر قريبًا من الصفر.</li>
+</ul>
+<details><summary>أكبر نصف قطر في كل مجموعة سرعات (القط)</summary>
+
+<div class="tbl"><table><thead><tr>
+<th dir="auto">التردّد <code>k</code></th>
+<th dir="auto">أكبر نصف قطر</th>
+</tr>
+</thead><tbody><tr>
+<td dir="auto">من 1 إلى 3</td>
+<td dir="auto">306.8</td>
+</tr>
+<tr>
+<td dir="auto">من 10 إلى 20</td>
+<td dir="auto">9.6</td>
+</tr>
+<tr>
+<td dir="auto">من 100 إلى 300</td>
+<td dir="auto">0.04</td>
+</tr>
+</tbody></table></div>
+</details>
+
+<h2 dir="auto" id="9-لماذا-نأخذ-أكبر-n-دائرة">9. لماذا نأخذ أكبر n دائرة<a class="anchor" href="#9-لماذا-نأخذ-أكبر-n-دائرة" aria-label="رابط القسم">#</a></h2>
+<p dir="auto">لأن <strong>مربّع نصف قطر كل دائرة هو نصيبها من الشكل</strong>، فالخطأ حين نحذف دوائر يساوي:</p>
+<pre dir="ltr"><code>error² = Σ (radius of omitted circles)²
+</code></pre>
+<p dir="auto">إذن أكبر <code>n</code> دائرة هي <strong>أفضل <code>n</code> دائرة ممكنة</strong>، ولا توجد مجموعة أخرى بالعدد نفسه تعطي خطأً أقل.</p>
+<details><summary>نصيب أكبر الدوائر من شكل القط</summary>
+
+<div class="tbl"><table><thead><tr>
+<th dir="auto">عدد الدوائر</th>
+<th dir="auto">نصيبها من الشكل</th>
+<th dir="auto">الخطأ المتبقّي</th>
+</tr>
+</thead><tbody><tr>
+<td dir="auto">1</td>
+<td dir="auto">81.0%</td>
+<td dir="auto">148.6 بكسل</td>
+</tr>
+<tr>
+<td dir="auto">2</td>
+<td dir="auto">90.6%</td>
+<td dir="auto">104.5 بكسل</td>
+</tr>
+<tr>
+<td dir="auto">5</td>
+<td dir="auto">97.9%</td>
+<td dir="auto">49.9 بكسل</td>
+</tr>
+<tr>
+<td dir="auto">10</td>
+<td dir="auto">99.4%</td>
+<td dir="auto">27.1 بكسل</td>
+</tr>
+<tr>
+<td dir="auto">50</td>
+<td dir="auto">99.996%</td>
+<td dir="auto">2.0 بكسل</td>
+</tr>
+<tr>
+<td dir="auto">100</td>
+<td dir="auto">~100%</td>
+<td dir="auto">0.55 بكسل</td>
+</tr>
+</tbody></table></div>
+</details>
+
+<details class="sec l2"><summary><h2 dir="auto" id="10-الدائرة-الثانية-وما-بعدها">10. الدائرة الثانية وما بعدها<a class="anchor" href="#10-الدائرة-الثانية-وما-بعدها" aria-label="رابط القسم">#</a></h2></summary>
+<p dir="auto"><strong>لماذا تنطلق من طرف الأولى؟</strong> لأن الحركات <strong>تُجمع</strong>:</p>
+<pre dir="ltr"><code>pen = c0 + arm_1 + arm_2 + arm_3 + ...
+</code></pre>
+<p dir="auto">تركيب الذراع الثانية على طرف الأولى طريقة لرسم هذا الجمع. لو غيّرنا ترتيب الأذرع لوصل القلم إلى النقطة نفسها، لكننا نضع الكبيرة أوّلًا ليبقى الرسم مفهومًا.</p>
+<details class="lead"><summary>لماذا نصف قطرها هكذا؟</summary><p dir="auto">يُحسب بالطريقة نفسها في <a href="#6-%D9%85%D8%A7-%D8%A7%D9%84%D8%B0%D9%8A-%D9%8A%D8%AD%D8%AF%D8%AF-%D9%86%D8%B5%D9%81-%D9%82%D8%B7%D8%B1-%D8%A7%D9%84%D8%AF%D8%A7%D8%A6%D8%B1%D8%A9">القسم 6</a>، لكن بسرعتها هي. في القط الثانية هي <code>k = +1</code> بنصف قطر <code>105.7</code>: لفّة واحدة في <strong>الاتجاه المعاكس</strong> للأولى. دائرتان بالسرعة نفسها في اتجاهين متعاكسين ترسمان <strong>شكلًا بيضاويًّا</strong>، فنصف قطر الثانية يحدّد كم يتمدّد، وزاويتها في أيّ اتجاه.</p></details>
+<p dir="auto">ثم الثالثة <code>k = +2</code> (نصف قطرها <code>77.6</code>) تلفّ لفّتين فتضيف انبعاجين، وهكذا تأتي التفاصيل من دوائر أسرع وأصغر.</p>
+</details>
+<h2 dir="auto" id="11-هل-تُحسب-القيم-دفعة-واحدة-أم-تدريجيًّا">11. هل تُحسب القيم دفعة واحدة أم تدريجيًّا<a class="anchor" href="#11-هل-تُحسب-القيم-دفعة-واحدة-أم-تدريجيًّا" aria-label="رابط القسم">#</a></h2>
+<p dir="auto"><strong>لا يوجد تغيير ولا تجربة.</strong> البرنامج يحسب الدوائر كلها <strong>مرة واحدة</strong> بمعادلة <a href="#5-%D8%AD%D8%B3%D8%A7%D8%A8-%D8%A7%D9%84%D8%AF%D8%A7%D8%A6%D8%B1%D8%A9-%D8%A7%D9%84%D9%85%D8%B9%D8%A7%D8%AF%D9%84%D8%A9-%D8%A7%D9%84%D9%88%D8%AD%D9%8A%D8%AF%D8%A9">القسم 5</a>، وكل دائرة <strong>مستقلّة</strong> عن غيرها. قيمة الدائرة رقم 5 لا تعتمد على وجود الدائرة رقم 4.</p>
+<p dir="auto">بين مرحلة وأخرى يحدث شيء واحد: نقرّر <strong>كم دائرة نأخذ</strong> من القائمة المرتّبة <strong>من الأكبر إلى الأصغر</strong>. المرحلة 10 تُبقي الخمس الأولى كما هي وتضيف الخمس التالية. في جدول الواجهة لا تتغيّر الصفوف القديمة أبدًا، والجديد ملوّن تحتها.</p>
+<details class="sec l2"><summary><h2 dir="auto" id="12-صيغة-الفيديو-a-و-b-و-c-و-d">12. صيغة الفيديو a و b و c و d<a class="anchor" href="#12-صيغة-الفيديو-a-و-b-و-c-و-d" aria-label="رابط القسم">#</a></h2></summary>
+<p dir="auto">المعادلتان في الفيديو هما الصيغة الحقيقية للجمع نفسه:</p>
+<pre dir="ltr"><code>x(t) = a0 + Σ (a_n·cos nt + b_n·sin nt)
+y(t) = c0 + Σ (c_n·cos nt + d_n·sin nt)
+</code></pre>
+<p dir="auto">كل حدّ <code>n</code> فيهما يجمع <strong>دائرتين</strong> عندنا، <code>+n</code> و<code>−n</code>:</p>
+<pre dir="ltr"><code>a_n = Re(c_+n) + Re(c_−n)        b_n = Im(c_−n) − Im(c_+n)
+c_n = Im(c_+n) + Im(c_−n)        d_n = Re(c_+n) − Re(c_−n)
+</code></pre>
+<p dir="auto">لهذا لا تساوي «100 دائرة» 100 حدّ: في القط استعملت المئة دائرة 54 حدًّا مختلفًا.</p>
+<p dir="auto">قد تدخل إحدى دائرتي الزوج مبكرًا وحدها، فيكون الحدّ <strong>«نصف زوج»</strong>. ثم تدخل أختها في مرحلة لاحقة، فتتغيّر a وb وc وd لهذا الحدّ وحده. هذا التغيير الوحيد الذي تراه في تبويب «صيغة الفيديو» في الجدول.</p>
+<details><summary>قيم القط للحدود الثلاثة الأولى</summary>
+
+<pre dir="ltr"><code>n=1:  a=246.84   b=-207.40   c=-319.46   d=-67.70
+n=2:  a=-3.90    b=59.86     c=-73.62    d=-75.08
+n=3:  a=12.08    b=-33.58    c=-29.61    d=32.54
+</code></pre>
+</details>
+
+</details>
+<details class="sec l2"><summary><h2 dir="auto" id="13-العلاقة-بين-عدد-النقاط-وعدد-الدوائر">13. العلاقة بين عدد النقاط وعدد الدوائر<a class="anchor" href="#13-العلاقة-بين-عدد-النقاط-وعدد-الدوائر" aria-label="رابط القسم">#</a></h2></summary>
+<p dir="auto"><strong>كل نقطة تعطي دائرة واحدة.</strong> من <code>N</code> نقطة تخرج <code>N</code> قيمة، واحدة منها المركز:</p>
+<pre dir="ltr"><code>circles_max = N − 1
+</code></pre>
+<p dir="auto">السبب أن <strong>كمية المعلومات واحدة في الجهتين</strong>:</p>
+<pre dir="ltr"><code>N points  × 2 numbers = 2N numbers
+N circles × 2 numbers = 2N numbers
+</code></pre>
+<ul>
+<li dir="auto">بكل الدوائر يمرّ الرسم بكل نقطة تمامًا، لكن ما بينها لا يعرفه البرنامج.</li>
+<li dir="auto">النقاط تحدّد <strong>أدقّ تفصيل</strong>: أسرع دائرة تلفّ نحو <code>N/2</code> لفّة، وما هو أقصر من المسافة بين نقطتين لا يُرى.</li>
+<li dir="auto">دوائر أقل من الحدّ الأقصى تعني تقريبًا مقصودًا أنعم من الأصل.</li>
+<li dir="auto">نقاط أكثر من حاجة الشكل لا تفيد، فدوائرها الإضافية شبه صفرية.</li>
+</ul>
+<details><summary>تجربة على الكمان</summary>
+
+<div class="tbl"><table><thead><tr>
+<th dir="auto">النقاط</th>
+<th dir="auto">أقصى دوائر</th>
+<th dir="auto">الدوائر المستعملة</th>
+<th dir="auto">الانحراف عن الأصل</th>
+</tr>
+</thead><tbody><tr>
+<td dir="auto">12</td>
+<td dir="auto">11</td>
+<td dir="auto">11</td>
+<td dir="auto">2.26%</td>
+</tr>
+<tr>
+<td dir="auto">40</td>
+<td dir="auto">39</td>
+<td dir="auto">39</td>
+<td dir="auto">0.66%</td>
+</tr>
+<tr>
+<td dir="auto">600</td>
+<td dir="auto">599</td>
+<td dir="auto">100</td>
+<td dir="auto">0.40%</td>
+</tr>
+<tr>
+<td dir="auto">1000</td>
+<td dir="auto">999</td>
+<td dir="auto">100</td>
+<td dir="auto">0.40%</td>
+</tr>
+</tbody></table></div>
+</details>
+
+</details>
+<h2 dir="auto" id="14-سرعة-المرور-فكرة-عنوان-الفيديو">14. سرعة المرور: فكرة عنوان الفيديو<a class="anchor" href="#14-سرعة-المرور-فكرة-عنوان-الفيديو" aria-label="رابط القسم">#</a></h2>
+<p dir="auto">المعاملات لا تصف الشكل وحده، بل تصف أيضًا <strong>كيف يمرّ القلم عليه</strong>. لو مررنا على المحيط نفسه أسرع في جزء وأبطأ في آخر، لتغيّرت المعاملات مع أن الشكل لم يتغيّر. لهذا يوزّع البرنامج النقاط بتباعد متساوٍ (<a href="#3-%D8%A7%D8%AE%D8%AA%D9%8A%D8%A7%D8%B1-%D8%A7%D9%84%D9%86%D9%82%D8%A7%D8%B7-%D9%83%D9%8A%D9%81-%D9%88%D9%83%D9%85">القسم 3</a>)، فيمشي القلم بسرعة ثابتة وتصير المعاملات وصفًا للشكل.</p>
+<h2 dir="auto" id="15-الحركة-على-الشاشة">15. الحركة على الشاشة<a class="anchor" href="#15-الحركة-على-الشاشة" aria-label="رابط القسم">#</a></h2>
+<p dir="auto">تدور كل الدوائر <strong>معًا في الوقت نفسه</strong>. خلال رسم الشكل مرة واحدة تلفّ الدائرة <code>k</code> عدد <code>|k|</code> لفّات، وتبدأ كلٌّ من زاوية بدايتها. طرف آخر ذراع هو القلم، ويرسم الخط الأحمر.</p>
+<hr>
+<details><summary>سجلّ تحديثات الشرح</summary>
+
+<ul>
+<li dir="auto"><strong>2026-11-15:</strong> في القسم 4: هل يتغيّر المركز بتغيّر عدد النقاط. وفي القسم 6: العلاقة بين المركز ونصف القطر.</li>
+<li dir="auto"><strong>2026-11-15:</strong> إنشاء الملف من أسئلة الجلسة: النقاط وعددها، المركز، نصف القطر وزاوية البداية، ترتيب الدوائر، الحساب دفعة واحدة، صيغة a وb وc وd، العلاقة بين النقاط والدوائر.</li>
+</ul>
+</details>
+
+<footer class="foot">مولَّد آلِيًّا من <code>شرح-طريقة-العمل.md</code> — التعديل في ملف الـ MD ثم يُحدَّث هذا الملف تلقائيًّا.</footer>
+</main>
+</div>
+<script>
+(function(){
+  var root=document.documentElement,btn=document.getElementById('theme');
+  try{var s=localStorage.getItem('md2html-theme');if(s)root.setAttribute('data-theme',s);}catch(e){}
+  if(btn)btn.onclick=function(){
+    var dark=root.getAttribute('data-theme')==='dark'||(!root.getAttribute('data-theme')&&matchMedia('(prefers-color-scheme:dark)').matches);
+    var n=dark?'light':'dark';root.setAttribute('data-theme',n);try{localStorage.setItem('md2html-theme',n);}catch(e){}
+  };
+  // افتح الكل / اطوِ الكل
+  var all=document.getElementById('foldall');
+  if(all)all.onclick=function(){var d=document.querySelectorAll('main details'),o=[].some.call(d,function(x){return !x.open;});[].forEach.call(d,function(x){x.open=o;});};
+  // رابط إلى عنوان (الفهرس، إحالة) يفتح الأكورديونات حوله عند النقر نفسه: بعض العارضات لا تغيّر العنوان
+  function reveal(id){var el=id&&document.getElementById(id);for(var p=el;p;p=p.parentElement){if(p.tagName==='DETAILS')p.open=true;}if(el)setTimeout(function(){el.scrollIntoView();},0);return !!el;}
+  document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^="#"]');if(a&&reveal(decodeURIComponent(a.getAttribute('href').slice(1)))){e.preventDefault();try{history.replaceState(null,'',a.getAttribute('href'));}catch(x){}}});
+  window.addEventListener('hashchange',function(){reveal(decodeURIComponent(location.hash.slice(1)));});
+  reveal(decodeURIComponent(location.hash.slice(1)));
+  var links=[].slice.call(document.querySelectorAll('nav.toc a'));if(!links.length||!('IntersectionObserver' in window))return;
+  var map={};links.forEach(function(a){map[a.getAttribute('href').slice(1)]=a;});
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){links.forEach(function(a){a.classList.remove('on');});var a=map[e.target.id];if(a)a.classList.add('on');}});},{rootMargin:'-70px 0px -70% 0px'});
+  document.querySelectorAll('main h1[id],main h2[id],main h3[id]').forEach(function(h){io.observe(h);});
+})();
+</script>
+</body>
+</html>
