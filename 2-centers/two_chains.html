@@ -118,7 +118,7 @@ code,.eq{font-family:var(--mono);direction:ltr;unicode-bidi:isolate}
 @media (prefers-reduced-motion: reduce){details.card>summary::before{transition:none}}
 
 /* إضافات صفحة المركزين: ألوان السلسلتين ومفتاح اللوحة */
-:root{--xchain:#f2c14e; --ychain:#4fd1b5; --dash:#8a9a94}
+:root{--xchain:#f2c14e; --ychain:#4fd1b5; --dash:#8a9a94; --cons-fixed:#c9d4cf; --cons-belt:#8fa8ff; --cons-arm:#a3b8b0; --cons-rail:#b4a7ff}
 .legend{display:flex;flex-direction:column;gap:6px;line-height:1.6}
 .legend div{display:flex;gap:8px;align-items:flex-start}
 .sw{width:14px;height:14px;border-radius:var(--r-ctl);flex:none;margin-top:4px}
@@ -189,6 +189,7 @@ th.yh{border-bottom:2px solid var(--ychain)}
           <label class="check"><input type="checkbox" id="showSmall" checked> <span data-t="show.small"></span></label>
           <label class="check"><input type="checkbox" id="showGhost" checked> <span data-t="show.ghost"></span></label>
           <label class="check"><input type="checkbox" id="showPoints" checked> <span data-t="show.points"></span></label>
+          <label class="check" data-t-tip="show.constraints_tip"><input type="checkbox" id="showCons"> <span data-t="show.constraints"></span></label>
         </div></div>
       </div>
 
@@ -204,6 +205,7 @@ th.yh{border-bottom:2px solid var(--ychain)}
           <div><span class="sw" style="background:var(--xchain)"></span><span data-t="legend.x"></span></div>
           <div><span class="sw" style="background:var(--ychain)"></span><span data-t="legend.y"></span></div>
           <div><span class="sw" style="background:var(--trace)"></span><span data-t="legend.pen"></span></div>
+          <div><span class="sw" style="background:var(--cons-rail)"></span><span data-t="legend.constraints"></span></div>
         </div>
       </div>
     </div>
@@ -317,6 +319,9 @@ const STRINGS = {
   "shapes.title": "الشكل",
   "show.ghost": "إظهار الشكل الأصلي في الخلفية",
   "show.points": "إظهار النقاط المأخوذة من المحيط",
+  "show.constraints": "إظهار القيود الميكانيكية",
+  "show.constraints_tip": "يرسم ما يلزم لصنع الآلة: مسنّن ثابت مثبّت في الإطار عند مركز كل سلسلة، وأذرع وبكرات وسيور، ومجريان مستقيمان متعامدان يحملان القلم",
+  "legend.constraints": "القيود (عند تفعيلها): المجريان المتعامدان اللذان يحملان القلم، والمسنّن الثابت والسيور في كل سلسلة",
   "show.small": "إظهار الدوائر الصغيرة",
   "speed.label": "السرعة",
   "stage.auto": "ملاءمة تلقائية عند تغيير الشكل",
@@ -577,6 +582,53 @@ function fitStage(){
 }
 function fullStage(){$("stageBox").style.width="100%";}
 
+/** يرسم القيود الميكانيكية لسلسلة دوائر (مواضع مفاصلها بالبكسل في joints):
+ *  مسنّن ثابت في المركز مثبّت في الإطار، ولكل ذراع قضيب بطول ثابت، وبكرة عند طرفه،
+ *  وسير يلفّ بكرتها وبكرة المفصل الذي قبلها؛ هذا السير هو ما يفرض سرعة الدائرة واتجاهها.
+ *  لا يُرسم إلا أوّل maxArms ذراعًا، والأذرع الأقصر من 4 بكسلات تُترك لأنها لا تُرى. */
+function drawConstraints(joints,dpr,col,maxArms){
+  const n=Math.min(joints.length-1,maxArms||12);
+  const teeth=(x,y,R,ang)=>{ctx.beginPath();ctx.arc(x,y,R,0,2*Math.PI);ctx.stroke();
+    const k=Math.max(8,Math.round(R/(2.2*dpr)));ctx.beginPath();
+    for(let i=0;i<k;i++){const a=ang+i*2*Math.PI/k;ctx.moveTo(x+R*Math.cos(a),y+R*Math.sin(a));ctx.lineTo(x+(R+3*dpr)*Math.cos(a),y+(R+3*dpr)*Math.sin(a));}
+    ctx.stroke();};
+  const [cx,cy]=joints[0],RS=11*dpr;
+  // الإطار الثابت: قاعدة مخطّطة يُثبَّت فيها المسنّن الشمس فلا يدور
+  ctx.strokeStyle=col.fixed;ctx.lineWidth=1.2*dpr;ctx.globalAlpha=.9;
+  ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx,cy+RS*1.7);ctx.moveTo(cx-RS*1.6,cy+RS*1.7);ctx.lineTo(cx+RS*1.6,cy+RS*1.7);ctx.stroke();
+  ctx.beginPath();for(let i=-3;i<=3;i++){ctx.moveTo(cx+i*RS*.5,cy+RS*1.7);ctx.lineTo(cx+i*RS*.5-RS*.4,cy+RS*2.2);}ctx.stroke();
+  teeth(cx,cy,RS,0);
+  for(let i=0;i<n;i++){
+    const [ax,ay]=joints[i],[bx,by]=joints[i+1],L=Math.hypot(bx-ax,by-ay);if(L<4*dpr)continue;
+    const ux=(bx-ax)/L,uy=(by-ay)/L,nx=-uy,ny=ux,ang=Math.atan2(uy,ux);
+    const rB=Math.max(3*dpr,Math.min(8*dpr,L*.14)),rA=i===0?RS:Math.max(3*dpr,Math.min(8*dpr,L*.14));
+    ctx.globalAlpha=.35;ctx.strokeStyle=col.armbar;ctx.lineWidth=6*dpr;ctx.lineCap="round";
+    ctx.beginPath();ctx.moveTo(ax,ay);ctx.lineTo(bx,by);ctx.stroke();
+    ctx.globalAlpha=.85;ctx.strokeStyle=col.belt;ctx.lineWidth=1.2*dpr;ctx.lineCap="butt";
+    ctx.beginPath();ctx.moveTo(ax+nx*rA,ay+ny*rA);ctx.lineTo(bx+nx*rB,by+ny*rB);ctx.moveTo(ax-nx*rA,ay-ny*rA);ctx.lineTo(bx-nx*rB,by-ny*rB);ctx.stroke();
+    ctx.strokeStyle=col.fixed;ctx.globalAlpha=.9;teeth(bx,by,rB,ang*3);
+    ctx.fillStyle=col.fixed;ctx.beginPath();ctx.arc(bx,by,1.8*dpr,0,2*Math.PI);ctx.fill();
+  }
+  ctx.globalAlpha=1;ctx.lineCap="butt";
+}
+
+/** يرسم المجريين المستقيمين المتعامدين اللذين يحملان القلم (بالبكسل):
+ *  مجرى رأسي يتبع الموضع الأفقي لطرف السلسلة العليا، ومجرى أفقي يتبع الموضع الرأسي لطرف الجانبية،
+ *  وعربة القلم عند تقاطعهما. هذان المجريان هما قيد «الإسقاط»: يُقرأ من كل سلسلة اتجاه واحد فقط. */
+function drawRails(tipX,tipY,pen,far,dpr,color){
+  const g=3*dpr;
+  ctx.strokeStyle=color;ctx.lineWidth=1.2*dpr;ctx.globalAlpha=.85;
+  ctx.beginPath();
+  ctx.moveTo(pen[0]-g,tipX[1]);ctx.lineTo(pen[0]-g,far[1]);ctx.moveTo(pen[0]+g,tipX[1]);ctx.lineTo(pen[0]+g,far[1]);
+  ctx.moveTo(tipY[0],pen[1]-g);ctx.lineTo(far[0],pen[1]-g);ctx.moveTo(tipY[0],pen[1]+g);ctx.lineTo(far[0],pen[1]+g);
+  ctx.stroke();
+  // منزلقا الطرفين وعربة القلم
+  ctx.fillStyle=color;ctx.globalAlpha=.5;
+  ctx.fillRect(tipX[0]-6*dpr,tipX[1]-4*dpr,12*dpr,8*dpr);ctx.fillRect(tipY[0]-4*dpr,tipY[1]-6*dpr,8*dpr,12*dpr);
+  ctx.globalAlpha=.9;ctx.strokeRect(pen[0]-7*dpr,pen[1]-7*dpr,14*dpr,14*dpr);
+  ctx.globalAlpha=1;
+}
+
 function draw(){
   const r=cv.getBoundingClientRect(),dpr=window.devicePixelRatio||1,w=Math.round(r.width*dpr),h=Math.round(r.height*dpr);
   if(cv.width!==w||cv.height!==h){cv.width=w;cv.height=h;}
@@ -591,17 +643,23 @@ function draw(){
     for(const p of S.pts){const q=P(p);ctx.beginPath();ctx.arc(q[0],q[1],rad,0,2*Math.PI);ctx.fill();}ctx.globalAlpha=1;}
   const tau=2*Math.PI*(S.hold>0?1:S.t),small=$("showSmall").checked;
   // سلسلة: كل ذراع من طرف السابقة. الجانبية تُدار ربع دورة ليُقرأ منها الاتجاه الرأسي.
-  const chain=(start,circles,color,rotate)=>{
-    let [x,y]=start;
+  const chain=(start,circles,color,rotate,joints)=>{
+    let [x,y]=start; joints.push(P([x,y]));
     for(let i=0;i<S.m;i++){const c=circles[i],a=(i+1)*tau,vr=c.re*Math.cos(a)-c.im*Math.sin(a),vi=c.re*Math.sin(a)+c.im*Math.cos(a);
       const dx=rotate?vi:vr,dy=rotate?vr:vi,[px,py]=P([x,y]),rr=c.r*sc;
       if((i===0||small)&&rr>1.2){ctx.beginPath();ctx.arc(px,py,rr,0,2*Math.PI);ctx.strokeStyle=color;ctx.globalAlpha=i===0?.9:Math.max(.2,.5-i*.005);ctx.lineWidth=(i===0?2:1)*dpr;ctx.stroke();}
-      x+=dx;y+=dy;const [qx,qy]=P([x,y]);
+      x+=dx;y+=dy;const [qx,qy]=P([x,y]);joints.push([qx,qy]);
       ctx.globalAlpha=.9;ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(qx,qy);ctx.strokeStyle=color;ctx.lineWidth=1.4*dpr;ctx.stroke();ctx.globalAlpha=1;}
     return [x,y];
   };
-  const tipX=chain(W.topC,S.X.circles,col.x,false),tipY=chain(W.sideC,S.Y.circles,col.y,true);
+  const jx=[],jy=[];
+  const tipX=chain(W.topC,S.X.circles,col.x,false,jx),tipY=chain(W.sideC,S.Y.circles,col.y,true,jy);
   const [penx,peny]=P([tipX[0],tipY[1]]);
+  if($("showCons").checked){
+    const cc={fixed:tok("--cons-fixed"),belt:tok("--cons-belt"),armbar:tok("--cons-arm")};
+    drawConstraints(jx,dpr,cc); drawConstraints(jy,dpr,cc);
+    drawRails(P(tipX),P(tipY),[penx,peny],P([W.maxX,W.maxY]),dpr,tok("--cons-rail"));
+  }
   ctx.setLineDash([6*dpr,6*dpr]);ctx.strokeStyle=col.dash;ctx.lineWidth=1*dpr;
   for(const tp of [tipX,tipY]){const a=P(tp);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(penx,peny);ctx.stroke();}
   ctx.setLineDash([]);
