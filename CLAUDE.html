@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- md2html:v1.2 src=CLAUDE.md sha=ea81071d2a2c793f — مولَّد آلِيًّا من CLAUDE.md، لا تعدّله بيدك -->
+<!-- md2html:v1.2 src=CLAUDE.md sha=799b0dbaa230657e — مولَّد آلِيًّا من CLAUDE.md، لا تعدّله بيدك -->
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
@@ -68,20 +68,26 @@ footer.foot{margin-top:48px;padding-top:12px;border-top:1px solid var(--border);
 <body>
 <header class="bar"><span class="path" title="CLAUDE.md">CLAUDE.md</span><button id="theme" type="button">فاتح / داكن</button></header>
 <div class="layout">
-<nav class="toc" aria-label="الفهرس"><b>في هذه الصفحة</b><a class="l2" href="#ملف-الشرح">ملف الشرح</a><a class="l2" href="#الواجهة-fourierlivehtml">الواجهة fourierlive.html</a></nav>
+<nav class="toc" aria-label="الفهرس"><b>في هذه الصفحة</b><a class="l2" href="#بنية-المشروع">بنية المشروع</a><a class="l2" href="#ملفات-الشرح">ملفات الشرح</a><a class="l2" href="#الصفحات-التفاعلية">الصفحات التفاعلية</a></nav>
 <main>
 <h1 dir="auto" id="fouriershape-تعليمات-المشروع">FourierShape — تعليمات المشروع<a class="anchor" href="#fouriershape-تعليمات-المشروع" aria-label="رابط القسم">#</a></h1>
-<h2 dir="auto" id="ملف-الشرح">ملف الشرح<a class="anchor" href="#ملف-الشرح" aria-label="رابط القسم">#</a></h2>
+<h2 dir="auto" id="بنية-المشروع">بنية المشروع<a class="anchor" href="#بنية-المشروع" aria-label="رابط القسم">#</a></h2>
 <ul>
-<li dir="auto">الشرح الدائم لطريقة العمل في <code>docs/شرح-طريقة-العمل.md</code>، قسم لكل سؤال.</li>
-<li dir="auto">حين يسأل المستخدم عن نقطة في الشرح: <strong>حدّث قسمها في الملف</strong> (أو أضف قسمًا فرعيًّا تحته، أو قسمًا جديدًا في مكانه المنطقي مع سطر في الفهرس)، وأضف سطرًا في «سجلّ تحديثات الشرح». ثم أجب في المحادثة <strong>بالنقطة المسؤول عنها فقط</strong> باختصار، مع رابط إلى قسمها. لا تُعِد الشرح كله.</li>
-<li dir="auto">الأرقام في الأمثلة محسوبة فعلًا من بيانات المشروع (شكل القط بـ 600 نقطة افتراضيًّا)، لا تقديرية.</li>
+<li dir="auto"><code>1-center/</code>: <strong>مركز واحد</strong>، سلسلة دوائر واحدة من مركز الشكل: <code>fourier_shape.py</code> و<code>locales/</code> و<code>fourier_live.html</code> والصور والفيديوهات، وشرحه <code>1-center/docs/شرح-طريقة-العمل.md</code>.</li>
+<li dir="auto"><code>2-centers/</code>: <strong>مركزان</strong>، سلسلتان خارج الشكل: <code>two_chains.html</code>، وشرحه <code>2-centers/docs/شرح-المركزين.md</code>.</li>
+<li dir="auto">كل عمل جديد يوضع في مجلد أسلوبه، لا في الجذر. الجذر للـ README العام وهذا الملف و<code>.claude/launch.json</code> فقط.</li>
 </ul>
-<h2 dir="auto" id="الواجهة-fourierlivehtml">الواجهة <code>fourier_live.html</code><a class="anchor" href="#الواجهة-fourierlivehtml" aria-label="رابط القسم">#</a></h2>
+<h2 dir="auto" id="ملفات-الشرح">ملفات الشرح<a class="anchor" href="#ملفات-الشرح" aria-label="رابط القسم">#</a></h2>
 <ul>
-<li dir="auto">صفحة واحدة مستقلّة تُنشر Artifact: لا ملفات خارجية. النصوص في كائن <code>STRINGS</code>، والأيقونات في <code>ICONS</code>، داخل الملف.</li>
+<li dir="auto">لكل أسلوب ملف شرح دائم، قسم لكل سؤال.</li>
+<li dir="auto">حين يسأل المستخدم عن نقطة: <strong>حدّث قسمها في ملف أسلوبها</strong> (أو أضف قسمًا فرعيًّا تحته، أو قسمًا جديدًا في مكانه المنطقي مع سطر في الفهرس)، وأضف سطرًا في «سجلّ تحديثات الشرح». ثم أجب في المحادثة <strong>بالنقطة المسؤول عنها فقط</strong> باختصار، مع رابط إلى قسمها. لا تُعِد الشرح كله.</li>
+<li dir="auto">الأرقام في الأمثلة محسوبة فعلًا من بيانات المشروع (شكل القط بـ 600 نقطة في المركز الواحد، والمثلث بـ 360 نقطة في المركزين)، لا تقديرية.</li>
+</ul>
+<h2 dir="auto" id="الصفحات-التفاعلية">الصفحات التفاعلية<a class="anchor" href="#الصفحات-التفاعلية" aria-label="رابط القسم">#</a></h2>
+<ul>
+<li dir="auto"><code>1-center/fourier_live.html</code> و<code>2-centers/two_chains.html</code>: كلٌّ منهما صفحة واحدة مستقلّة تُنشر Artifact، فلا ملفات خارجية. النصوص في كائن <code>STRINGS</code>، والأيقونات في <code>ICONS</code>، داخل الملف. ووسم <code>&lt;title&gt;</code> يبقى نصّه مكتوبًا فيه لأن النشر يقرأ اسم الصفحة منه.</li>
 <li dir="auto">الأزرار بعرض نصّها، متراصّة في صفوف لا تلتفّ إلا عند الضيق؛ والمترابطة منها داخل إطار <code>.group</code>. لا شبكات أعمدة متساوية تمطّ الأزرار.</li>
-<li dir="auto">بعد كل تعديل: افحصها بخادم محلي (<code>.claude/launch.json</code>)، ثم أعد النشر على رابطها نفسه.</li>
+<li dir="auto">بعد كل تعديل: افحص الصفحة بخادم محلي (<code>.claude/launch.json</code> يقدّم جذر المشروع، فالمسار <code>/1-center/…</code> أو <code>/2-centers/…</code>)، ثم أعد النشر على رابطها نفسه.</li>
 </ul>
 
 <footer class="foot">مولَّد آلِيًّا من <code>CLAUDE.md</code> — التعديل في ملف الـ MD ثم يُحدَّث هذا الملف تلقائيًّا.</footer>

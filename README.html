@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- md2html:v1.2 src=README.md sha=61185f940211a9bb — مولَّد آلِيًّا من README.md، لا تعدّله بيدك -->
+<!-- md2html:v1.2 src=README.md sha=227702d2810faafc — مولَّد آلِيًّا من README.md، لا تعدّله بيدك -->
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
@@ -68,66 +68,27 @@ footer.foot{margin-top:48px;padding-top:12px;border-top:1px solid var(--border);
 <body>
 <header class="bar"><span class="path" title="README.md">README.md</span><button id="theme" type="button">فاتح / داكن</button></header>
 <div class="layout">
-<nav class="toc" aria-label="الفهرس"><b>في هذه الصفحة</b><a class="l2" href="#المحتويات">المحتويات</a><a class="l2" href="#التشغيل">التشغيل</a><a class="l2" href="#الطريقة">الطريقة</a></nav>
+
 <main>
 <h1 dir="auto" id="fouriershape-رسم-الأشكال-بدوائر-فورييه">FourierShape — رسم الأشكال بدوائر فورييه<a class="anchor" href="#fouriershape-رسم-الأشكال-بدوائر-فورييه" aria-label="رابط القسم">#</a></h1>
-<p dir="auto">يرسم محيط أي شكل من صورة بسلسلة دوائر دوّارة (Fourier epicycles)، وكلما زاد عدد الدوائر اقترب الرسم من الأصل.</p>
-<h2 dir="auto" id="المحتويات">المحتويات<a class="anchor" href="#المحتويات" aria-label="رابط القسم">#</a></h2>
+<p dir="auto">دوائر دوّارة ترسم محيط أي شكل. في المشروع أسلوبان، لكلٍّ منهما مجلده وشرحه:</p>
 <div class="tbl"><table><thead><tr>
-<th dir="auto">الملف</th>
-<th dir="auto">ما هو</th>
+<th dir="auto">المجلد</th>
+<th dir="auto">الأسلوب</th>
+<th dir="auto">أهمّ ما فيه</th>
 </tr>
 </thead><tbody><tr>
-<td dir="auto"><code>fourier_shape.py</code></td>
-<td dir="auto">البرنامج: يأخذ صورة ويُخرج فيديو MP4 يرسم الشكل على مراحل</td>
+<td dir="auto"><a href="1-center/README.html"><code>1-center/</code></a></td>
+<td dir="auto"><strong>مركز واحد:</strong> سلسلة دوائر واحدة تنطلق من مركز الشكل، وطرفها القلم</td>
+<td dir="auto">برنامج بايثون يحوّل صورة إلى فيديو، وواجهة تفاعلية، وشرح طريقة العمل</td>
 </tr>
 <tr>
-<td dir="auto"><code>locales/ar.json</code></td>
-<td dir="auto">نصوص البرنامج الظاهرة</td>
-</tr>
-<tr>
-<td dir="auto"><code>fourier_live.html</code></td>
-<td dir="auto">الواجهة التفاعلية: رسم حيّ، عدد الدوائر والنقاط، رفع صورة، جدول المعاملات</td>
-</tr>
-<tr>
-<td dir="auto"><code>two_chains.html</code></td>
-<td dir="auto">صفحة مستقلّة: سلسلتا دوائر خارج الشكل (فوقه وبجانبه) ترسمان مثلثًا أو مربعًا أو نجمة</td>
-</tr>
-<tr>
-<td dir="auto"><code>images/</code></td>
-<td dir="auto">صور الاختبار (قط وخريطة إيطاليا من Wikimedia Commons، ملك عام)</td>
-</tr>
-<tr>
-<td dir="auto"><code>*.mp4</code></td>
-<td dir="auto">فيديوهات ناتجة: كمان، قط، إيطاليا</td>
-</tr>
-<tr>
-<td dir="auto"><code>cat_100_circles.csv</code></td>
-<td dir="auto">معاملات أكبر 100 دائرة لشكل القط</td>
+<td dir="auto"><a href="2-centers/README.html"><code>2-centers/</code></a></td>
+<td dir="auto"><strong>مركزان:</strong> سلسلتان خارج الشكل، فوقه وبجانبه، وخطّان متقطّعان يلتقيان عند القلم</td>
+<td dir="auto">صفحة تفاعلية على مثلث ومربّع ونجمة، وشرح الأسلوب</td>
 </tr>
 </tbody></table></div>
-<h2 dir="auto" id="التشغيل">التشغيل<a class="anchor" href="#التشغيل" aria-label="رابط القسم">#</a></h2>
-<pre dir="ltr"><code class="language-bash">pip install opencv-python numpy
-</code></pre>
-<pre dir="ltr"><code class="language-bash">python fourier_shape.py images/cat.png --out cat.mp4 --show
-</code></pre>
-<p dir="auto">الخيارات: <code>--stages</code> أعداد الدوائر في كل مرحلة، <code>--points</code> عدد نقاط المحيط، <code>--show</code> نافذة حيّة، <code>--explain N</code> طباعة حساب أوّل <code>N</code> دائرة خطوة بخطوة.</p>
-<p dir="auto">شرح الطريقة كاملًا، وأين كل خطوة في الكود: <a href="docs/%D8%B4%D8%B1%D8%AD-%D8%B7%D8%B1%D9%8A%D9%82%D8%A9-%D8%A7%D9%84%D8%B9%D9%85%D9%84.html">docs/شرح-طريقة-العمل.md</a>.</p>
-<p dir="auto">الواجهة التفاعلية تُفتح مباشرة في المتصفح، أو عبر الخادم المحلي في <code>.claude/launch.json</code>.</p>
-<h2 dir="auto" id="الطريقة">الطريقة<a class="anchor" href="#الطريقة" aria-label="رابط القسم">#</a></h2>
-<ol>
-<li dir="auto">يُستخرج محيط أكبر شكل في الصورة (قناة الشفافية إن وُجدت، وإلا عتبة Otsu).</li>
-<li dir="auto">تُوزَّع على المحيط <code>N</code> نقطة متساوية التباعد، فتثبت سرعة المرور.</li>
-<li dir="auto">يُحسب تحويل فورييه المتقطّع للنقاط بوصفها أعدادًا مركّبة:</li>
-</ol>
-<pre dir="ltr"><code>c_k = (1/N) · Σ z_j · e^(−2πi·k·j/N)      z_j = x_j + i·y_j
-</code></pre>
-<ol start="4">
-<li dir="auto">كل معامل دائرة (نصف قطرها <code>|c_k|</code>، وسرعتها <code>k</code>)، وتُرتَّب من الأكبر إلى الأصغر، ويُرسم الشكل بأوّل <code>n</code> منها:</li>
-</ol>
-<pre dir="ltr"><code>z(t) = c_0 + Σ c_k · e^(i·k·t)
-</code></pre>
-<p dir="auto">أقصى عدد للدوائر هو عدد النقاط ناقص واحد.</p>
+<p dir="auto">الصفحات تُفتح مباشرة في المتصفح، أو عبر الخادم المحلي في <code>.claude/launch.json</code>.</p>
 
 <footer class="foot">مولَّد آلِيًّا من <code>README.md</code> — التعديل في ملف الـ MD ثم يُحدَّث هذا الملف تلقائيًّا.</footer>
 </main>

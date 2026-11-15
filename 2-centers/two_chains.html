@@ -1,5 +1,5 @@
 <meta charset="utf-8">
-<title>سلسلتان ترسمان الشكل</title>
+<title data-t="title">سلسلتان ترسمان الشكل</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
 /* التخطيط: لوحة رسم قابلة للسحب، بجانبها لوحة تحكّم بمعيار Fluent؛ وتنزل تحتها في الهاتف */
@@ -36,6 +36,9 @@ header p{margin:0;color:var(--muted);flex-basis:100%;max-width:90ch;line-height:
 .sec{padding:16px;display:flex;flex-direction:column;gap:12px;border-top:1px solid var(--line)}
 .sec:first-child{border-top:0}
 .sec.alt{background:var(--card2)}
+.sec:nth-child(3){background:color-mix(in srgb,var(--accent-soft) 45%,var(--card))}
+.sec:first-child{border-radius:calc(var(--r-win) - 1px) calc(var(--r-win) - 1px) 0 0}
+.sec:last-child{border-radius:0 0 calc(var(--r-win) - 1px) calc(var(--r-win) - 1px)}
 .sec h2{font-size:14px;line-height:20px;font-weight:600;margin:0;color:var(--muted)}
 .toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
 /* الأزرار بعرض نصّها؛ والمترابطة منها داخل إطار واحد */
@@ -45,27 +48,35 @@ header p{margin:0;color:var(--muted);flex-basis:100%;max-width:90ch;line-height:
   border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;box-shadow:0 1px 0 rgba(0,0,0,.08)}
 .btn:hover{background:var(--card2);border-color:var(--muted)}
 .btn:active{background:var(--accent-soft);box-shadow:none}
-.btn:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn:focus-visible,.chip:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .btn.primary{background:var(--accent);color:var(--accent-fg);border-color:transparent}
+.btn.primary:hover{background:var(--accent);border-color:var(--fg);filter:brightness(1.08)}
+.btn.primary:active{background:var(--accent);filter:brightness(.92)}
 .btn[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent)}
+.btn[aria-pressed="true"]:hover{background:var(--accent-soft);border-color:var(--accent);filter:brightness(.97)}
+.btn:disabled,.chip:disabled{opacity:.5;cursor:default;pointer-events:none}
 .btn svg{width:16px;height:16px;flex:none}
 .chip{font:inherit;font-family:var(--mono);min-height:32px;padding:4px 8px;border-radius:var(--r-ctl);border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer}
+.chip:hover{background:var(--card2);border-color:var(--muted)}
+.chip:active{background:var(--accent-soft)}
 .chip.on{background:var(--accent);color:var(--accent-fg);border-color:transparent}
+.chip.on:hover,.chip.on:active{background:var(--accent);filter:brightness(1.08)}
 .field{display:flex;flex-direction:column;gap:4px}
 .field label{display:flex;justify-content:space-between;gap:8px}
 .field output{font-family:var(--mono);color:var(--accent)}
-input[type=range]{width:100%;accent-color:var(--accent)}
-.check{display:flex;align-items:center;gap:8px;cursor:pointer;min-height:32px;padding-inline:6px}
+input[type=range]{width:100%;min-height:32px;accent-color:var(--accent)}
+.check{display:flex;align-items:center;gap:8px;cursor:pointer;min-height:32px;padding-inline:6px;border-radius:var(--r-ctl)}
+.check:hover{background:var(--card2)}
 .check input{width:20px;height:20px;accent-color:var(--accent)}
 .legend{display:flex;flex-direction:column;gap:8px;line-height:1.6}
 .legend div{display:flex;gap:8px;align-items:flex-start}
-.sw{width:14px;height:14px;border-radius:3px;flex:none;margin-top:4px}
+.sw{width:14px;height:14px;border-radius:var(--r-ctl);flex:none;margin-top:4px}
 .stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 .stat{background:var(--card2);border:1px solid var(--line);border-radius:var(--r-ctl);padding:8px}
-.stat b{display:block;font-family:var(--mono);font-size:18px;line-height:24px}
+.stat b{display:block;font-family:var(--mono);font-size:18px;line-height:24px;font-weight:600}
 .stat span{color:var(--muted);font-size:12px}
 .steps{padding:16px;line-height:1.8;max-width:90ch}
-.steps h2{margin:0 0 8px;font-size:16px}
+.steps h2{margin:0 0 8px;font-size:18px;line-height:24px;font-weight:600}
 .steps ol{margin:0;padding-inline-start:20px}
 .eq{display:block;direction:ltr;text-align:left;font-family:var(--mono);background:var(--card2);border:1px solid var(--line);border-radius:var(--r-ctl);padding:8px 10px;margin:8px 0;overflow-x:auto}
 [data-tip]{position:relative}
@@ -304,7 +315,7 @@ function draw(){
   ctx.strokeStyle=col.trace;ctx.lineWidth=3*dpr;ctx.lineJoin="round";ctx.stroke();
   for(const tp of [tipX,tipY]){const q=P(tp[0],tp[1]);ctx.beginPath();ctx.arc(q[0],q[1],3.5*dpr,0,2*Math.PI);ctx.fillStyle=col.dash;ctx.fill();}
   ctx.beginPath();ctx.arc(penx,peny,5*dpr,0,2*Math.PI);ctx.fillStyle=col.pen;ctx.fill();
-  ctx.fillStyle=col.trace;ctx.font=`700 ${Math.round(30*dpr)}px ${tok("--mono")}`;ctx.textAlign="right";ctx.fillText(String(m),W-16*dpr,H-16*dpr);
+  ctx.fillStyle=col.trace;ctx.font=`600${Math.round(30*dpr)}px ${tok("--mono")}`;ctx.textAlign="right";ctx.fillText(String(m),W-16*dpr,H-16*dpr);
 }
 
 let last=performance.now();
