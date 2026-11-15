@@ -1,0 +1,12 @@
+{
+  "cli.description": "رسم محيط شكل بدوائر فورييه الدوّارة",
+  "cli.image_help": "صورة فيها شكل واحد (اتركها فارغة لشكل الكمان)",
+  "cli.out_help": "ملف الفيديو الناتج",
+  "cli.points_help": "عدد نقاط المحيط",
+  "cli.show_help": "عرض نافذة حيّة أثناء الرسم",
+  "cli.stages_help": "أعداد الدوائر في كل مرحلة",
+  "done.message": "تم: {out}",
+  "error.image_read": "تعذّرت قراءة الصورة.",
+  "error.no_shape": "لم يُعثر على شكل في الصورة.",
+  "window.title": "Fourier shape"
+}
