@@ -1,347 +1,668 @@
 <meta charset="utf-8">
-<title data-t="title">سلسلتان ترسمان الشكل</title>
+<title data-t="app.title">سلسلتان ترسمان الشكل</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
-/* التخطيط: لوحة رسم قابلة للسحب، بجانبها لوحة تحكّم بمعيار Fluent؛ وتنزل تحتها في الهاتف */
+
+/* التخطيط: لوحة رسم كبيرة بجانبها لوحة تحكّم بمعيار Fluent، وتنزل تحتها في الهاتف */
 :root{
   --bg:#f3f3f3; --card:#ffffff; --card2:#f9f9fb; --line:#e0e0e6; --fg:#1b1b1f; --muted:#5f6170;
   --accent:#0067c0; --accent-fg:#ffffff; --accent-soft:#e6f0fa;
-  --stage:#0d1512; --ghost:#2a3632; --trace:#ff6b5a; --xchain:#f2c14e; --ychain:#4fd1b5; --dash:#8a9a94; --pen:#ffffff;
+  --stage:#0d1512; --stage-ghost:#2e3a36; --trace:#ff6b5a; --circle:#8fb8a4; --arm:#d6ebe1; --pen:#ffffff; --fill:#c8473a;
   --tip:#c42b1c; --tip-fg:#ffffff;
-  --font:"Segoe UI Variable Text","Segoe UI",Tahoma,sans-serif; --mono:"Cascadia Mono",Consolas,monospace;
+  --ok:#0f7b0f; --warn:#9d5d00;
+  --font:"Segoe UI Variable Text","Segoe UI","Noto Sans Arabic",Tahoma,sans-serif;
+  --mono:"Cascadia Mono",Consolas,"Courier New",monospace;
   --r-ctl:4px; --r-win:8px;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#202020; --card:#2b2b2b; --card2:#323232; --line:#3d3d42; --fg:#f2f2f2; --muted:#b4b4bd;
-  --accent:#4cc2ff; --accent-fg:#002a40; --accent-soft:#1f3442; --stage:#0a100e; --ghost:#24302c;
-  --tip:#d13438; --tip-fg:#ffffff; color-scheme:dark}}
+  --accent:#4cc2ff; --accent-fg:#002a40; --accent-soft:#1f3442;
+  --stage:#0a100e; --stage-ghost:#26322e;
+  --tip:#d13438; --tip-fg:#ffffff; --ok:#6ccb5f; --warn:#fce100; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#202020; --card:#2b2b2b; --card2:#323232; --line:#3d3d42; --fg:#f2f2f2; --muted:#b4b4bd;
-  --accent:#4cc2ff; --accent-fg:#002a40; --accent-soft:#1f3442; --stage:#0a100e; --ghost:#24302c;
-  --tip:#d13438; --tip-fg:#ffffff; color-scheme:dark}
+  --accent:#4cc2ff; --accent-fg:#002a40; --accent-soft:#1f3442;
+  --stage:#0a100e; --stage-ghost:#26322e;
+  --tip:#d13438; --tip-fg:#ffffff; --ok:#6ccb5f; --warn:#fce100; color-scheme:dark}
+html,body{height:auto}
 body{background:var(--bg);color:var(--fg);font-family:var(--font);font-size:14px;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 32px}
 .wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
 header{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 header h1{font-size:28px;line-height:36px;font-weight:600;margin:0;text-wrap:balance}
-header p{margin:0;color:var(--muted);flex-basis:100%;max-width:90ch;line-height:1.7}
-.layout{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:16px;align-items:start}
+header p{margin:0;color:var(--muted);flex-basis:100%}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:16px;align-items:start}
 @media (max-width:860px){.layout{grid-template-columns:minmax(0,1fr)}}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r-win);box-shadow:0 2px 4px rgba(0,0,0,.06)}
 .stage{padding:8px;background:var(--card2);display:flex;flex-direction:column;gap:8px;min-width:0}
-.stage-box{resize:both;overflow:hidden;width:100%;height:600px;max-width:100%;min-width:220px;min-height:220px;
+.stage-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.stage-bar .hint{color:var(--muted);font-size:12px;margin-inline-start:auto}
+/* لوحة قابلة للسحب من زاويتها: يغيّر المستخدم عرضها وارتفاعها بحرّية */
+.stage-box{resize:both;overflow:hidden;width:100%;height:640px;max-width:100%;min-width:200px;min-height:200px;
   border-radius:var(--r-ctl);border:1px solid var(--line);background:var(--stage)}
-.stage-box canvas{display:block;width:100%;height:100%}
-.hint{color:var(--muted);font-size:12px}
+.stage-box canvas{display:block;width:100%;height:100%;touch-action:none}
+.panel{display:flex;flex-direction:column}
 .sec{padding:16px;display:flex;flex-direction:column;gap:12px;border-top:1px solid var(--line)}
 .sec:first-child{border-top:0}
+.sec h2{font-size:14px;line-height:20px;font-weight:600;margin:0;color:var(--muted);letter-spacing:.02em}
 .sec.alt{background:var(--card2)}
-.sec:nth-child(3){background:color-mix(in srgb,var(--accent-soft) 45%,var(--card))}
-.sec:first-child{border-radius:calc(var(--r-win) - 1px) calc(var(--r-win) - 1px) 0 0}
-.sec:last-child{border-radius:0 0 calc(var(--r-win) - 1px) calc(var(--r-win) - 1px)}
-.sec h2{font-size:14px;line-height:20px;font-weight:600;margin:0;color:var(--muted)}
-.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
-/* الأزرار بعرض نصّها؛ والمترابطة منها داخل إطار واحد */
-.group{display:inline-flex;flex-wrap:wrap;align-items:center;gap:4px;padding:4px;max-width:100%;
-  border:1px solid var(--line);border-radius:var(--r-win);background:var(--card)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .btn{font:inherit;display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:5px 12px;border-radius:var(--r-ctl);
   border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;box-shadow:0 1px 0 rgba(0,0,0,.08)}
 .btn:hover{background:var(--card2);border-color:var(--muted)}
 .btn:active{background:var(--accent-soft);box-shadow:none}
+.btn:disabled,.chip:disabled{opacity:.45;cursor:default;pointer-events:none}
 .btn:focus-visible,.chip:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .btn.primary{background:var(--accent);color:var(--accent-fg);border-color:transparent}
-.btn.primary:hover{background:var(--accent);border-color:var(--fg);filter:brightness(1.08)}
-.btn.primary:active{background:var(--accent);filter:brightness(.92)}
-.btn[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent)}
-.btn[aria-pressed="true"]:hover{background:var(--accent-soft);border-color:var(--accent);filter:brightness(.97)}
-.btn:disabled,.chip:disabled{opacity:.5;cursor:default;pointer-events:none}
+.btn.primary:hover{filter:brightness(1.07)}
+.btn.primary:active{filter:brightness(.9);background:var(--accent)}
+.btn[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--fg)}
 .btn svg{width:16px;height:16px;flex:none}
-.chip{font:inherit;font-family:var(--mono);min-height:32px;padding:4px 8px;border-radius:var(--r-ctl);border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer}
+/* الأزرار بعرض نصّها وفي صفوف تلتفّ عند الضيق؛ والمترابطة منها داخل إطار واحد */
+.group{display:inline-flex;flex-wrap:wrap;align-items:center;gap:4px;padding:4px;max-width:100%;
+  border:1px solid var(--line);border-radius:var(--r-win);background:var(--card)}
+.group .check{padding-inline:6px}
+.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{display:flex;justify-content:space-between;gap:8px}
+.field output{font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--accent)}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.check{display:flex;align-items:center;gap:8px;cursor:pointer;min-height:32px}
+.check input{width:20px;height:20px;accent-color:var(--accent)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:inherit;font-family:var(--mono);min-width:0;min-height:32px;padding:4px 8px;border-radius:var(--r-ctl);border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer}
 .chip:hover{background:var(--card2);border-color:var(--muted)}
 .chip:active{background:var(--accent-soft)}
 .chip.on{background:var(--accent);color:var(--accent-fg);border-color:transparent}
-.chip.on:hover,.chip.on:active{background:var(--accent);filter:brightness(1.08)}
-.field{display:flex;flex-direction:column;gap:4px}
-.field label{display:flex;justify-content:space-between;gap:8px}
-.field output{font-family:var(--mono);color:var(--accent)}
-input[type=range]{width:100%;min-height:32px;accent-color:var(--accent)}
-.check{display:flex;align-items:center;gap:8px;cursor:pointer;min-height:32px;padding-inline:6px;border-radius:var(--r-ctl)}
-.check:hover{background:var(--card2)}
-.check input{width:20px;height:20px;accent-color:var(--accent)}
-.legend{display:flex;flex-direction:column;gap:8px;line-height:1.6}
-.legend div{display:flex;gap:8px;align-items:flex-start}
-.sw{width:14px;height:14px;border-radius:var(--r-ctl);flex:none;margin-top:4px}
-.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .stat{background:var(--card2);border:1px solid var(--line);border-radius:var(--r-ctl);padding:8px}
-.stat b{display:block;font-family:var(--mono);font-size:18px;line-height:24px;font-weight:600}
-.stat span{color:var(--muted);font-size:12px}
-.steps{padding:16px;line-height:1.8;max-width:90ch}
-.steps h2{margin:0 0 8px;font-size:18px;line-height:24px;font-weight:600}
-.steps ol{margin:0;padding-inline-start:20px}
-.eq{display:block;direction:ltr;text-align:left;font-family:var(--mono);background:var(--card2);border:1px solid var(--line);border-radius:var(--r-ctl);padding:8px 10px;margin:8px 0;overflow-x:auto}
+.stat b{display:block;font-family:var(--mono);font-size:18px;line-height:24px;font-weight:600;font-variant-numeric:tabular-nums}
+.stat span{color:var(--muted);font-size:12px;line-height:16px}
+.drop{border:1px dashed var(--line);border-radius:var(--r-win);padding:4px 4px 4px 12px;color:var(--muted)}
+.drop.over{border-color:var(--accent);background:var(--accent-soft)}
+.hint{margin-top:8px;font-size:12px;line-height:16px}
+.msg{font-size:12px;line-height:16px;min-height:16px}
+.msg.err{color:var(--tip)}
+.msg.ok{color:var(--ok)}
+.lower{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+@media (max-width:860px){.lower{grid-template-columns:minmax(0,1fr)}}
+details.card>summary:hover{background:var(--card2);border-radius:var(--r-win)}
+details.card>summary:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;border-radius:var(--r-win)}
+details.card>summary{cursor:pointer;padding:12px 16px;min-height:32px;font-weight:600;list-style:none;display:flex;align-items:center;gap:8px}
+details.card>summary::before{content:"";width:8px;height:8px;border-inline-end:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);transition:transform .15s}
+details[open].card>summary::before{transform:rotate(-135deg)}
+details.card .body{padding:0 16px 14px;line-height:1.75;max-width:70ch}
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th,td{padding:8px;text-align:start;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600;font-size:14px;line-height:20px}
+td.n{font-family:var(--mono);direction:ltr;unicode-bidi:isolate;text-align:end;white-space:nowrap}
+.stack{display:flex;flex-direction:column;gap:16px}
+.tbl-top{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;padding:16px 16px 8px}
+.tbl-top h2{margin:0;font-size:16px;font-weight:600}
+.tbl-sum{color:var(--muted)}
+.tbl-head{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:0 16px 12px}
+.tbl-scroll{max-height:440px;overflow:auto;border:1px solid var(--line);border-radius:var(--r-ctl);margin:0 16px}
+.tbl-scroll thead th{position:sticky;top:0;background:var(--card2);z-index:1;white-space:nowrap}
+.tbl-scroll tr.new td,.tbl-scroll tr.changed td{background:var(--accent-soft)}
+.pill{display:inline-block;padding:0 6px;border-radius:var(--r-ctl);background:var(--accent);color:var(--accent-fg);font-size:12px;line-height:18px;margin-inline-start:6px;font-family:var(--font)}
+.pill.half{background:var(--card2);color:var(--muted);border:1px solid var(--line)}
+.tbl-note{padding:12px 16px 16px;margin:0;color:var(--muted);line-height:1.7;max-width:90ch}
+code,.eq{font-family:var(--mono);direction:ltr;unicode-bidi:isolate}
+.eq{display:block;text-align:left;background:var(--card2);border:1px solid var(--line);border-radius:var(--r-ctl);padding:8px 10px;margin:8px 0;overflow-x:auto}
+/* تلميح الفأرة بشكلنا الأحمر */
 [data-tip]{position:relative}
 [data-tip]:hover::after,[data-tip]:focus-visible::after{content:attr(data-tip);position:absolute;inset-inline-start:0;top:calc(100% + 6px);z-index:20;
-  background:var(--tip);color:var(--tip-fg);padding:5px 9px;border-radius:var(--r-ctl);font-size:12px;width:max-content;max-width:240px;pointer-events:none;box-shadow:0 4px 10px rgba(0,0,0,.2)}
+  background:var(--tip);color:var(--tip-fg);padding:5px 9px;border-radius:var(--r-ctl);font-size:12px;font-weight:400;white-space:normal;width:max-content;max-width:240px;
+  box-shadow:0 4px 10px rgba(0,0,0,.2);pointer-events:none}
+@media (prefers-reduced-motion: reduce){details.card>summary::before{transition:none}}
+
+/* إضافات صفحة المركزين: ألوان السلسلتين ومفتاح اللوحة */
+:root{--xchain:#f2c14e; --ychain:#4fd1b5; --dash:#8a9a94}
+.legend{display:flex;flex-direction:column;gap:6px;line-height:1.6}
+.legend div{display:flex;gap:8px;align-items:flex-start}
+.sw{width:14px;height:14px;border-radius:var(--r-ctl);flex:none;margin-top:4px}
+.stats.four{grid-template-columns:repeat(2,minmax(0,1fr))}
+th.xh{border-bottom:2px solid var(--xchain)}
+th.yh{border-bottom:2px solid var(--ychain)}
 </style>
 
 <div class="wrap" dir="rtl">
   <header>
-    <span data-icon="logo"></span>
-    <h1 data-t="title"></h1>
-    <p data-t="intro"></p>
+    <span data-icon="logo2"></span>
+    <h1 data-t="app.title"></h1>
+    <p data-t="app.intro"></p>
   </header>
 
   <div class="layout">
     <div class="card stage">
-      <div class="stage-box" id="box"><canvas id="cv" data-t-aria="canvas.aria"></canvas></div>
-      <span class="hint" data-t="stage.hint"></span>
+      <div class="stage-bar">
+        <div class="group">
+          <button class="btn" id="fitBtn" data-t-tip="stage.fit_tip"><span data-icon="fit"></span><span data-t="stage.fit"></span></button>
+          <button class="btn" id="fullBtn" data-t-tip="stage.full_tip"><span data-icon="full"></span><span data-t="stage.full"></span></button>
+          <label class="check"><input type="checkbox" id="autoFit" checked> <span data-t="stage.auto"></span></label>
+        </div>
+        <span class="hint" data-t="stage.hint"></span>
+      </div>
+      <div class="stage-box" id="stageBox"><canvas id="cv" data-t-aria="canvas.aria"></canvas></div>
     </div>
 
-    <div class="card">
+    <div class="card panel">
       <div class="sec">
-        <h2 data-t="shape.title"></h2>
+        <h2 data-t="shapes.title"></h2>
         <div class="toolbar"><div class="group" id="shapes"></div></div>
+        <div class="drop toolbar" id="drop">
+          <button class="btn" id="uploadBtn" data-t-tip="upload.tip"><span data-icon="upload"></span><span data-t="upload.button"></span></button>
+          <span class="hint" data-t="upload.drop_hint"></span>
+          <input type="file" id="file" accept="image/*" hidden>
+        </div>
+        <div class="msg" id="msg" role="status"></div>
       </div>
 
       <div class="sec alt">
-        <h2 data-t="play.title"></h2>
+        <h2 data-t="playback.title"></h2>
         <div class="toolbar">
           <div class="group">
-            <button class="btn primary" id="play" data-t-tip="play.tip"></button>
-            <button class="btn" id="restart" data-t-tip="restart.tip"><span data-icon="restart"></span><span data-t="restart"></span></button>
+            <button class="btn primary" id="play" data-t-tip="playback.play_tip"></button>
+            <button class="btn" id="restart" data-t-tip="playback.restart_tip"><span data-icon="restart"></span><span data-t="playback.restart"></span></button>
           </div>
           <div class="group">
-            <button class="btn" id="modeAuto" aria-pressed="true" data-t="mode.auto" data-t-tip="mode.auto_tip"></button>
-            <button class="btn" id="modeManual" aria-pressed="false" data-t="mode.manual" data-t-tip="mode.manual_tip"></button>
+            <button class="btn" id="modeStages" aria-pressed="true" data-t-tip="mode.stages_tip" data-t="mode.stages"></button>
+            <button class="btn" id="modeManual" aria-pressed="false" data-t-tip="mode.manual_tip" data-t="mode.manual"></button>
           </div>
         </div>
-        <div class="toolbar"><div class="group" id="chips"></div></div>
+        <div class="toolbar"><div class="chips group" id="chips" data-t-aria="chips.aria"></div></div>
         <div class="field">
-          <label for="m"><span data-t="m.label"></span> <output id="mOut">1</output></label>
-          <input type="range" id="m" min="1" max="40" value="1">
+          <label for="m"><span data-t="count.label"></span> <output id="mOut">1</output></label>
+          <input type="range" id="m" min="1" max="150" value="1">
         </div>
         <div class="field">
           <label for="speed"><span data-t="speed.label"></span> <output id="speedOut">1×</output></label>
-          <input type="range" id="speed" min="0.25" max="3" step="0.25" value="1">
+          <input type="range" id="speed" min="0.25" max="4" step="0.25" value="1">
+        </div>
+        <div class="field" data-t-tip="points.tip">
+          <label for="pts"><span data-t="points.label"></span> <output id="ptsOut">360</output></label>
+          <input type="range" id="pts" min="8" max="1000" step="1" value="360">
+          <span class="hint" id="ptsHint"></span>
         </div>
         <div class="toolbar"><div class="group">
-          <label class="check"><input type="checkbox" id="showGhost" checked> <span data-t="show.ghost"></span></label>
           <label class="check"><input type="checkbox" id="showSmall" checked> <span data-t="show.small"></span></label>
+          <label class="check"><input type="checkbox" id="showGhost" checked> <span data-t="show.ghost"></span></label>
+          <label class="check"><input type="checkbox" id="showPoints" checked> <span data-t="show.points"></span></label>
         </div></div>
       </div>
 
       <div class="sec">
-        <h2 data-t="legend.title"></h2>
+        <h2 data-t="stats.title"></h2>
+        <div class="stats four">
+          <div class="stat" data-t-tip="stats.count_tip"><b id="sM">1</b><span data-t="stats.count_label"></span></div>
+          <div class="stat" data-t-tip="stats.error_tip"><b id="sErr">–</b><span data-t="stats.error_label"></span></div>
+          <div class="stat" data-t-tip="stats.rx_tip"><b id="sRx">–</b><span data-t="stats.rx_label"></span></div>
+          <div class="stat" data-t-tip="stats.ry_tip"><b id="sRy">–</b><span data-t="stats.ry_label"></span></div>
+        </div>
         <div class="legend">
           <div><span class="sw" style="background:var(--xchain)"></span><span data-t="legend.x"></span></div>
           <div><span class="sw" style="background:var(--ychain)"></span><span data-t="legend.y"></span></div>
           <div><span class="sw" style="background:var(--trace)"></span><span data-t="legend.pen"></span></div>
         </div>
-        <div class="stats">
-          <div class="stat" data-t-tip="stat.rx_tip"><b id="rx">–</b><span data-t="stat.rx"></span></div>
-          <div class="stat" data-t-tip="stat.ry_tip"><b id="ry">–</b><span data-t="stat.ry"></span></div>
-        </div>
       </div>
     </div>
   </div>
 
-  <section class="card steps">
-    <h2 data-t="how.title"></h2>
-    <ol>
-      <li data-t="how.1"></li>
-      <li data-t="how.2"></li>
-      <li data-t="how.3"></li>
-      <li data-t="how.4"></li>
-    </ol>
-    <span class="eq">x(t) = a0 + Σ R_x(n)·cos(n·t + φ_n)        y(t) = c0 + Σ R_y(n)·cos(n·t + ψ_n)</span>
-    <p data-t="how.5"></p>
-  </section>
+  <div class="stack">
+    <section class="card tblcard">
+      <div class="tbl-top">
+        <h2 data-t="table.title"></h2>
+        <span class="tbl-sum" id="tblSum" role="status"></span>
+      </div>
+      <div class="tbl-head">
+        <button class="btn" id="copyTbl" data-t-tip="table.copy_tip"><span data-icon="copy"></span><span data-t="table.copy"></span></button>
+      </div>
+      <div class="tbl-scroll">
+        <table>
+          <thead id="thd"></thead>
+          <tbody id="tbl"></tbody>
+        </table>
+      </div>
+      <p class="tbl-note" id="tblNote"></p>
+    </section>
+    <details class="card">
+      <summary data-t="how.title"></summary>
+      <div class="body">
+        <p data-t="how.step1"></p>
+        <p data-t="how.step2"></p>
+        <p data-t="how.step3"></p>
+        <span class="eq">X_n = (2/N) · Σ x_j · e^(−i·n·t_j)      Y_n = (2/N) · Σ y_j · e^(−i·n·t_j)      t_j = 2π·j/N</span>
+        <p data-t="how.step4"></p>
+        <span class="eq">x(t) = x0 + Σ Re(X_n · e^(i·n·t))      y(t) = y0 + Σ Re(Y_n · e^(i·n·t))</span>
+        <p data-t="how.step5"></p>
+        <p data-t="how.step6"></p>
+      </div>
+    </details>
+  </div>
 </div>
 
 <script>
-/* نصوص الواجهة كلها هنا */
+const ICONS = {
+  logo2: {vb:"0 0 34 34", attrs:'width="34" height="34" aria-hidden="true"', body:'<circle cx="17" cy="7" r="5" fill="none" stroke="#f2c14e" stroke-width="2"/><circle cx="7" cy="20" r="5" fill="none" stroke="#4fd1b5" stroke-width="2"/><path d="M17 12v14M12 20h14" stroke="#8a9a94" stroke-width="1.5" stroke-dasharray="2 2"/><circle cx="17" cy="20" r="2.6" fill="#e0453a"/>'},
+  triangle: {vb:"0 0 16 16", body:'<path d="M8 2.5 14 13.5H2z" fill="none" stroke="#e0453a" stroke-width="1.6" stroke-linejoin="round"/>'},
+  square: {vb:"0 0 16 16", body:'<rect x="3" y="3" width="10" height="10" fill="none" stroke="#2b88d8" stroke-width="1.6"/>'},
+  star: {vb:"0 0 16 16", body:'<path d="M8 1.8l1.8 4 4.4.4-3.3 2.9 1 4.3L8 11.2l-3.9 2.2 1-4.3L1.8 6.2l4.4-.4z" fill="none" stroke="#e8a317" stroke-width="1.4" stroke-linejoin="round"/>'},
+  fit: {vb:"0 0 16 16", body:'<path d="M2 5.5V2h3.5M14 5.5V2h-3.5M2 10.5V14h3.5M14 10.5V14h-3.5" fill="none" stroke="#0078d4" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><rect x="5.5" y="4.5" width="5" height="7" rx="1" fill="#2fa36b"/>'},
+  full: {vb:"0 0 16 16", body:'<path d="M1.5 8h13" stroke="#8a5cd6" stroke-width="1.6" stroke-linecap="round"/><path d="M4.5 5 1.5 8l3 3M11.5 5l3 3-3 3" fill="none" stroke="#e8a317" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>'},
+  copy: {vb:"0 0 16 16", body:'<rect x="5.5" y="5.5" width="8" height="8.5" rx="1.2" fill="none" stroke="#0078d4" stroke-width="1.5"/><path d="M10.5 3.5V3a1 1 0 0 0-1-1H3.5a1 1 0 0 0-1 1v7.5a1 1 0 0 0 1 1h.5" fill="none" stroke="#8a5cd6" stroke-width="1.5" stroke-linecap="round"/>'},
+  logo: {vb:"0 0 34 34", attrs:'width="34" height="34" aria-hidden="true"', body:'<circle cx="13" cy="17" r="10" fill="none" stroke="#2fa36b" stroke-width="2"/><circle cx="21" cy="12" r="5" fill="none" stroke="#e8a317" stroke-width="2"/><line x1="13" y1="17" x2="21" y2="12" stroke="#0067c0" stroke-width="2"/><circle cx="24.5" cy="8.5" r="2.5" fill="#e0453a"/>'},
+  pause: {vb:"0 0 16 16", body:'<rect x="3.5" y="2.5" width="3" height="11" rx="1" fill="#ffb900"/><rect x="9.5" y="2.5" width="3" height="11" rx="1" fill="#ff8c00"/>'},
+  play: {vb:"0 0 16 16", body:'<path d="M4 2.5v11l9-5.5z" fill="#6ccb5f"/>'},
+  restart: {vb:"0 0 16 16", body:'<path d="M3 8a5 5 0 1 0 1.6-3.7" fill="none" stroke="#8a5cd6" stroke-width="1.6" stroke-linecap="round"/><path d="M3 2.5v3h3" fill="none" stroke="#e8a317" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>'},
+  shape: {vb:"0 0 16 16", body:'<circle cx="8" cy="8" r="6" fill="none" stroke="{c}" stroke-width="1.8"/><circle cx="8" cy="8" r="2" fill="{c}"/>'},
+  upload: {vb:"0 0 16 16", body:'<path d="M8 11V2M4.5 5.5 8 2l3.5 3.5" fill="none" stroke="#0078d4" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 10v3.2c0 .4.4.8.8.8h10.4c.4 0 .8-.4.8-.8V10" fill="none" stroke="#2fa36b" stroke-width="1.6" stroke-linecap="round"/>'}
+};
+/* تعيد نص svg للأيقونة name؛ color اختياري يملأ {c} (لأيقونة الأشكال). اسم مجهول: مربّع بعلامة استفهام مع تحذير. */
+function icon(name, color){
+  const d = ICONS[name];
+  if(!d){
+    console.warn("أيقونة غير معرّفة:", name);
+    return '<svg viewBox="0 0 16 16"><rect x="2" y="2" width="12" height="12" rx="2" fill="none" stroke="#e8a317" stroke-width="1.4"/><text x="8" y="12" font-size="10" text-anchor="middle" fill="#e8a317">?</text></svg>';
+  }
+  return `<svg viewBox="${d.vb}"${d.attrs?" "+d.attrs:""}>${d.body.replace(/\{c\}/g, color||"#888")}</svg>`;
+}
+/* تستبدل كل عنصر [data-icon] في الصفحة بأيقونته. */
+function applyIcons(){
+  document.querySelectorAll("[data-icon]").forEach(el => el.outerHTML = icon(el.dataset.icon));
+}
+/* كل النصوص الظاهرة للمستخدم في مكان واحد (الصفحة مستقلة فلا ملف نصوص خارجي). للترجمة: بدّل قيم هذا الكائن. */
+
+
 const STRINGS = {
+  "app.intro": "دائرتان بعيدتان عن الشكل، واحدة فوقه وأخرى بجانبه، تدوران معًا. العليا تحدّد الموضع الأفقي للقلم، والجانبية موضعه الرأسي، فيرسمان الشكل معًا. اختر شكلًا أو ارفع صورة، وزِد الدوائر لترى التفاصيل تتكوّن.",
+  "app.title": "سلسلتان ترسمان الشكل",
   "canvas.aria": "لوحة الرسم: سلسلتا دوائر خارج الشكل ترسمانه معًا",
-  "how.1": "تُؤخذ نقاط متساوية التباعد على محيط الشكل، ولكل نقطة إحداثي أفقي x ورأسي y.",
-  "how.2": "تُفصل الحركة الأفقية x(t) عن الرأسية y(t)، وتُفكّ كلٌّ منهما إلى دوائر: الدائرة n تلفّ n مرّات، ونصف قطرها من a وb (للأفقية) أو من c وd (للرأسية).",
-  "how.3": "السلسلة العليا لا يُقرأ منها إلا موضع طرفها الأفقي، فيمكن وضعها فوق الشكل بعيدًا عنه. والجانبية لا يُقرأ منها إلا موضع طرفها الرأسي، فتوضع بجانبه.",
-  "how.4": "خطّ متقطّع ينزل من طرف العليا، وآخر يمتدّ من طرف الجانبية؛ ونقطة التقائهما هي القلم الذي يرسم الشكل.",
-  "how.5": "بدائرة واحدة في كل سلسلة يخرج شكل بيضاوي، وكلما زادت الدوائر اقترب من زوايا المثلث الحادّة.",
-  "how.title": "كيف تعمل",
-  "intro": "دائرتان بعيدتان عن الشكل، واحدة فوقه وأخرى بجانبه، تدوران معًا. العليا تحدّد الموضع الأفقي للقلم، والجانبية موضعه الرأسي، فيرسمان الشكل معًا. زِد عدد الدوائر في كل سلسلة لترى الزوايا تتكوّن.",
+  "chips.aria": "مراحل عدد الدوائر في كل سلسلة",
+  "count.label": "عدد الدوائر في كل سلسلة",
+  "how.step1": "1. يُستخرج محيط الشكل من الصورة: يُفصل الشكل عن الخلفية، ويؤخذ أكبر جزء متّصل، ثم يُتتبّع حدّه نقطةً نقطة.",
+  "how.step2": "2. تُوزَّع على المحيط نقاط متساوية التباعد، ولكل نقطة إحداثي أفقي x ورأسي y. تُفصل الحركة الأفقية عن الرأسية.",
+  "how.step3": "3. تُفكّ كل حركة إلى دوائر وحدها: الدائرة n تلفّ n مرّات، ونصف قطرها وزاويتها من هذه المعادلة:",
+  "how.step4": "4. السلسلة العليا تجمع دوائر الحركة الأفقية، ولا يُقرأ منها إلا موضع طرفها الأفقي؛ والجانبية تجمع دوائر الحركة الرأسية، ولا يُقرأ منها إلا موضع طرفها الرأسي:",
+  "how.step5": "5. لهذا توضع كلٌّ منهما خارج الشكل، فوقه وبجانبه. ينزل من طرف العليا خطّ متقطّع رأسي، ويمتدّ من طرف الجانبية خطّ أفقي، ونقطة التقائهما هي القلم.",
+  "how.step6": "6. بصيغة الفيديو: نصف قطر الدائرة n في العليا √(a² + b²)، وفي الجانبية √(c² + d²). ودائرة واحدة في كل سلسلة تعادل دائرتين في أسلوب المركز الواحد.",
+  "how.title": "كيف يعمل البرنامج",
   "legend.pen": "القلم: نقطة التقاء الخطّين المتقطّعين",
-  "legend.title": "ما على اللوحة",
   "legend.x": "السلسلة العليا: ترسم الحركة الأفقية x",
   "legend.y": "السلسلة الجانبية: ترسم الحركة الرأسية y",
-  "m.label": "عدد الدوائر في كل سلسلة",
-  "mode.auto": "مراحل تلقائية",
-  "mode.auto_tip": "يزيد عدد الدوائر بعد كل دورة كاملة",
   "mode.manual": "عدد ثابت",
   "mode.manual_tip": "تختار عدد الدوائر بنفسك من المنزلق",
-  "pause": "إيقاف مؤقت",
-  "play": "تشغيل",
-  "play.tip": "تشغيل الحركة أو إيقافها (مفتاح المسافة)",
-  "play.title": "التشغيل",
-  "restart": "من البداية",
-  "restart.tip": "إعادة الرسم من أوّل مرحلة",
+  "mode.stages": "مراحل تلقائية",
+  "mode.stages_tip": "يزيد عدد الدوائر تلقائيًّا بعد كل دورة كاملة",
+  "msg.extracted": "استُخرج المحيط من: {name}",
+  "msg.no_shape": "لم أجد شكلًا واضحًا في الصورة. جرّب صورة فيها شكل واحد على خلفية سادة.",
+  "msg.not_image": "اختر ملف صورة (PNG أو JPG أو SVG).",
+  "msg.read_failed": "تعذّرت قراءة الصورة.",
+  "playback.pause": "إيقاف مؤقت",
+  "playback.play": "تشغيل",
+  "playback.play_tip": "تشغيل الحركة أو إيقافها مؤقتًا (مفتاح المسافة)",
+  "playback.restart": "من البداية",
+  "playback.restart_tip": "إعادة الرسم من أوّل مرحلة",
+  "playback.title": "التشغيل",
+  "points.hint": "أقصى عدد للدوائر في كل سلسلة الآن: {max}",
+  "points.label": "عدد النقاط على المحيط",
+  "points.tip": "كم نقطة متساوية التباعد تؤخذ من محيط الشكل. من N نقطة تخرج في كل سلسلة دوائر بسرعات أقل من N/2",
+  "shape.cat": "قط جالس",
+  "shape.italy": "خريطة إيطاليا",
   "shape.square": "مربّع",
   "shape.star": "نجمة",
-  "shape.title": "الشكل",
   "shape.triangle": "مثلث",
-  "show.ghost": "إظهار الشكل الأصلي",
+  "shape.upload": "صورتك",
+  "shape.violin": "كمان",
+  "shapes.title": "الشكل",
+  "show.ghost": "إظهار الشكل الأصلي في الخلفية",
+  "show.points": "إظهار النقاط المأخوذة من المحيط",
   "show.small": "إظهار الدوائر الصغيرة",
   "speed.label": "السرعة",
+  "stage.auto": "ملاءمة تلقائية عند تغيير الشكل",
+  "stage.fit": "على قدّ الرسم",
+  "stage.fit_tip": "يجعل نسبة عرض اللوحة إلى ارتفاعها مثل نسبة الرسم مع السلسلتين",
+  "stage.full": "ملء العرض",
+  "stage.full_tip": "يعيد اللوحة إلى كامل عرض مكانها",
   "stage.hint": "اسحب زاوية اللوحة السفلية لتغيير حجمها",
-  "stat.rx": "نصف قطر أكبر دائرة عليا",
-  "stat.rx_tip": "نصف قطر الدائرة الأولى في السلسلة العليا (الحركة الأفقية)",
-  "stat.ry": "نصف قطر أكبر دائرة جانبية",
-  "stat.ry_tip": "نصف قطر الدائرة الأولى في السلسلة الجانبية (الحركة الرأسية)",
-  "title": "سلسلتان ترسمان الشكل"
+  "stats.count_label": "دائرة في كل سلسلة",
+  "stats.count_tip": "عدد الدوائر المستعملة الآن في كل سلسلة",
+  "stats.error_label": "الانحراف",
+  "stats.error_tip": "متوسط بُعد الرسم عن المحيط الأصلي، نسبةً إلى قطر الشكل",
+  "stats.rx_label": "أكبر دائرة عليا",
+  "stats.rx_tip": "نصف قطر الدائرة الأولى في السلسلة العليا (الحركة الأفقية)",
+  "stats.ry_label": "أكبر دائرة جانبية",
+  "stats.ry_tip": "نصف قطر الدائرة الأولى في السلسلة الجانبية (الحركة الرأسية)",
+  "stats.title": "القياسات",
+  "table.a": "a",
+  "table.angle": "الزاوية",
+  "table.copied": "نُسخ الجدول، الصقه في Excel",
+  "table.copy": "انسخ الجدول",
+  "table.copy_fail": "تعذّر النسخ تلقائيًّا. حدّد الجدول بالفأرة وانسخه.",
+  "table.copy_tip": "ينسخ الجدول بأعمدة مفصولة، جاهزًا للصق في Excel",
+  "table.n": "الدائرة n",
+  "table.new": "جديدة",
+  "table.note": "صفّ لكل دائرة n: نصفها الأيمن للسلسلة العليا (من a وb)، والأيسر للجانبية (من c وd). الدائرة n تلفّ n مرّات، وقيمتها ثابتة لا تتغيّر بين المراحل؛ كل مرحلة تضيف الدوائر التالية بالترتيب. الصفوف الملوّنة هي ما أُضيف في آخر خطوة.",
+  "table.rx": "نصف القطر (عليا)",
+  "table.ry": "نصف القطر (جانبية)",
+  "table.summary": "{m} دائرة في كل سلسلة، منها {a} جديدة في آخر خطوة",
+  "table.title": "جدول دوائر السلسلتين",
+  "upload.button": "ارفع صورة من جهازك",
+  "upload.drop_hint": "أو اسحبها وأفلتها هنا",
+  "upload.tip": "صورة فيها شكل واحد واضح على خلفية سادة، أو PNG بخلفية شفافة"
 };
-function t(k){ return STRINGS[k] ?? (console.warn("missing string:",k), k); }
+/** يعيد نص المفتاح مع تعويض {name}؛ إن غاب المفتاح يعيده نفسه ويحذّر في الكونسول. */
+function t(key, params){
+  let v=STRINGS[key]; if(v===undefined){console.warn("missing string:",key);return key;}
+  if(params) v=v.replace(/\{(\w+)\}/g,(m,p)=>(p in params?params[p]:m)); return v;
+}
+/** يملأ عناصر HTML الثابتة: data-t للنص، data-t-tip للتلميح، data-t-aria لـ aria-label. */
 function applyStrings(){
-  document.querySelectorAll("[data-t]").forEach(e=>e.textContent=t(e.dataset.t));
-  document.querySelectorAll("[data-t-tip]").forEach(e=>e.setAttribute("data-tip",t(e.dataset.tTip)));
-  document.querySelectorAll("[data-t-aria]").forEach(e=>e.setAttribute("aria-label",t(e.dataset.tAria)));
+  document.querySelectorAll("[data-t]").forEach(el=>{el.textContent=t(el.dataset.t);});
+  document.querySelectorAll("[data-t-tip]").forEach(el=>el.setAttribute("data-tip",t(el.dataset.tTip)));
+  document.querySelectorAll("[data-t-aria]").forEach(el=>el.setAttribute("aria-label",t(el.dataset.tAria)));
 }
 
-/* الأيقونات كلها هنا، كلٌّ بلونها */
-const ICONS = {
-  logo:{vb:"0 0 34 34",size:34,body:'<circle cx="17" cy="7" r="5" fill="none" stroke="#f2c14e" stroke-width="2"/><circle cx="7" cy="20" r="5" fill="none" stroke="#4fd1b5" stroke-width="2"/><path d="M17 12v14M12 20h14" stroke="#8a9a94" stroke-width="1.5" stroke-dasharray="2 2"/><circle cx="17" cy="20" r="2.6" fill="#e0453a"/>'},
-  play:{vb:"0 0 16 16",body:'<path d="M4 2.5v11l9-5.5z" fill="#6ccb5f"/>'},
-  pause:{vb:"0 0 16 16",body:'<rect x="3.5" y="2.5" width="3" height="11" rx="1" fill="#ffb900"/><rect x="9.5" y="2.5" width="3" height="11" rx="1" fill="#ff8c00"/>'},
-  restart:{vb:"0 0 16 16",body:'<path d="M3 8a5 5 0 1 0 1.6-3.7" fill="none" stroke="#8a5cd6" stroke-width="1.6" stroke-linecap="round"/><path d="M3 2.5v3h3" fill="none" stroke="#e8a317" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>'},
-  triangle:{vb:"0 0 16 16",body:'<path d="M8 2.5 14 13.5H2z" fill="none" stroke="#e0453a" stroke-width="1.6" stroke-linejoin="round"/>'},
-  square:{vb:"0 0 16 16",body:'<rect x="3" y="3" width="10" height="10" fill="none" stroke="#0078d4" stroke-width="1.6"/>'},
-  star:{vb:"0 0 16 16",body:'<path d="M8 1.8l1.8 4 4.4.4-3.3 2.9 1 4.3L8 11.2l-3.9 2.2 1-4.3L1.8 6.2l4.4-.4z" fill="none" stroke="#e8a317" stroke-width="1.4" stroke-linejoin="round"/>'}
+/* الأشكال الجاهزة: صور (600 نقطة مستخرجة بالبرنامج) ومضلّعات بسيطة */
+const IMAGE_SHAPES = {"violin":[[295.0,35.0],[291.7,36.3],[288.5,38.0],[285.3,39.7],[282.3,41.7],[279.6,44.4],[276.9,47.1],[274.8,50.2],[272.8,53.2],[270.8,56.2],[267.2,57.0],[263.4,57.0],[259.5,57.0],[255.7,57.0],[251.8,57.0],[247.9,57.0],[244.1,57.0],[242.0,59.4],[242.0,63.3],[242.0,67.1],[242.0,71.0],[244.4,73.0],[248.3,73.0],[252.2,73.0],[256.0,73.0],[259.9,73.0],[263.2,74.2],[263.5,77.5],[263.0,81.2],[262.9,85.1],[259.9,87.0],[256.0,87.0],[252.2,87.0],[248.3,87.0],[244.4,87.0],[242.0,89.0],[242.0,92.9],[242.0,96.7],[242.0,100.6],[244.1,103.0],[247.9,103.0],[251.8,103.0],[255.7,103.0],[259.5,103.0],[262.7,104.7],[263.0,108.4],[263.2,112.2],[263.5,115.5],[260.2,117.0],[256.4,117.0],[252.5,117.0],[248.7,117.0],[244.8,117.0],[242.0,118.7],[242.0,122.5],[242.0,126.4],[242.0,130.2],[243.7,133.0],[247.6,133.0],[251.4,133.0],[255.3,133.0],[259.1,133.0],[263.0,133.0],[266.9,133.0],[270.2,134.2],[273.0,137.0],[275.0,140.0],[277.0,143.0],[278.0,146.5],[278.0,150.3],[278.0,154.2],[278.0,158.1],[278.0,161.9],[278.0,165.8],[278.0,169.6],[278.0,173.5],[278.0,177.4],[278.0,181.2],[278.0,185.1],[278.0,189.0],[278.0,192.8],[278.0,196.7],[278.0,200.5],[278.0,204.4],[278.0,208.3],[278.0,212.1],[278.0,216.0],[278.0,219.9],[278.0,223.7],[278.0,227.6],[278.0,231.5],[278.0,235.3],[278.0,239.2],[278.0,243.0],[278.0,246.9],[278.0,250.8],[278.0,254.6],[278.0,258.5],[278.0,262.4],[278.0,266.2],[278.0,270.1],[278.0,273.9],[278.0,277.8],[276.8,281.2],[273.3,282.0],[269.8,283.0],[266.4,284.0],[262.7,284.3],[259.1,285.0],[255.6,286.0],[252.2,287.0],[248.8,288.2],[245.5,289.5],[242.3,291.0],[238.9,292.1],[235.5,293.5],[232.3,295.0],[229.2,296.8],[225.9,298.1],[222.9,300.1],[219.8,302.0],[216.5,303.5],[213.5,305.5],[210.5,307.5],[207.6,310.0],[204.7,312.3],[201.7,314.3],[199.0,317.0],[196.2,319.8],[193.5,322.5],[190.8,325.2],[188.0,328.0],[185.3,330.7],[183.3,333.7],[181.3,336.7],[179.0,339.7],[177.2,342.8],[175.2,345.8],[173.2,348.8],[171.8,352.2],[170.0,355.3],[168.5,358.5],[167.2,361.8],[166.0,365.2],[165.0,368.6],[164.0,372.1],[163.0,375.5],[162.0,379.0],[162.0,382.9],[161.0,386.3],[160.9,390.1],[160.0,393.6],[160.0,397.5],[160.0,401.3],[160.0,405.2],[160.0,409.0],[161.0,412.5],[161.3,416.3],[162.0,419.8],[163.0,423.3],[163.8,426.8],[164.4,430.4],[166.0,433.6],[167.0,437.1],[168.0,440.5],[169.7,443.7],[171.0,447.0],[173.0,450.0],[174.3,453.3],[176.4,456.4],[179.1,459.1],[181.8,461.8],[184.6,464.6],[187.0,467.4],[188.6,470.6],[190.6,473.6],[192.0,476.9],[193.3,480.3],[194.6,483.6],[195.0,487.3],[196.0,490.7],[196.0,494.6],[196.0,498.5],[195.1,501.9],[195.0,505.8],[193.8,509.2],[192.5,512.5],[191.0,515.7],[189.2,518.8],[187.2,521.8],[185.1,524.9],[182.4,527.6],[179.7,530.3],[176.9,533.1],[173.9,535.1],[170.9,537.1],[167.9,539.1],[164.8,541.2],[161.7,543.0],[158.5,544.5],[155.2,545.8],[151.8,547.0],[148.4,548.0],[144.9,549.0],[141.0,549.0],[137.6,550.0],[133.8,550.2],[130.3,551.0],[126.4,551.0],[122.6,551.0],[119.1,551.9],[117.8,555.2],[116.4,558.6],[115.8,562.2],[115.0,565.7],[113.9,569.1],[113.0,572.6],[112.0,576.0],[112.0,579.9],[111.0,583.3],[111.0,587.2],[110.2,590.8],[110.0,594.5],[110.0,598.4],[110.0,602.2],[110.0,606.1],[110.7,609.7],[111.0,613.4],[111.0,617.3],[112.0,620.7],[112.0,624.6],[113.0,628.0],[114.0,631.5],[115.0,635.0],[116.0,638.4],[116.9,641.9],[118.0,645.3],[119.0,648.7],[120.1,652.1],[121.4,655.4],[123.0,658.7],[124.8,661.8],[126.1,665.1],[128.0,668.2],[130.0,671.2],[132.0,674.3],[133.5,677.5],[135.5,680.5],[138.0,683.4],[140.3,686.3],[142.3,689.3],[144.3,692.3],[147.1,695.1],[149.8,697.8],[152.5,700.5],[154.5,703.5],[157.3,706.3],[160.3,708.3],[163.0,711.0],[166.1,713.1],[168.8,715.8],[171.8,717.8],[174.5,720.5],[177.6,722.6],[180.6,724.6],[183.6,726.6],[186.9,728.0],[189.9,730.0],[193.0,732.0],[196.0,734.0],[199.3,735.3],[202.4,737.4],[205.5,739.0],[209.0,740.0],[212.0,742.0],[215.5,743.0],[218.6,744.6],[222.0,746.0],[225.4,747.0],[228.8,748.0],[232.2,749.2],[235.5,750.5],[239.1,751.1],[242.6,752.0],[246.1,753.1],[249.5,754.0],[253.0,755.0],[256.4,756.0],[260.3,756.0],[263.7,757.0],[267.2,758.0],[271.1,758.0],[274.9,758.0],[278.4,759.0],[282.2,759.0],[285.8,759.8],[289.5,760.0],[293.4,760.0],[297.3,760.0],[301.1,760.0],[305.0,760.0],[308.9,760.0],[312.7,760.0],[316.2,759.0],[320.0,759.0],[323.9,759.0],[327.3,758.0],[331.2,758.0],[334.7,757.0],[338.4,756.6],[342.0,756.0],[345.4,755.0],[349.2,754.8],[352.5,753.5],[356.1,752.9],[359.6,752.0],[363.1,751.0],[366.5,750.0],[370.0,749.0],[373.3,747.7],[376.6,746.4],[379.9,745.0],[383.3,743.7],[386.4,742.0],[389.8,741.0],[393.2,739.8],[396.3,738.0],[399.4,736.0],[402.6,734.4],[405.8,733.0],[408.9,731.1],[411.9,729.1],[415.0,727.0],[418.0,725.0],[421.0,723.0],[424.1,721.0],[427.1,718.9],[429.8,716.2],[432.8,714.2],[435.5,711.5],[438.6,709.4],[441.3,706.7],[444.0,704.0],[447.0,701.9],[449.1,698.9],[451.8,696.2],[454.5,693.5],[456.6,690.4],[459.0,687.6],[461.3,684.7],[463.4,681.6],[465.4,678.6],[467.4,675.6],[469.4,672.6],[471.5,669.5],[473.0,666.3],[474.8,663.2],[476.1,659.9],[478.0,656.8],[479.0,653.4],[480.1,649.9],[481.4,646.6],[482.7,643.3],[484.0,640.0],[485.0,636.5],[486.0,633.1],[487.0,629.6],[487.2,625.8],[488.0,622.3],[489.0,618.9],[489.0,615.0],[489.0,611.1],[490.0,607.7],[490.0,603.8],[490.0,600.0],[490.0,596.1],[490.0,592.2],[489.0,588.8],[489.0,584.9],[489.0,581.1],[488.0,577.6],[487.1,574.1],[487.0,570.3],[485.9,566.9],[485.0,563.4],[484.0,560.0],[483.0,556.5],[482.0,553.1],[479.0,551.0],[475.2,551.0],[471.3,551.0],[467.4,551.0],[464.0,550.0],[460.1,550.0],[456.7,549.0],[453.2,548.0],[449.8,547.0],[446.3,546.0],[442.9,544.9],[439.6,543.6],[436.4,542.0],[433.3,540.3],[430.2,538.2],[427.3,536.0],[424.2,534.2],[421.5,531.5],[418.7,528.7],[416.0,526.0],[413.3,523.3],[411.9,519.9],[409.9,516.9],[408.0,513.8],[407.0,510.4],[406.0,507.0],[405.0,503.5],[404.0,500.1],[404.0,496.2],[404.0,492.3],[404.4,488.6],[405.0,485.0],[406.0,481.6],[407.0,478.1],[408.9,475.1],[411.0,472.0],[413.0,469.0],[414.3,465.7],[417.0,463.0],[419.8,460.2],[422.5,457.5],[424.5,454.5],[426.6,451.4],[428.0,448.2],[429.9,445.1],[431.2,441.8],[432.5,438.5],[433.8,435.2],[435.0,431.8],[436.0,428.3],[437.0,424.9],[438.0,421.4],[438.0,417.6],[439.0,414.1],[439.0,410.2],[440.0,406.8],[440.0,402.9],[440.0,399.1],[440.0,395.2],[440.0,391.3],[439.0,387.9],[439.0,384.0],[438.0,380.6],[437.1,377.1],[436.5,373.5],[435.2,370.2],[434.0,366.8],[433.0,363.3],[432.0,359.9],[430.6,356.6],[429.0,353.4],[427.3,350.3],[425.9,346.9],[423.9,343.9],[421.9,340.9],[419.9,337.9],[417.8,334.8],[415.1,332.1],[413.1,329.1],[410.4,326.4],[407.6,323.6],[404.9,320.9],[402.2,318.2],[399.4,315.4],[396.4,313.4],[393.7,310.7],[390.7,308.7],[387.6,306.6],[384.6,304.6],[381.6,302.6],[378.6,300.6],[375.3,299.0],[372.2,297.2],[368.9,295.9],[365.8,294.0],[362.4,293.0],[359.2,291.2],[355.9,290.0],[352.4,289.0],[349.0,288.0],[345.5,287.0],[342.1,286.0],[338.6,285.0],[335.2,284.0],[331.7,283.0],[327.9,282.9],[324.4,282.0],[322.0,279.4],[322.0,275.5],[322.0,271.7],[322.0,267.8],[322.0,263.9],[322.0,260.1],[322.0,256.2],[322.0,252.4],[322.0,248.5],[322.0,244.6],[322.0,240.8],[322.0,236.9],[322.0,233.0],[322.0,229.2],[322.0,225.3],[322.0,221.5],[322.0,217.6],[322.0,213.7],[322.0,209.9],[322.0,206.0],[322.0,202.1],[322.0,198.3],[322.0,194.4],[322.0,190.5],[322.0,186.7],[322.0,182.8],[322.0,179.0],[322.0,175.1],[322.0,171.2],[322.0,167.4],[322.0,163.5],[322.0,159.6],[322.0,155.8],[322.0,151.9],[322.0,148.1],[322.0,144.2],[324.0,141.2],[326.0,138.1],[328.6,135.4],[331.5,133.0],[335.4,133.0],[339.3,133.0],[343.1,133.0],[347.0,133.0],[350.9,133.0],[354.7,133.0],[358.0,131.8],[358.0,128.0],[358.0,124.1],[358.0,120.2],[356.8,117.0],[352.9,117.0],[349.1,117.0],[345.2,117.0],[341.3,117.0],[337.6,116.6],[336.0,113.4],[337.0,110.0],[337.0,106.1],[338.9,103.1],[342.8,103.0],[346.6,103.0],[350.5,103.0],[354.3,103.0],[357.9,102.1],[358.0,98.3],[358.0,94.5],[358.0,90.6],[357.1,87.1],[353.3,87.0],[349.4,87.0],[345.6,87.0],[341.7,87.0],[338.2,86.2],[337.0,82.8],[337.0,79.0],[336.0,75.5],[338.5,73.0],[342.4,73.0],[346.3,73.0],[350.1,73.0],[354.0,73.0],[357.6,72.4],[358.0,68.7],[358.0,64.8],[358.0,61.0],[357.4,57.4],[353.7,57.0],[349.8,57.0],[345.9,57.0],[342.1,57.0],[338.2,57.0],[334.3,57.0],[330.5,57.0],[328.0,54.5],[326.0,51.4],[324.0,48.4],[321.5,45.5],[318.8,42.8],[315.8,40.8],[312.8,38.8],[309.6,37.0],[306.2,36.0],[302.7,35.0],[298.9,35.0]],"cat":[[817.0,42.0],[812.2,44.0],[807.8,47.0],[803.6,50.4],[799.4,53.6],[796.1,57.9],[792.1,61.9],[788.2,65.8],[784.9,70.1],[780.9,74.1],[777.0,78.0],[772.7,81.3],[768.5,84.5],[763.9,87.1],[759.4,89.6],[754.5,91.5],[749.5,93.0],[744.3,94.0],[738.7,94.0],[733.1,94.0],[727.5,94.0],[722.3,93.0],[717.1,92.0],[712.3,90.0],[707.4,88.4],[702.5,86.5],[697.7,84.7],[693.1,82.1],[688.4,80.0],[683.7,77.7],[679.2,75.0],[674.6,72.6],[670.1,70.1],[665.3,68.0],[660.7,65.7],[655.7,64.0],[650.5,63.0],[645.5,64.5],[642.0,68.6],[640.0,73.4],[638.6,78.4],[638.0,83.8],[637.7,89.3],[638.0,94.2],[638.0,99.8],[638.0,105.4],[639.0,110.6],[640.0,115.8],[641.0,121.0],[642.0,126.2],[643.0,131.4],[644.0,136.6],[646.0,141.4],[647.0,146.6],[649.0,151.3],[650.4,156.4],[652.0,161.3],[654.0,166.1],[655.2,171.2],[657.1,176.1],[659.0,180.9],[660.0,186.0],[662.0,190.8],[663.0,196.0],[665.0,200.8],[666.0,206.0],[667.0,211.2],[668.0,216.4],[669.0,221.6],[669.0,227.2],[669.0,232.8],[668.0,238.0],[667.0,243.2],[665.0,248.0],[662.0,252.4],[658.5,256.5],[654.2,259.8],[649.7,262.3],[644.7,264.0],[639.9,266.0],[634.8,267.0],[629.6,268.0],[624.0,268.0],[618.7,269.0],[613.6,270.0],[608.4,271.0],[603.2,272.0],[598.0,273.0],[592.5,273.5],[587.4,274.6],[582.0,275.0],[577.1,276.9],[572.0,278.0],[566.8,279.0],[561.6,280.0],[556.4,281.0],[551.4,282.6],[546.4,284.0],[541.4,285.6],[536.4,287.0],[531.5,288.5],[526.4,290.0],[521.7,292.0],[516.9,294.0],[512.1,295.9],[507.2,297.8],[502.5,300.0],[497.7,302.0],[493.0,304.0],[488.4,306.6],[483.8,309.0],[479.3,311.7],[474.8,314.2],[470.2,316.8],[465.9,320.0],[461.4,322.6],[457.1,325.9],[452.6,328.4],[448.3,331.7],[444.1,335.0],[440.1,338.9],[435.8,342.2],[431.8,346.0],[427.6,349.4],[423.6,353.4],[419.7,357.3],[415.7,361.3],[412.4,365.6],[408.5,369.5],[405.2,373.8],[401.9,378.1],[398.0,382.0],[395.0,386.4],[392.0,390.8],[388.9,395.1],[386.0,399.5],[383.1,403.9],[380.0,408.2],[377.3,412.7],[374.7,417.3],[372.2,421.8],[369.6,426.4],[367.1,430.9],[365.0,435.7],[362.7,440.3],[360.1,444.9],[358.0,449.6],[356.0,454.4],[354.0,459.2],[352.0,464.0],[350.0,468.8],[348.0,473.5],[346.0,478.3],[344.6,483.4],[343.0,488.3],[341.0,493.1],[339.8,498.2],[338.0,503.1],[336.1,507.9],[335.0,513.0],[333.1,517.9],[332.0,523.0],[330.8,528.2],[329.0,533.0],[328.0,538.2],[326.7,543.3],[325.0,548.2],[324.0,553.4],[323.0,558.6],[321.5,563.5],[320.0,568.6],[319.0,573.7],[318.0,578.9],[316.0,583.7],[315.0,588.9],[313.2,593.8],[312.0,598.9],[310.2,603.8],[309.0,608.9],[307.0,613.7],[305.0,618.5],[302.8,623.2],[300.3,627.7],[297.0,632.0],[293.8,636.2],[290.5,640.5],[286.5,644.5],[283.3,648.7],[279.3,652.7],[275.3,656.7],[271.4,660.6],[267.4,664.6],[263.1,667.9],[259.2,671.8],[254.9,675.1],[250.7,678.3],[246.4,681.6],[242.1,684.9],[237.8,688.0],[233.3,690.7],[229.1,693.9],[224.5,696.5],[219.9,699.1],[215.4,701.6],[210.8,704.2],[206.3,706.7],[201.6,709.0],[196.9,711.1],[192.1,713.0],[187.5,715.5],[182.6,717.4],[177.8,719.2],[173.2,721.8],[168.4,723.6],[163.5,725.5],[158.7,727.3],[153.9,729.1],[149.0,731.0],[144.5,733.5],[139.6,735.4],[135.1,738.0],[130.5,740.5],[125.9,743.1],[121.7,746.3],[117.6,750.0],[113.5,753.5],[110.2,757.8],[107.6,762.4],[105.0,766.9],[103.0,771.7],[101.4,776.6],[100.0,781.6],[99.0,786.8],[98.7,792.3],[98.0,797.6],[98.0,803.2],[98.0,808.9],[99.0,814.0],[101.0,818.8],[103.0,823.6],[105.3,828.3],[108.5,832.5],[111.8,836.8],[115.8,840.8],[119.7,844.7],[124.0,848.0],[128.3,851.3],[132.5,854.5],[137.1,857.0],[141.6,859.6],[146.3,862.0],[151.0,864.0],[155.9,865.9],[161.0,867.0],[166.2,868.2],[171.4,869.0],[177.0,869.0],[182.2,868.0],[185.0,864.0],[183.1,859.1],[179.9,854.9],[175.9,850.9],[172.0,847.0],[168.0,843.0],[164.0,839.0],[160.8,834.8],[157.0,830.7],[154.2,826.2],[152.0,821.5],[150.0,816.8],[149.0,811.6],[149.7,806.3],[150.9,801.1],[153.0,796.4],[156.0,792.0],[159.2,787.8],[163.5,784.5],[167.5,780.5],[172.0,778.0],[176.3,774.7],[180.8,772.0],[185.4,769.6],[189.9,767.1],[194.7,765.0],[199.3,762.7],[204.2,760.8],[209.0,759.0],[213.8,757.0],[218.6,755.0],[223.4,753.0],[228.2,751.0],[233.0,749.0],[237.8,747.0],[242.5,745.0],[247.3,743.0],[252.1,741.0],[256.9,739.1],[261.8,737.2],[266.6,735.4],[271.5,733.5],[276.3,731.7],[281.2,730.0],[286.0,728.0],[290.8,726.2],[296.0,725.0],[300.8,723.0],[306.0,722.0],[310.7,720.0],[315.9,719.0],[321.4,718.6],[326.7,718.0],[332.0,719.0],[337.1,720.0],[342.2,721.2],[346.8,723.8],[351.1,727.0],[355.4,730.0],[359.6,733.6],[364.2,736.0],[369.8,736.0],[375.4,736.0],[381.0,736.0],[386.6,736.0],[392.2,736.0],[397.8,736.0],[403.5,736.0],[409.1,736.0],[414.7,736.0],[420.3,736.0],[425.9,736.0],[431.5,736.0],[437.1,736.0],[442.7,736.0],[448.3,736.0],[454.0,736.0],[459.6,736.0],[465.2,736.0],[470.8,736.0],[476.4,736.0],[482.0,736.0],[487.6,736.0],[493.2,736.0],[498.8,736.0],[504.5,736.0],[510.1,736.0],[515.7,736.0],[521.3,736.0],[526.9,736.0],[532.5,736.0],[538.1,736.0],[543.7,736.0],[549.3,736.0],[555.0,736.0],[560.6,736.0],[566.2,736.0],[571.8,736.0],[577.4,736.0],[583.0,736.0],[588.6,736.0],[594.2,736.0],[599.8,736.0],[605.5,736.0],[611.1,736.0],[616.7,736.0],[622.3,736.0],[627.9,736.0],[633.0,735.5],[633.0,729.9],[633.0,724.3],[633.0,718.7],[632.0,713.5],[630.5,708.5],[628.0,703.9],[624.7,699.7],[620.2,697.0],[615.4,695.0],[610.2,694.0],[605.0,693.0],[599.8,692.0],[594.2,692.0],[588.7,691.7],[583.4,691.0],[577.8,691.0],[572.1,691.0],[568.0,688.9],[569.2,683.8],[571.0,679.0],[573.6,674.4],[575.4,669.6],[578.0,665.0],[580.0,660.2],[582.4,655.6],[584.9,651.1],[587.5,646.5],[590.0,642.0],[592.6,637.4],[595.1,632.9],[598.4,628.6],[601.0,624.1],[604.2,619.8],[607.5,615.5],[610.0,611.0],[614.0,607.0],[617.3,602.7],[621.2,598.8],[625.2,594.8],[629.2,591.0],[633.7,588.3],[638.4,586.0],[643.6,585.0],[648.8,586.0],[654.4,586.0],[659.6,587.0],[664.8,588.0],[669.4,590.4],[673.9,593.0],[677.9,596.9],[680.5,601.5],[683.0,606.0],[684.9,610.9],[686.0,616.0],[687.0,621.2],[687.0,626.8],[687.0,632.4],[687.0,638.0],[688.0,643.2],[689.0,648.4],[691.0,653.2],[692.3,658.3],[694.1,663.1],[696.7,667.7],[699.0,672.4],[701.8,676.8],[704.4,681.4],[707.0,685.9],[710.2,690.2],[713.4,694.4],[716.7,698.7],[720.0,703.0],[723.9,706.9],[727.2,711.2],[731.2,715.2],[735.2,719.0],[739.4,722.4],[743.5,726.0],[747.9,729.0],[752.2,732.2],[756.4,735.4],[761.0,738.0],[765.8,740.0],[770.5,742.0],[775.5,743.5],[780.9,744.0],[786.5,744.0],[791.3,742.0],[795.5,738.5],[798.0,734.0],[800.6,729.4],[802.4,724.6],[803.6,719.4],[803.3,714.3],[802.1,709.1],[800.0,704.4],[797.0,700.0],[793.1,696.1],[789.1,692.1],[785.1,688.1],[781.2,684.2],[777.2,680.2],[773.9,675.9],[770.0,672.0],[767.0,667.6],[764.0,663.2],[761.0,658.8],[758.3,654.3],[756.0,649.7],[754.0,644.9],[752.0,640.1],[750.0,635.3],[748.4,630.4],[747.0,625.4],[746.0,620.2],[745.0,615.0],[744.0,609.8],[743.0,604.6],[743.0,599.0],[742.0,593.8],[742.0,588.2],[742.0,582.6],[741.0,577.4],[741.9,572.1],[742.0,566.5],[742.0,560.9],[742.0,555.3],[742.0,549.7],[743.0,544.5],[743.0,538.9],[744.0,533.7],[744.6,528.4],[745.0,522.9],[746.0,517.7],[747.0,512.5],[748.0,507.3],[749.6,502.4],[751.0,497.3],[752.6,492.4],[754.0,487.3],[756.0,482.6],[758.0,477.8],[760.0,473.0],[762.0,468.2],[764.4,463.6],[767.0,459.1],[769.5,454.5],[772.8,450.2],[775.3,445.7],[778.6,441.4],[782.0,437.2],[785.8,433.2],[789.1,428.9],[793.0,425.0],[797.0,421.0],[800.3,416.7],[804.2,412.8],[808.2,408.8],[812.2,404.8],[815.4,400.6],[819.4,396.6],[822.7,392.3],[825.2,387.8],[828.5,383.5],[831.0,379.0],[833.0,374.2],[835.0,369.4],[837.0,364.6],[838.0,359.4],[839.0,354.2],[840.0,349.0],[841.0,343.8],[841.0,338.2],[841.0,332.6],[841.0,327.0],[841.0,321.4],[840.0,316.2],[840.0,310.6],[839.0,305.4],[838.0,300.2],[837.0,295.0],[836.0,289.8],[834.7,284.7],[833.0,279.8],[832.0,274.6],[830.6,269.6],[829.4,264.4],[829.0,259.0],[828.0,253.8],[828.0,248.2],[828.0,242.6],[828.0,237.0],[829.0,231.8],[830.3,226.7],[832.1,221.9],[834.7,217.3],[837.2,212.8],[840.5,208.5],[844.5,204.5],[847.7,200.3],[851.7,196.3],[855.0,192.0],[857.5,187.5],[860.0,182.9],[861.0,177.7],[861.0,172.1],[860.0,166.9],[859.5,161.5],[858.4,156.4],[857.0,151.3],[856.0,146.1],[855.0,140.9],[854.0,135.7],[853.0,130.5],[852.2,125.2],[851.8,119.8],[851.0,114.5],[850.0,109.3],[849.0,104.1],[849.0,98.5],[848.0,93.3],[847.8,87.8],[847.0,82.5],[846.2,77.2],[846.0,71.7],[845.0,66.5],[844.0,61.3],[842.4,56.4],[840.5,51.5],[837.3,47.3],[833.0,44.0],[828.2,42.0],[822.6,42.0]],"italy":[[445.0,45.0],[437.6,48.0],[429.8,50.0],[422.6,53.4],[415.3,56.7],[408.1,56.0],[400.5,54.5],[393.3,54.0],[386.5,57.5],[379.0,57.0],[371.2,59.0],[365.4,64.6],[364.0,72.6],[359.6,79.4],[351.6,79.0],[343.9,77.0],[339.7,71.7],[332.3,69.0],[324.5,71.0],[319.0,73.9],[317.1,80.9],[314.5,88.5],[318.1,94.0],[320.4,100.6],[312.3,102.0],[306.0,98.8],[302.0,95.0],[294.4,97.6],[290.0,104.4],[290.0,112.2],[295.0,117.0],[295.8,122.2],[296.2,129.2],[297.1,135.9],[291.0,132.3],[286.4,126.6],[282.3,121.3],[274.6,123.0],[267.5,124.5],[262.2,129.8],[254.5,128.0],[249.6,121.6],[248.0,113.7],[245.3,108.0],[238.4,108.0],[233.4,112.6],[234.0,119.8],[235.0,128.0],[231.7,135.3],[227.0,142.0],[220.6,147.4],[217.8,154.2],[214.9,161.1],[216.5,168.0],[217.0,174.5],[211.1,175.1],[208.0,167.8],[202.9,161.9],[203.1,154.9],[199.5,150.0],[191.2,149.0],[184.9,144.9],[180.9,138.0],[175.0,132.3],[176.0,125.0],[176.0,116.3],[170.5,112.0],[163.7,116.3],[161.6,123.0],[155.3,128.7],[148.3,132.7],[152.3,139.3],[151.1,146.9],[144.1,150.9],[141.6,158.4],[134.0,161.0],[129.6,167.0],[121.6,165.6],[114.6,162.4],[107.6,162.4],[100.9,167.0],[93.7,168.3],[87.0,171.0],[79.2,173.0],[73.4,167.4],[69.2,172.8],[62.2,176.8],[56.0,180.5],[56.1,189.1],[61.8,194.8],[68.5,197.5],[69.0,205.9],[72.5,212.5],[78.6,218.6],[80.7,225.3],[78.0,231.9],[76.1,238.9],[68.5,241.5],[62.0,246.2],[55.8,247.0],[48.4,248.0],[43.0,253.6],[46.7,260.7],[51.9,265.9],[53.8,273.8],[60.3,279.0],[68.1,279.0],[70.9,285.9],[73.8,293.2],[66.9,297.1],[65.0,305.0],[60.0,311.0],[63.2,318.2],[62.9,326.1],[65.8,332.8],[70.0,339.7],[75.3,342.3],[82.6,345.6],[89.3,350.3],[96.8,353.0],[105.0,352.0],[112.4,349.0],[118.0,351.2],[120.0,359.0],[116.0,366.0],[110.0,370.9],[105.0,376.9],[107.0,384.7],[114.5,387.0],[122.3,385.0],[130.1,383.0],[137.6,380.4],[144.6,376.4],[151.6,372.4],[154.2,365.8],[159.0,359.7],[161.0,351.9],[167.5,348.0],[173.0,343.1],[175.6,336.4],[181.4,331.0],[188.0,326.0],[194.9,322.1],[203.1,323.0],[210.9,325.0],[218.8,326.8],[225.0,331.1],[230.0,332.1],[236.9,332.0],[243.0,337.4],[249.2,341.2],[255.5,346.5],[261.7,351.0],[268.5,355.5],[275.7,359.0],[282.2,360.0],[290.3,361.3],[296.4,367.4],[301.8,373.8],[305.0,381.1],[306.0,389.3],[306.0,397.1],[307.2,405.2],[309.0,413.1],[313.8,419.8],[318.0,426.6],[321.0,434.0],[324.3,441.3],[325.9,449.1],[325.0,457.4],[321.4,464.6],[323.4,471.4],[329.5,468.0],[337.2,470.2],[343.0,475.9],[340.0,483.3],[346.7,487.0],[354.0,490.0],[359.0,496.0],[364.7,501.7],[368.4,508.0],[372.0,514.7],[366.9,518.0],[365.9,524.9],[373.2,525.8],[379.7,522.0],[387.5,524.0],[394.9,527.0],[401.6,531.6],[407.7,537.7],[411.0,544.9],[414.9,551.9],[418.9,558.9],[427.1,560.1],[433.5,565.5],[440.1,570.1],[444.1,577.1],[447.0,584.5],[452.2,589.2],[458.9,593.9],[464.3,600.3],[469.7,606.7],[474.4,613.4],[480.7,615.7],[487.4,619.6],[495.2,620.2],[501.0,625.8],[505.0,632.8],[510.1,637.9],[516.3,632.0],[524.5,631.0],[532.5,632.5],[538.5,637.5],[546.0,637.9],[551.9,634.0],[559.0,637.3],[564.6,643.6],[568.6,650.6],[571.1,658.1],[576.0,664.7],[579.0,672.1],[576.3,679.7],[569.1,681.0],[565.8,685.8],[572.3,686.7],[578.4,680.6],[582.0,676.0],[588.4,678.0],[595.4,674.0],[602.0,678.3],[608.2,683.2],[606.4,689.6],[600.4,692.6],[601.2,699.0],[608.6,696.0],[616.3,695.7],[623.8,693.0],[630.6,690.0],[637.0,695.1],[641.8,701.8],[645.0,709.0],[647.0,716.8],[643.0,723.2],[641.0,731.0],[648.3,734.3],[654.6,737.4],[661.2,741.2],[667.6,746.6],[669.9,751.1],[677.2,754.0],[683.9,749.1],[691.2,746.0],[697.5,751.5],[701.5,758.5],[705.0,765.7],[706.0,773.0],[707.0,781.3],[709.7,788.7],[712.4,796.0],[718.0,802.0],[721.3,809.3],[723.0,817.2],[724.0,825.4],[725.0,833.6],[727.0,841.4],[731.0,848.4],[736.0,854.3],[736.0,862.1],[732.6,869.4],[725.4,871.4],[717.8,873.2],[710.5,876.5],[710.1,883.1],[715.0,889.8],[712.0,897.1],[709.0,904.5],[705.4,911.6],[698.1,915.0],[691.3,912.0],[684.3,911.7],[677.3,915.7],[669.6,918.0],[664.8,913.0],[664.0,920.0],[657.9,926.0],[650.1,924.0],[642.7,921.0],[634.9,923.0],[627.1,924.9],[621.5,931.0],[614.1,933.9],[606.6,934.4],[599.0,937.0],[590.4,937.0],[583.0,936.0],[575.2,934.0],[567.9,937.1],[560.4,940.0],[552.4,938.4],[545.5,934.5],[542.2,927.2],[534.5,929.0],[531.0,922.1],[525.1,917.0],[518.4,921.6],[510.4,921.0],[509.0,928.0],[503.7,933.3],[496.2,934.2],[490.0,929.2],[487.5,922.0],[483.7,923.7],[479.1,928.9],[472.3,932.0],[467.0,938.2],[464.3,945.7],[463.7,952.7],[463.7,959.7],[466.3,967.3],[473.5,970.5],[478.2,977.2],[485.5,977.5],[493.9,977.0],[501.5,979.5],[507.7,984.0],[515.6,985.6],[521.0,991.4],[526.6,996.6],[533.3,1001.3],[540.7,1004.0],[547.8,1007.8],[553.7,1013.0],[560.6,1017.0],[566.4,1020.4],[574.6,1020.4],[582.7,1020.7],[590.6,1022.6],[597.3,1027.3],[603.4,1033.4],[607.3,1040.3],[610.6,1047.6],[618.3,1050.0],[625.2,1054.2],[633.0,1056.0],[640.8,1054.0],[647.6,1057.4],[653.8,1060.8],[658.9,1055.9],[656.0,1048.5],[658.9,1041.1],[662.9,1034.1],[669.6,1029.4],[671.4,1025.4],[668.4,1019.0],[663.0,1012.8],[666.6,1006.6],[660.4,1002.4],[656.0,996.1],[656.0,988.3],[659.0,981.0],[662.0,973.6],[664.0,965.8],[666.7,958.3],[671.0,951.4],[675.0,944.4],[679.4,937.6],[684.8,931.2],[688.7,924.3],[691.3,916.7],[693.6,921.6],[694.0,929.2],[694.0,937.0],[698.0,944.0],[705.3,947.0],[713.6,946.0],[721.5,946.5],[728.1,942.9],[731.4,935.6],[733.2,927.8],[737.9,921.1],[743.0,914.6],[749.6,910.4],[756.3,905.7],[761.9,900.1],[763.0,892.7],[763.0,884.1],[762.0,875.9],[763.0,868.5],[768.1,862.0],[774.7,857.3],[782.0,854.0],[789.8,852.0],[797.2,855.0],[803.8,852.2],[807.4,845.6],[804.0,840.9],[802.0,833.1],[804.0,825.3],[802.0,817.5],[804.0,809.7],[798.5,804.5],[792.1,799.1],[785.2,795.2],[779.5,789.5],[771.5,788.0],[763.5,786.5],[760.0,780.7],[756.0,773.7],[759.5,766.5],[764.1,759.9],[765.9,752.9],[766.0,745.0],[771.0,738.5],[775.0,731.5],[778.6,724.4],[783.0,717.6],[788.0,711.0],[794.5,706.0],[802.2,704.2],[808.5,708.5],[809.2,715.2],[816.2,719.0],[823.2,723.0],[830.6,726.0],[838.8,725.0],[847.0,726.0],[855.2,727.2],[859.0,734.2],[863.8,740.8],[864.0,748.5],[865.6,755.6],[871.0,762.0],[877.6,767.0],[885.3,769.3],[892.6,771.4],[894.0,763.4],[896.0,755.6],[900.0,748.7],[903.0,741.3],[900.0,733.9],[896.7,726.7],[892.0,720.0],[885.9,713.9],[880.3,708.0],[873.3,704.0],[869.0,697.3],[864.3,691.3],[857.6,688.0],[850.4,684.4],[843.6,680.0],[836.2,677.2],[828.9,673.9],[822.5,668.5],[816.1,663.1],[810.1,658.1],[803.2,654.0],[796.3,650.0],[788.9,647.0],[781.5,644.0],[774.1,641.1],[766.3,639.0],[759.4,635.0],[752.3,631.3],[745.0,628.0],[737.6,625.0],[730.7,621.0],[723.5,617.5],[717.1,612.1],[713.8,604.8],[715.4,597.6],[722.2,593.0],[728.8,588.2],[735.0,582.7],[734.0,575.3],[729.7,569.7],[722.6,566.0],[714.3,567.0],[706.6,569.0],[698.5,569.5],[691.0,569.0],[682.7,570.0],[675.0,570.0],[666.7,569.0],[658.5,568.0],[652.0,564.1],[645.2,560.0],[637.9,556.9],[630.9,552.9],[628.0,545.4],[621.1,542.0],[614.4,537.4],[609.0,531.0],[603.6,524.6],[596.9,519.9],[591.0,513.7],[585.8,507.8],[580.4,501.4],[577.0,494.2],[574.0,486.8],[571.0,479.5],[569.5,471.5],[566.9,463.9],[565.0,456.1],[562.0,448.7],[560.0,440.9],[556.7,433.7],[554.0,426.1],[550.8,418.8],[549.0,410.9],[544.7,404.7],[538.0,402.0],[530.4,399.4],[523.8,394.8],[517.4,389.4],[511.0,384.0],[504.6,378.6],[498.2,373.2],[491.9,369.0],[484.1,367.0],[477.7,361.7],[472.0,356.0],[466.6,349.6],[461.6,343.6],[458.0,336.5],[456.0,328.7],[454.0,320.9],[452.0,313.1],[452.0,305.3],[450.0,297.5],[449.5,289.5],[452.1,281.9],[458.6,285.0],[465.4,280.6],[468.0,273.0],[469.5,265.5],[463.1,260.1],[457.4,254.4],[455.0,246.7],[453.0,238.9],[454.2,230.8],[458.0,223.8],[464.1,218.9],[471.4,215.6],[478.6,212.0],[485.9,209.0],[492.6,204.4],[499.3,199.7],[507.7,199.0],[514.0,195.0],[520.0,190.0],[513.4,191.6],[511.9,187.1],[518.2,185.0],[526.0,187.0],[530.5,192.5],[537.4,192.6],[544.0,188.5],[545.9,184.0],[552.3,189.3],[557.7,195.7],[555.4,202.0],[563.2,204.0],[569.0,199.4],[565.0,193.0],[560.7,187.0],[554.1,182.1],[547.0,178.7],[547.8,171.2],[551.0,164.0],[543.8,162.2],[540.4,157.6],[544.7,151.3],[551.1,145.9],[549.0,140.0],[541.7,137.0],[533.9,134.9],[534.1,127.9],[539.0,122.0],[546.0,118.0],[552.8,115.0],[555.0,108.8],[550.6,104.0],[542.8,102.0],[535.3,101.3],[527.4,100.6],[519.3,100.3],[512.0,97.0],[503.9,97.9],[496.3,96.7],[490.0,93.0],[482.7,92.0],[474.4,91.0],[466.6,89.0],[459.8,84.8],[455.7,78.0],[452.9,70.9],[448.5,67.0],[443.4,61.4],[441.9,54.1],[448.1,49.9]]};
+const POLYGONS = {
+  triangle:[[200,0],[400,346],[0,346]],
+  square:[[0,0],[400,0],[400,400],[0,400]],
+  star:(()=>{const p=[];for(let i=0;i<10;i++){const r=i%2?80:200,a=-Math.PI/2+i*Math.PI/5;p.push([200+r*Math.cos(a),200+r*Math.sin(a)]);}return p;})()
 };
-function icon(n){const d=ICONS[n];const s=d.size||16;return `<svg width="${s}" height="${s}" viewBox="${d.vb}" aria-hidden="true">${d.body}</svg>`;}
-function applyIcons(){document.querySelectorAll("[data-icon]").forEach(e=>e.outerHTML=icon(e.dataset.icon));}
+const SHAPE_ORDER = ["triangle","square","star","violin","cat","italy"];
+const SHAPE_ICONS = {triangle:"triangle",square:"square",star:"star",violin:"shape",cat:"shape",italy:"shape",upload:"shape"};
+const SHAPE_COLORS = {violin:"#c8473a",cat:"#8a5cd6",italy:"#2fa36b",upload:"#0078d4"};
+const STAGES = [1,2,3,5,10,20,50];
+const RAW_POINTS = 1000;   // كثافة المحيط الأصلي المحفوظ للمضلّعات والصور المرفوعة
+const MAX_M = 150;         // أقصى عدد دوائر في كل سلسلة
 
-/* ---------- الأشكال: رؤوس مضلّع بسيط (y للأسفل) ---------- */
-const SHAPES = {
-  triangle:[[0.5,0],[1,0.866],[0,0.866]],
-  square:[[0,0],[1,0],[1,1],[0,1]],
-  star:(()=>{const p=[];for(let i=0;i<10;i++){const r=i%2?0.2:0.5,a=-Math.PI/2+i*Math.PI/5;p.push([0.5+r*Math.cos(a),0.5+r*Math.sin(a)]);}return p;})()
-};
-const N = 360;                       // عدد النقاط على المحيط
-const MAXM = 40;                     // أقصى عدد دوائر في كل سلسلة
-const STAGES = [1,2,3,5,10,20,40];
+const $=id=>document.getElementById(id);
+const cv=$("cv"), ctx=cv.getContext("2d");
 
-/** يضع N نقطة متساوية التباعد على محيط المضلّع، بدءًا من رأسه الأوّل. */
-function samplePolygon(v){
-  const L=[0]; for(let i=0;i<v.length;i++){const a=v[i],b=v[(i+1)%v.length];L.push(L[i]+Math.hypot(b[0]-a[0],b[1]-a[1]));}
-  const tot=L[L.length-1], xs=[], ys=[]; let s=0;
-  for(let j=0;j<N;j++){const d=tot*j/N; while(L[s+1]<d) s++; const a=v[s],b=v[(s+1)%v.length],f=(d-L[s])/(L[s+1]-L[s]);
-    xs.push(a[0]+(b[0]-a[0])*f); ys.push(a[1]+(b[1]-a[1])*f);}
-  return {xs,ys};
+/** حالة البرنامج كلها في كائن واحد */
+const S = {key:"triangle", raw:null, P:360, pts:null, X:null, Y:null, maxM:1, m:1, mode:"stages", stage:0,
+  t:0, hold:0, playing:true, speed:1, trail:null, err:0, custom:null, tableM:0, prevTableM:0, box:null};
+
+/* ---------- الرياضيات ---------- */
+
+/** يعيد أخذ n نقطة متساوية التباعد على محيط مغلق (مصفوفة [x,y]). */
+function resample(pts,n){
+  const L=[0];
+  for(let i=1;i<=pts.length;i++){const a=pts[i-1],b=pts[i%pts.length];L.push(L[i-1]+Math.hypot(b[0]-a[0],b[1]-a[1]));}
+  const total=L[L.length-1],out=[];let j=0;
+  for(let i=0;i<n;i++){const s=total*i/n;while(L[j+1]<s)j++;
+    const a=pts[j],b=pts[(j+1)%pts.length],f=(s-L[j])/((L[j+1]-L[j])||1);
+    out.push([a[0]+(b[0]-a[0])*f,a[1]+(b[1]-a[1])*f]);}
+  return out;
 }
 
-/** يفكّ حركة واحدة (أفقية أو رأسية) إلى دوائر: لكل n عدد مركّب نصف قطره R ومن زاويته φ.
- *  X_n = (2/N)·Σ v_j·e^(−i·n·t_j)، فتكون الحركة v(t) = v0 + Σ Re(X_n·e^(i·n·t)). */
-function decompose(vals){
-  const v0=vals.reduce((a,b)=>a+b,0)/N, out=[];
-  for(let n=1;n<=MAXM;n++){let re=0,im=0;
-    for(let j=0;j<N;j++){const a=2*Math.PI*n*j/N;re+=vals[j]*Math.cos(a);im-=vals[j]*Math.sin(a);}
-    out.push({n,re:2*re/N,im:2*im/N,r:2*Math.hypot(re,im)/N});}
-  return {v0,circles:out};
+/** يفكّ حركة واحدة (أفقية أو رأسية) إلى دوائر.
+ *  لكل n: X_n = (2/N)·Σ v_j·e^(−i·n·t_j)، فتكون الحركة v(t) = v0 + Σ Re(X_n·e^(i·n·t)).
+ *  يرجع: v0 (المتوسط)، والدوائر بالترتيب n = 1، 2، 3… مع نصف القطر والزاوية و(a, b) بصيغة الفيديو. */
+function decompose(vals,maxM){
+  const N=vals.length, v0=vals.reduce((s,v)=>s+v,0)/N, circles=[];
+  for(let n=1;n<=maxM;n++){
+    let c=0,s=0;
+    for(let j=0;j<N;j++){const a=2*Math.PI*n*j/N;c+=vals[j]*Math.cos(a);s+=vals[j]*Math.sin(a);}
+    const a=2*c/N, b=2*s/N;          // صيغة الفيديو: v(t) ⊃ a·cos(nt) + b·sin(nt)
+    circles.push({n,re:a,im:-b,r:Math.hypot(a,b),a,b});
+  }
+  return {v0,circles};
 }
-
-/* ---------- الحالة ---------- */
-const S = {key:"triangle", X:null, Y:null, poly:null, m:1, mode:"auto", stage:0, t:0, hold:0, playing:true, speed:1, trail:[]};
-const $=id=>document.getElementById(id), cv=$("cv"), ctx=cv.getContext("2d");
 
 /** موضع القلم عند الزمن tau بأوّل m دائرة في كل سلسلة. */
 function penAt(tau,m){
   let x=S.X.v0,y=S.Y.v0;
-  for(let i=0;i<m;i++){const a=S.X.circles[i],b=S.Y.circles[i],c=Math.cos((i+1)*tau),s=Math.sin((i+1)*tau);
-    x+=a.re*c-a.im*s; y+=b.re*c-b.im*s;}
+  for(let i=0;i<m;i++){const A=S.X.circles[i],B=S.Y.circles[i],ang=(i+1)*tau,c=Math.cos(ang),s=Math.sin(ang);
+    x+=A.re*c-A.im*s; y+=B.re*c-B.im*s;}
   return [x,y];
 }
+
+/** يجهّز أثر القلم لعدد الدوائر الحالي، ويقيس الانحراف عن المحيط الأصلي الكثيف. */
 function rebuild(){
-  const tr=[]; for(let i=0;i<=720;i++) tr.push(penAt(2*Math.PI*i/720,S.m)); S.trail=tr;
-  $("mOut").textContent=S.m; $("m").value=S.m;
-  document.querySelectorAll(".chip").forEach(c=>c.classList.toggle("on",S.mode==="auto"&&+c.dataset.m===S.m));
+  S.m=Math.max(1,Math.min(S.m,S.maxM));   // حماية: لا دوائر أكثر مما تسمح به النقاط
+  const M=900,tr=[];for(let i=0;i<=M;i++)tr.push(penAt(2*Math.PI*i/M,S.m));S.trail=tr;
+  // المحيطان يبدآن من النقطة نفسها ومتساويا التباعد، فالنقطة j من الأصل تقابل الزمن 2πj/N
+  const R=S.raw,N=R.length;let sum=0;
+  for(let j=0;j<N;j++){const p=penAt(2*Math.PI*j/N,S.m);sum+=Math.hypot(p[0]-R[j][0],p[1]-R[j][1]);}
+  S.err=sum/N/Math.hypot(S.box.w,S.box.h)*100;
+  $("sM").textContent=S.m;$("mOut").textContent=S.m;$("m").value=S.m;
+  $("sErr").textContent=S.err<10?S.err.toFixed(2)+"%":S.err.toFixed(1)+"%";
+  document.querySelectorAll(".chip").forEach(c=>{c.classList.toggle("on",S.mode==="stages"&&+c.dataset.m===S.m);c.disabled=+c.dataset.m>S.maxM;});
+  renderTable();
 }
-function loadShape(k){
-  S.key=k; S.poly=SHAPES[k]; const p=samplePolygon(S.poly); S.X=decompose(p.xs); S.Y=decompose(p.ys);
-  $("rx").textContent=S.X.circles[0].r.toFixed(3); $("ry").textContent=S.Y.circles[0].r.toFixed(3);
-  document.querySelectorAll("#shapes .btn").forEach(b=>b.setAttribute("aria-pressed",b.dataset.k===k));
-  restart();
+
+/** يحمّل شكلًا جديدًا (محيطه الأصلي الكثيف) ويبدأ من أوّل مرحلة. */
+function loadPoints(raw){
+  S.raw=raw;
+  let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;
+  for(const [x,y] of raw){x0=Math.min(x0,x);y0=Math.min(y0,y);x1=Math.max(x1,x);y1=Math.max(y1,y);}
+  S.box={x:x0,y:y0,w:x1-x0,h:y1-y0};
+  S.tableM=0;S.prevTableM=0;
+  sample();restart();
+  if($("autoFit").checked) fitStage();
 }
-function restart(){S.stage=0;S.t=0;S.hold=0;if(S.mode==="auto")S.m=STAGES[0];rebuild();}
+
+/** يأخذ من المحيط S.P نقطة ويعيد حساب دوائر السلسلتين، دون إعادة المراحل. */
+function sample(){
+  S.pts=resample(S.raw,S.P);
+  // لماذا (N−1)/2: من N نقطة لا تُعرف إلا السرعات الأقل من N/2؛ ما فوقها يكرّر ما تحتها
+  S.maxM=Math.max(1,Math.min(MAX_M,Math.floor((S.P-1)/2)));
+  S.X=decompose(S.pts.map(p=>p[0]),S.maxM);
+  S.Y=decompose(S.pts.map(p=>p[1]),S.maxM);
+  $("m").max=S.maxM; if(S.m>S.maxM) S.m=S.maxM;
+  $("ptsOut").textContent=S.P; $("ptsHint").textContent=t("points.hint",{max:S.maxM});
+  $("sRx").textContent=S.X.circles[0].r.toFixed(1); $("sRy").textContent=S.Y.circles[0].r.toFixed(1);
+}
+
+function restart(){S.stage=0;S.t=0;S.hold=0;if(S.mode==="stages")S.m=Math.min(STAGES[0],S.maxM);rebuild();}
+
+/* ---------- الجدول ---------- */
+
+const f2=v=>v.toFixed(2);
+const deg=c=>(Math.atan2(c.im,c.re)*180/Math.PI).toFixed(1)+"°";
+
+/** يرسم جدول دوائر السلسلتين المستعملة الآن، ويلوّن ما أُضيف في آخر خطوة. */
+function renderTable(){
+  const prev=S.tableM||0, added=Math.max(0,S.m-prev);
+  $("tblSum").textContent=t("table.summary",{m:S.m,a:added});
+  $("thd").innerHTML=`<tr><th>${t("table.n")}</th><th class="xh">${t("table.rx")}</th><th class="xh">${t("table.angle")}</th><th class="xh">a</th><th class="xh">b</th><th class="yh">${t("table.ry")}</th><th class="yh">${t("table.angle")}</th><th class="yh">c</th><th class="yh">d</th></tr>`;
+  let h="";
+  for(let i=0;i<S.m;i++){
+    const A=S.X.circles[i],B=S.Y.circles[i],isNew=prev>0&&i>=prev;
+    h+=`<tr class="${isNew?"new":""}"><td class="n">${A.n}${isNew?`<span class="pill">${t("table.new")}</span>`:""}</td><td class="n">${f2(A.r)}</td><td class="n">${deg(A)}</td><td class="n">${f2(A.a)}</td><td class="n">${f2(A.b)}</td><td class="n">${f2(B.r)}</td><td class="n">${deg(B)}</td><td class="n">${f2(B.a)}</td><td class="n">${f2(B.b)}</td></tr>`;
+  }
+  $("tbl").innerHTML=h; $("tblNote").textContent=t("table.note");
+  S.prevTableM=prev; S.tableM=S.m;
+}
+
+/** ينسخ الجدول نصًّا مفصولًا بعلامات جدولة، للصق في Excel. */
+function copyTable(){
+  const rows=[...document.querySelectorAll(".tbl-scroll tr")].map(tr=>[...tr.children].map(td=>{
+    const c=td.cloneNode(true);c.querySelectorAll(".pill").forEach(p=>p.remove());return c.textContent.trim();}).join("\t")).join("\n");
+  const done=()=>setMsg(t("table.copied"),"ok"),fail=()=>setMsg(t("table.copy_fail"),"err");
+  try{navigator.clipboard.writeText(rows).then(done,fail);}catch(e){fail();}
+}
+
+/* ---------- استخراج المحيط من صورة مرفوعة (منقول كما هو من صفحة المركز الواحد) ---------- */
+
+/** يستخرج محيط أكبر شكل في صورة: قناع أمامي، أكبر جزء متّصل، ثم تتبّع الحدّ (Moore). */
+function contourFromImage(img){
+  const MAX=420, sc=Math.min(1,MAX/Math.max(img.width,img.height));
+  const W=Math.max(8,Math.round(img.width*sc))+2, H=Math.max(8,Math.round(img.height*sc))+2;
+  const c=document.createElement("canvas"); c.width=W; c.height=H;
+  const g=c.getContext("2d"); g.drawImage(img,1,1,W-2,H-2);
+  const d=g.getImageData(0,0,W,H).data, n=W*H;
+  // هل في الصورة شفافية حقيقية؟ إن كانت فهي أدقّ فاصل بين الشكل والخلفية
+  let minA=255,maxA=0; for(let i=1*W+1;i<n-W-1;i++){const a=d[i*4+3];if(a<minA)minA=a;if(a>maxA)maxA=a;}
+  const fg=new Uint8Array(n);
+  if(minA<128&&maxA>128){
+    for(let i=0;i<n;i++) fg[i]=d[i*4+3]>128?1:0;
+  }else{
+    const gray=new Uint8Array(n), hist=new Array(256).fill(0);
+    for(let i=0;i<n;i++){const a=d[i*4+3]/255, v=(0.299*d[i*4]+0.587*d[i*4+1]+0.114*d[i*4+2])*a+255*(1-a);gray[i]=v;hist[gray[i]]++;}
+    // عتبة Otsu
+    let sum=0; for(let i=0;i<256;i++) sum+=i*hist[i];
+    let sB=0,wB=0,best=0,th=127;
+    for(let i=0;i<256;i++){wB+=hist[i];if(!wB)continue;const wF=n-wB;if(!wF)break;sB+=i*hist[i];const mB=sB/wB,mF=(sum-sB)/wF,v=wB*wF*(mB-mF)**2;if(v>best){best=v;th=i;}}
+    // الخلفية هي اللون الغالب على حوافّ الصورة
+    let bright=0,cnt=0;
+    for(let x=1;x<W-1;x++){bright+=gray[W+x]>th;bright+=gray[(H-2)*W+x]>th;cnt+=2;}
+    for(let y=1;y<H-1;y++){bright+=gray[y*W+1]>th;bright+=gray[y*W+W-2]>th;cnt+=2;}
+    const bgBright=bright/cnt>0.5;
+    for(let i=0;i<n;i++) fg[i]=(gray[i]>th)!==bgBright?1:0;
+  }
+  for(let x=0;x<W;x++){fg[x]=0;fg[(H-1)*W+x]=0;} for(let y=0;y<H;y++){fg[y*W]=0;fg[y*W+W-1]=0;}
+  // أكبر جزء متّصل
+  const lab=new Int32Array(n); let bestL=0,bestSize=0,L=0; const st=[];
+  for(let i=0;i<n;i++){ if(!fg[i]||lab[i]) continue; L++; let size=0; st.push(i); lab[i]=L;
+    while(st.length){const p=st.pop();size++;for(const q of [p-1,p+1,p-W,p+W]) if(fg[q]&&!lab[q]){lab[q]=L;st.push(q);}}
+    if(size>bestSize){bestSize=size;bestL=L;} }
+  if(bestSize<50) return null;
+  const inside=i=>lab[i]===bestL;
+  // تتبّع الحدّ بطريقة Moore، بدءًا من أعلى نقطة يسرى
+  let s=0; while(!inside(s)) s++;
+  const DX=[1,1,0,-1,-1,-1,0,1], DY=[0,1,1,1,0,-1,-1,-1];
+  const dirOf=(dx,dy)=>{for(let k=0;k<8;k++) if(DX[k]===dx&&DY[k]===dy) return k; return 4;};
+  const out=[]; let p=s, b=4, guard=0;
+  do{
+    out.push([p%W,Math.floor(p/W)]);
+    let found=false;
+    for(let i=1;i<=8;i++){
+      const dd=(b+i)%8, q=p+DX[dd]+DY[dd]*W;
+      if(inside(q)){ const pd=(dd+7)%8, prev=p+DX[pd]+DY[pd]*W;
+        b=dirOf((prev%W)-(q%W), Math.floor(prev/W)-Math.floor(q/W)); p=q; found=true; break; }
+    }
+    if(!found) break;
+  }while(p!==s && ++guard<200000);
+  return out.length>20?out:null;
+}
+
+
+
+function loadImageFile(file){
+  if(!file||!file.type.startsWith("image/")){setMsg(t("msg.not_image"),"err");return;}
+  const url=URL.createObjectURL(file),img=new Image();
+  img.onload=()=>{const c=contourFromImage(img);URL.revokeObjectURL(url);
+    if(!c){setMsg(t("msg.no_shape"),"err");return;}
+    S.custom=resample(c,RAW_POINTS);selectShape("upload");setMsg(t("msg.extracted",{name:file.name}),"ok");};
+  img.onerror=()=>{setMsg(t("msg.read_failed"),"err");URL.revokeObjectURL(url);};
+  img.src=url;
+}
+function setMsg(text,kind){const m=$("msg");m.textContent=text;m.className="msg "+(kind||"");}
 
 /* ---------- الرسم ---------- */
-function tok(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim();}
+
+function tok(name){return getComputedStyle(document.documentElement).getPropertyValue(name).trim();}
+
+/** حدود الرسم كاملًا في إحداثيات الشكل: الشكل والسلسلتان خارجه، ومركز كل سلسلة. */
+function world(){
+  let Rx=0,Ry=0;for(let i=0;i<S.m;i++){Rx+=S.X.circles[i].r;Ry+=S.Y.circles[i].r;}
+  const b=S.box, gap=0.08*Math.max(b.w,b.h);
+  // العليا فوق الشكل عند الموضع الأفقي المتوسط، والجانبية يساره عند الموضع الرأسي المتوسط
+  const topC=[S.X.v0, b.y-gap-Rx], sideC=[b.x-gap-Ry, S.Y.v0];
+  const minX=Math.min(sideC[0]-Ry, S.X.v0-Rx, b.x), maxX=Math.max(b.x+b.w, S.X.v0+Rx, sideC[0]+Ry);
+  const minY=Math.min(topC[1]-Rx, S.Y.v0-Ry, b.y), maxY=Math.max(b.y+b.h, S.Y.v0+Ry, topC[1]+Rx);
+  return {topC,sideC,minX,maxX,minY,maxY};
+}
+
+/** يضبط حجم اللوحة على نسبة الرسم كاملًا (الشكل والسلسلتان). */
+function fitStage(){
+  const box=$("stageBox"),avail=box.parentElement.clientWidth-16,W=world(),ratio=(W.maxY-W.minY)/(W.maxX-W.minX);
+  let w=avail,h=w*ratio;const maxH=Math.max(240,window.innerHeight*0.82);
+  if(h>maxH){h=maxH;w=h/ratio;}
+  w=Math.max(200,Math.min(avail,w));h=Math.max(200,h);
+  box.style.width=Math.round(w)+"px";box.style.height=Math.round(h)+"px";
+}
+function fullStage(){$("stageBox").style.width="100%";}
+
 function draw(){
-  const r=cv.getBoundingClientRect(),dpr=devicePixelRatio||1,W=Math.round(r.width*dpr),H=Math.round(r.height*dpr);
-  if(cv.width!==W||cv.height!==H){cv.width=W;cv.height=H;}
-  const col={stage:tok("--stage"),ghost:tok("--ghost"),trace:tok("--trace"),x:tok("--xchain"),y:tok("--ychain"),dash:tok("--dash"),pen:tok("--pen")};
-  ctx.fillStyle=col.stage; ctx.fillRect(0,0,W,H);
-  const m=S.m;
-  // مدى كل سلسلة = مجموع أنصاف أقطار دوائرها، ليتّسع لها مكانها خارج الشكل
-  let Rx=0,Ry=0; for(let i=0;i<m;i++){Rx+=S.X.circles[i].r;Ry+=S.Y.circles[i].r;}
-  const gap=0.18;
-  const topC=[S.X.v0, -gap-Rx];               // مركز السلسلة العليا: فوق الشكل
-  const sideC=[-gap-Ry, S.Y.v0];              // مركز السلسلة الجانبية: يسار الشكل
-  const minX=Math.min(sideC[0]-Ry, S.X.v0-Rx, 0), maxX=Math.max(1, S.X.v0+Rx, sideC[0]+Ry);
-  const minY=Math.min(topC[1]-Rx, S.Y.v0-Ry, 0), maxY=Math.max(1, S.Y.v0+Ry, topC[1]+Rx);
-  const pad=24*dpr, sc=Math.min((W-2*pad)/(maxX-minX),(H-2*pad)/(maxY-minY));
-  const ox=pad+(W-2*pad-(maxX-minX)*sc)/2-minX*sc, oy=pad+(H-2*pad-(maxY-minY)*sc)/2-minY*sc;
-  const P=(x,y)=>[x*sc+ox,y*sc+oy];
-
-  if($("showGhost").checked){ctx.beginPath();S.poly.forEach((p,i)=>{const q=P(p[0],p[1]);i?ctx.lineTo(q[0],q[1]):ctx.moveTo(q[0],q[1]);});ctx.closePath();ctx.fillStyle=col.ghost;ctx.fill();}
-
-  const tau=2*Math.PI*(S.hold>0?1:S.t), small=$("showSmall").checked;
-  // سلسلة: نرسم كل ذراع من طرف السابقة. في الجانبية نديرها ربع دورة ليُقرأ منها الاتجاه الرأسي.
+  const r=cv.getBoundingClientRect(),dpr=window.devicePixelRatio||1,w=Math.round(r.width*dpr),h=Math.round(r.height*dpr);
+  if(cv.width!==w||cv.height!==h){cv.width=w;cv.height=h;}
+  const col={stage:tok("--stage"),ghost:tok("--stage-ghost"),trace:tok("--trace"),x:tok("--xchain"),y:tok("--ychain"),dash:tok("--dash"),pen:tok("--pen"),arm:tok("--arm")};
+  ctx.fillStyle=col.stage;ctx.fillRect(0,0,w,h);
+  const W=world(),pad=20*dpr,sc=Math.min((w-2*pad)/(W.maxX-W.minX),(h-2*pad)/(W.maxY-W.minY));
+  const ox=pad+(w-2*pad-(W.maxX-W.minX)*sc)/2-W.minX*sc, oy=pad+(h-2*pad-(W.maxY-W.minY)*sc)/2-W.minY*sc;
+  const P=p=>[p[0]*sc+ox,p[1]*sc+oy];
+  const path=(pts,close)=>{ctx.beginPath();pts.forEach((p,i)=>{const q=P(p);i?ctx.lineTo(q[0],q[1]):ctx.moveTo(q[0],q[1]);});if(close)ctx.closePath();};
+  if($("showGhost").checked){path(S.raw,true);ctx.fillStyle=col.ghost;ctx.fill();}
+  if($("showPoints").checked){const rad=(S.P>300?1.6:S.P>80?2.4:3.6)*dpr;ctx.fillStyle=col.arm;ctx.globalAlpha=.7;
+    for(const p of S.pts){const q=P(p);ctx.beginPath();ctx.arc(q[0],q[1],rad,0,2*Math.PI);ctx.fill();}ctx.globalAlpha=1;}
+  const tau=2*Math.PI*(S.hold>0?1:S.t),small=$("showSmall").checked;
+  // سلسلة: كل ذراع من طرف السابقة. الجانبية تُدار ربع دورة ليُقرأ منها الاتجاه الرأسي.
   const chain=(start,circles,color,rotate)=>{
     let [x,y]=start;
-    for(let i=0;i<m;i++){const c=circles[i],a=(i+1)*tau,vr=c.re*Math.cos(a)-c.im*Math.sin(a),vi=c.re*Math.sin(a)+c.im*Math.cos(a);
-      const dx=rotate?vi:vr, dy=rotate?vr:vi, [px,py]=P(x,y), rr=c.r*sc;
-      if(i===0||small){ctx.beginPath();ctx.arc(px,py,rr,0,2*Math.PI);ctx.strokeStyle=color;ctx.globalAlpha=i===0?.9:.45;ctx.lineWidth=(i===0?2:1)*dpr;ctx.stroke();}
-      x+=dx;y+=dy; const [qx,qy]=P(x,y);
-      ctx.globalAlpha=.9;ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(qx,qy);ctx.strokeStyle=color;ctx.lineWidth=1.5*dpr;ctx.stroke();ctx.globalAlpha=1;}
+    for(let i=0;i<S.m;i++){const c=circles[i],a=(i+1)*tau,vr=c.re*Math.cos(a)-c.im*Math.sin(a),vi=c.re*Math.sin(a)+c.im*Math.cos(a);
+      const dx=rotate?vi:vr,dy=rotate?vr:vi,[px,py]=P([x,y]),rr=c.r*sc;
+      if((i===0||small)&&rr>1.2){ctx.beginPath();ctx.arc(px,py,rr,0,2*Math.PI);ctx.strokeStyle=color;ctx.globalAlpha=i===0?.9:Math.max(.2,.5-i*.005);ctx.lineWidth=(i===0?2:1)*dpr;ctx.stroke();}
+      x+=dx;y+=dy;const [qx,qy]=P([x,y]);
+      ctx.globalAlpha=.9;ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(qx,qy);ctx.strokeStyle=color;ctx.lineWidth=1.4*dpr;ctx.stroke();ctx.globalAlpha=1;}
     return [x,y];
   };
-  const tipX=chain(topC,S.X.circles,col.x,false), tipY=chain(sideC,S.Y.circles,col.y,true);
-  const pen=[tipX[0],tipY[1]], [penx,peny]=P(pen[0],pen[1]);
-  // الخطّان المتقطّعان من طرفي السلسلتين إلى القلم
-  ctx.setLineDash([6*dpr,6*dpr]); ctx.strokeStyle=col.dash; ctx.lineWidth=1*dpr;
-  let a=P(tipX[0],tipX[1]); ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(penx,peny);ctx.stroke();
-  a=P(tipY[0],tipY[1]); ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(penx,peny);ctx.stroke(); ctx.setLineDash([]);
-  // أثر القلم
+  const tipX=chain(W.topC,S.X.circles,col.x,false),tipY=chain(W.sideC,S.Y.circles,col.y,true);
+  const [penx,peny]=P([tipX[0],tipY[1]]);
+  ctx.setLineDash([6*dpr,6*dpr]);ctx.strokeStyle=col.dash;ctx.lineWidth=1*dpr;
+  for(const tp of [tipX,tipY]){const a=P(tp);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(penx,peny);ctx.stroke();}
+  ctx.setLineDash([]);
+  if(S.hold>0){path(S.trail,true);ctx.globalAlpha=.35;ctx.fillStyle=col.trace;ctx.fill();ctx.globalAlpha=1;}
   const upto=S.hold>0?S.trail.length:Math.max(2,Math.floor(S.t*(S.trail.length-1))+1);
-  ctx.beginPath();for(let i=0;i<upto;i++){const q=P(S.trail[i][0],S.trail[i][1]);i?ctx.lineTo(q[0],q[1]):ctx.moveTo(q[0],q[1]);}
-  ctx.strokeStyle=col.trace;ctx.lineWidth=3*dpr;ctx.lineJoin="round";ctx.stroke();
-  for(const tp of [tipX,tipY]){const q=P(tp[0],tp[1]);ctx.beginPath();ctx.arc(q[0],q[1],3.5*dpr,0,2*Math.PI);ctx.fillStyle=col.dash;ctx.fill();}
+  path(S.trail.slice(0,upto),false);ctx.strokeStyle=col.trace;ctx.lineWidth=3*dpr;ctx.lineJoin="round";ctx.stroke();
+  for(const tp of [tipX,tipY]){const q=P(tp);ctx.beginPath();ctx.arc(q[0],q[1],3.5*dpr,0,2*Math.PI);ctx.fillStyle=col.dash;ctx.fill();}
   ctx.beginPath();ctx.arc(penx,peny,5*dpr,0,2*Math.PI);ctx.fillStyle=col.pen;ctx.fill();
-  ctx.fillStyle=col.trace;ctx.font=`600${Math.round(30*dpr)}px ${tok("--mono")}`;ctx.textAlign="right";ctx.fillText(String(m),W-16*dpr,H-16*dpr);
+  ctx.fillStyle=col.trace;ctx.font=`600 ${Math.round(30*dpr)}px ${tok("--mono")}`;ctx.textAlign="right";ctx.fillText(String(S.m),w-16*dpr,h-16*dpr);
 }
 
 let last=performance.now();
 function frame(now){
-  const dt=Math.min(.05,(now-last)/1000); last=now;
+  const dt=Math.min(.05,(now-last)/1000);last=now;
   if(S.playing){
-    if(S.hold>0){S.hold-=dt; if(S.hold<=0){S.hold=0;S.t=0; if(S.mode==="auto"){S.stage=(S.stage+1)%STAGES.length;S.m=STAGES[S.stage];rebuild();}}}
-    else{S.t+=dt*S.speed/6; if(S.t>=1){S.t=1;S.hold=1;}}
+    if(S.hold>0){S.hold-=dt;if(S.hold<=0){S.hold=0;S.t=0;
+      if(S.mode==="stages"){S.stage=(S.stage+1)%STAGES.length;S.m=Math.min(STAGES[S.stage],S.maxM);rebuild();}}}
+    else{S.t+=dt*S.speed/7;if(S.t>=1){S.t=1;S.hold=S.mode==="stages"?1.1:0.6;}}
   }
-  draw(); requestAnimationFrame(frame);
+  draw();requestAnimationFrame(frame);
 }
 
 /* ---------- الواجهة ---------- */
-function setPlay(p){S.playing=p;$("play").innerHTML=p?`${icon("pause")}${t("pause")}`:`${icon("play")}${t("play")}`;}
-function setMode(md){S.mode=md;$("modeAuto").setAttribute("aria-pressed",md==="auto");$("modeManual").setAttribute("aria-pressed",md==="manual");if(md==="auto")restart();else{S.t=0;S.hold=0;rebuild();}}
-$("shapes").innerHTML=Object.keys(SHAPES).map(k=>`<button class="btn" data-k="${k}">${icon(k)}${t("shape."+k)}</button>`).join("");
-$("shapes").querySelectorAll(".btn").forEach(b=>b.onclick=()=>loadShape(b.dataset.k));
+
+function buildShapes(){
+  const keys=SHAPE_ORDER.concat(S.custom?["upload"]:[]);
+  $("shapes").innerHTML=keys.map(k=>`<button class="btn" data-k="${k}" aria-pressed="${k===S.key}">${icon(SHAPE_ICONS[k],SHAPE_COLORS[k])}${t("shape."+k)}</button>`).join("");
+  $("shapes").querySelectorAll("button").forEach(b=>b.onclick=()=>selectShape(b.dataset.k));
+}
+function rawFor(k){
+  if(k==="upload") return S.custom;
+  if(POLYGONS[k]) return resample(POLYGONS[k],RAW_POINTS);
+  return IMAGE_SHAPES[k];
+}
+function selectShape(k){S.key=k;buildShapes();loadPoints(rawFor(k));}
+function setPlay(p){S.playing=p;$("play").innerHTML=p?`${icon("pause")}${t("playback.pause")}`:`${icon("play")}${t("playback.play")}`;}
+function setMode(md){S.mode=md;$("modeStages").setAttribute("aria-pressed",md==="stages");$("modeManual").setAttribute("aria-pressed",md==="manual");
+  if(md==="stages")restart();else{S.t=0;S.hold=0;rebuild();}}
+
 $("chips").innerHTML=STAGES.map((m,i)=>`<button class="chip" data-m="${m}" data-i="${i}">${m}</button>`).join("");
-$("chips").querySelectorAll(".chip").forEach(c=>c.onclick=()=>{if(S.mode!=="auto"){S.mode="auto";$("modeAuto").setAttribute("aria-pressed",true);$("modeManual").setAttribute("aria-pressed",false);}S.stage=+c.dataset.i;S.m=+c.dataset.m;S.t=0;S.hold=0;rebuild();});
+$("chips").querySelectorAll(".chip").forEach(c=>c.onclick=()=>{
+  if(S.mode!=="stages"){S.mode="stages";$("modeStages").setAttribute("aria-pressed",true);$("modeManual").setAttribute("aria-pressed",false);}
+  S.stage=+c.dataset.i;S.m=Math.min(+c.dataset.m,S.maxM);S.t=0;S.hold=0;rebuild();});
 $("play").onclick=()=>setPlay(!S.playing);
 $("restart").onclick=()=>{restart();setPlay(true);};
-$("modeAuto").onclick=()=>setMode("auto");
+$("modeStages").onclick=()=>setMode("stages");
 $("modeManual").onclick=()=>setMode("manual");
-$("m").oninput=e=>{if(S.mode!=="manual")setMode("manual");S.m=+e.target.value;rebuild();};
+$("m").oninput=e=>{if(S.mode!=="manual"){S.mode="manual";$("modeStages").setAttribute("aria-pressed",false);$("modeManual").setAttribute("aria-pressed",true);}S.m=+e.target.value;rebuild();};
 $("speed").oninput=e=>{S.speed=+e.target.value;$("speedOut").textContent=S.speed+"×";};
+// تغيير عدد النقاط لا يعيد المراحل: يبقى عدد الدوائر والمرحلة والزمن كما هي
+$("pts").oninput=e=>{S.P=+e.target.value;sample();rebuild();};
+$("fitBtn").onclick=fitStage;
+$("fullBtn").onclick=fullStage;
+$("copyTbl").onclick=copyTable;
+$("uploadBtn").onclick=()=>$("file").click();
+$("file").onchange=e=>loadImageFile(e.target.files[0]);
+const drop=$("drop");
+["dragenter","dragover"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add("over");}));
+["dragleave","drop"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove("over");}));
+drop.addEventListener("drop",e=>loadImageFile(e.dataTransfer.files[0]));
 document.addEventListener("keydown",e=>{if(e.code==="Space"&&!/INPUT|BUTTON/.test(e.target.tagName)){e.preventDefault();setPlay(!S.playing);}});
 
-applyIcons(); applyStrings(); setPlay(true); loadShape("triangle"); requestAnimationFrame(frame);
+applyIcons();applyStrings();setPlay(true);selectShape("triangle");requestAnimationFrame(frame);
 </script>
